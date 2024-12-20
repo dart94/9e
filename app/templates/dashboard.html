@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Embarazo - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/styles.css') }}">
+</head>
+<body>
+    <header class="fade-in">
+        <h1>Mi Panel de Seguimiento</h1>
+        <nav>
+            <div class="nav-container">
+                <a href="{{ url_for('routes.index') }}" class="nav-item">Inicio</a>
+                <a href="{{ url_for('routes.nuevo_registro_embarazo') }}" class="nav-item">Registro Semanal</a>
+                <a href="{{ url_for('routes.ver_registros_embarazo') }}" class="nav-item">Historial</a>
+                <a href="#" class="nav-item">Consejos</a>
+                <a href="{{ url_for('routes.mi_perfil') }}" class="nav-item">Mi Perfil</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dashboard-container fade-in">
+        <!-- Progreso del Embarazo -->
+        <section class="progress-section card">
+            {% if last_record and current_week %}
+                <h2>Semana {{ current_week }}</h2>
+                <div class="pregnancy-progress">
+                    <div class="progress-bar">
+                        <div class="progress" style="width: {{ progress_percentage }}%;"></div>
+                    </div>
+                    <p>Has completado el {{ progress_percentage|round(1) }}% de tu embarazo</p>
+                </div>
+            {% else %}
+                <h2>Sin Registros</h2>
+                <p>Empieza a registrar datos para ver tu progreso.</p>
+            {% endif %}
+        </section>
+
+        <!-- Desarrollo del Embarazo -->
+        <div class="week-info card">
+            {% if week_info %}
+                <h3 class="week-title">Semana {{ week_info.semana }}</h3>
+                <div class="week-details">
+                    <div>
+                        <p><strong>Tamaño:</strong></p>
+                        <p class="highlight">{{ week_info.tamano }}</p>
+                    </div>
+                    <div>
+                        <p><strong>Comparación:</strong></p>
+                        <p class="highlight">{{ week_info.comparacion }}</p>
+                    </div>
+                    <div>
+                        <p><strong>Detalles:</strong></p>
+                        <p>{{ week_info.desarrollo_bebe }}</p>
+                    </div>
+                </div>
+                <div class="week-section">
+                    <h4>Consejos para esta semana:</h4>
+                    <ul class="week-list">
+                        {% for consejo in week_info.consejos %}
+                            <li class="week-item">{{ consejo }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p>No hay información disponible para la semana actual.</p>
+            {% endif %}
+        </div>
+
+        <!-- Secciones del Dashboard -->
+        <div class="dashboard-grid">
+            <!-- Registro Semanal -->
+            <section class="weekly-log card">
+                <h3>Registro de la Semana</h3>
+                <div class="quick-actions">
+                    <a href="{{ url_for('routes.nuevo_registro_embarazo') }}" class="btn">Añadir Registro</a>
+                    <a href="{{ url_for('routes.ver_registros_embarazo') }}" class="btn">Ver Historial</a>
+                </div>
+                {% if last_record %}
+                    <div class="weekly-stats">
+                        <div class="stat-item">
+                            <h4>Peso</h4>
+                            <p>{{ last_record.weight or 'No registrado' }} kg</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Síntomas</h4>
+                            <p>{{ last_record.symptoms or 'No registrado' }}</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Notas</h4>
+                            <p>{{ last_record.notes or 'No registrado' }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No hay datos registrados para esta semana.</p>
+                {% endif %}
+            </section>
+
+            <!-- Hitos -->
+            <section class="milestones card">
+                <h3>Próximos Hitos</h3>
+                <ul class="milestone-list">
+                    <li class="milestone-item {% if last_record and last_record.week >= 12 %}completed{% endif %}">
+                        <span class="milestone-week">Semana 12</span>
+                        <p>Primera ecografía</p>
+                    </li>
+                    <li class="milestone-item {% if last_record and last_record.week >= 20 %}active{% endif %}">
+                        <span class="milestone-week">Semana 20</span>
+                        <p>Determinación del sexo</p>
+                    </li>
+                    <li class="milestone-item {% if last_record and last_record.week >= 30 %}active{% endif %}">
+                        <span class="milestone-week">Semana 30</span>
+                        <p>Preparación del hospital</p>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Consejos -->
+            <section class="quick-tips card">
+                <h3>Consejos de la Semana</h3>
+                <div class="tip-container">
+                    {% if week_info %}
+                        {% for consejo in week_info.consejos %}
+                        <div class="tip">
+                            <p>{{ consejo }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Empieza a registrar datos para recibir consejos personalizados.</p>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>Creado con ❤️ para futuras mamás</p>
+            <p>&copy; 2024 Mi Embarazo - Todos los derechos reservados</p>
+        </div>
+    </footer>
+</body>
+</html>

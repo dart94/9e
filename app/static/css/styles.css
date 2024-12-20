@@ -1,0 +1,12 @@
+/* Importar módulos */
+@import url('variables.css');
+@import url('reset.css');
+@import url('navbar.css');
+@import url('dashboard.css');
+@import url('forms.css');
+@import url('responsive.css');
+@import url('tables.css');
+@import url('week.css');
+@import url('footer.css');
+@import url('layout.css');
+@import url('components.css');

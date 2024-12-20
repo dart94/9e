@@ -1,0 +1,16 @@
+/* Variables de Color */
+:root {
+    /* Paleta principal más suave y femenina */
+    --color-primary: #FF97B7; /* Rosa suave */
+    --color-primary-dark: #FF6B98; /* Rosa más oscuro */
+    --color-secondary: #FFD6E5; /* Rosa muy claro */
+    --color-accent: #4ECDC4; /* Turquesa para acentos */
+    --color-bg: #FFF9FB; /* Fondo muy suave */
+    --color-text: #4A4A4A; /* Texto más suave que negro */
+    --color-white: #ffffff;
+    --color-shadow: rgba(255, 151, 183, 0.1); /* Sombra con el color principal */
+    
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+    --spacing-unit: 1rem;
+}

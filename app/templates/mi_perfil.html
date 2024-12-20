@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/styles.css') }}">
+</head>
+<body>
+    <header class="fade-in">
+        <h1>Mi Perfil</h1>
+        <nav>
+            <div class="nav-container">
+                <a href="{{ url_for('routes.index') }}" class="nav-item">Inicio</a>
+                <a href="{{ url_for('routes.nuevo_registro_embarazo') }}" class="nav-item">Registro Semanal</a>
+                <a href="{{ url_for('routes.ver_registros_embarazo') }}" class="nav-item">Historial</a>
+                <a href="#" class="nav-item">Consejos</a>
+                <a href="{{ url_for('routes.mi_perfil') }}" class="nav-item">Mi Perfil</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="profile-container card">
+            <h2>Hola, {{ user.username }}</h2>
+            <p><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+            <p><strong>Fecha de Registro:</strong> {{ user.created_at.strftime('%d/%m/%Y') }}</p>
+            {% if last_record %}
+                <p><strong>Última Fecha del Período:</strong> {{ last_record.last_period_date.strftime('%d/%m/%Y') }}</p>
+                <p><strong>Semana Actual:</strong> {{ current_week }}</p>
+                <p><strong>Progreso del Embarazo:</strong></p>
+                <div class="progress-bar">
+                    <div class="progress" style="width: {{ progress_percentage }}%;"></div>
+                </div>
+            {% else %}
+                <p>Aún no has registrado información de embarazo.</p>
+            {% endif %}
+            <div class="profile-actions">
+                <a href="{{ url_for('routes.dashboard') }}" class="btn">Ir al Dashboard</a>
+                <a href="{{ url_for('routes.editar_perfil') }}" class="btn btn-secondary">Editar Perfil</a>
+            </div>
+        </div>
+
+        {% if registros %}
+        <div class="recent-records card">
+            <h3>Tus Últimos Registros</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Semana</th>
+                        <th>Peso (kg)</th>
+                        <th>Síntomas</th>
+                        <th>Notas</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in registros[:5] %}
+                    <tr>
+                        <td>{{ registro.week }}</td>
+                        <td>{{ registro.weight or 'N/A' }}</td>
+                        <td>{{ registro.symptoms or 'N/A' }}</td>
+                        <td>{{ registro.notes or 'N/A' }}</td>
+                        <td>{{ registro.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>Creado con ❤️ para futuras mamás</p>
+            <p>&copy; 2024 Mi Embarazo - Todos los derechos reservados</p>
+        </div>
+    </footer>
+</body>
+</html>

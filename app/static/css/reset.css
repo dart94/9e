@@ -1,0 +1,13 @@
+/* Reset y estilos  */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Nunito', sans-serif; /* Fuente más amigable */
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+}

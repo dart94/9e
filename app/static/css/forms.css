@@ -1,0 +1,61 @@
+/* Estilos para formularios */
+.styled-form {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: var(--color-white);
+    padding: var(--spacing-unit) * 2;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px var(--color-shadow);
+}
+
+.styled-form .form-group {
+    margin-bottom: var(--spacing-unit) * 2;
+}
+
+.styled-form label {
+    font-weight: 600;
+    color: var(--color-primary);
+    display: block;
+    margin-bottom: var(--spacing-unit);
+}
+
+.styled-form .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-secondary);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    background-color: var(--color-bg);
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.styled-form .form-control:focus {
+    border-color: var(--color-primary-dark);
+    box-shadow: 0 0 4px var(--color-primary);
+    outline: none;
+}
+
+.error-message {
+    color: var(--color-primary-dark);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Botones dentro de formularios */
+.styled-form .btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.styled-form .btn:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+}

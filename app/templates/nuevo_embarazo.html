@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Registro de Embarazo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/styles.css') }}">
+</head>
+<body>
+    <header class="fade-in">
+        <h1>Registros de embarazo</h1>
+        <nav>
+            <div class="nav-container">
+                <a href="{{ url_for('routes.index') }}" class="nav-item">Inicio</a>
+                <a href="{{ url_for('routes.nuevo_registro_embarazo') }}" class="nav-item">Registro Semanal</a>
+                <a href="{{ url_for('routes.ver_registros_embarazo') }}" class="nav-item">Historial</a>
+                <a href="#" class="nav-item">Consejos</a>
+                <a href="{{ url_for('routes.mi_perfil') }}" class="nav-item">Mi Perfil</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <form method="POST" action="{{ url_for('routes.nuevo_registro_embarazo') }}" class="styled-form">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="last_period_date">{{ form.last_period_date.label }}</label>
+                {{ form.last_period_date(class="form-control") }}
+                {% for error in form.last_period_date.errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="weight">{{ form.weight.label }}</label>
+                {{ form.weight(class="form-control") }}
+                {% for error in form.weight.errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="symptoms">{{ form.symptoms.label }}</label>
+                {{ form.symptoms(class="form-control") }}
+                {% for error in form.symptoms.errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="notes">{{ form.notes.label }}</label>
+                {{ form.notes(class="form-control") }}
+                {% for error in form.notes.errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn">{{ form.submit.label }}</button>
+        </form>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>Creado con ❤️ para futuras mamás</p>
+            <p>&copy; 2024 Mi Embarazo - Todos los derechos reservados</p>
+        </div>
+    </footer>
+</body>
+</html>

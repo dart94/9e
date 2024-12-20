@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información del Embarazo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Información del Embarazo</h1>
+    </header>
+    <main>
+        <form method="POST" action="{{ url_for('routes.register_pregnancy') }}">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.week.label }}
+                {{ form.week(class="form-control") }}
+                {% for error in form.week.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div>
+                {{ form.weight.label }}
+                {{ form.weight(class="form-control") }}
+                {% for error in form.weight.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div>
+                {{ form.symptoms.label }}
+                {{ form.symptoms(class="form-control") }}
+                {% for error in form.symptoms.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div>
+                {{ form.notes.label }}
+                {{ form.notes(class="form-control") }}
+                {% for error in form.notes.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn">{{ form.submit.label }}</button>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registros de Embarazo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/styles.css') }}">
+</head>
+<body>
+    <header class="fade-in">
+        <h1>Historial de Embarazo</h1>
+        <nav>
+            <div class="nav-container">
+                <a href="{{ url_for('routes.index') }}" class="nav-item">Inicio</a>
+                <a href="{{ url_for('routes.nuevo_registro_embarazo') }}" class="nav-item">Registro Semanal</a>
+                <a href="{{ url_for('routes.ver_registros_embarazo') }}" class="nav-item">Historial</a>
+                <a href="#" class="nav-item">Consejos</a>
+                <a href="{{ url_for('routes.mi_perfil') }}" class="nav-item">Mi Perfil</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <table>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Semana</th>
+                        <th>Peso (kg)</th>
+                        <th>Síntomas</th>
+                        <th>Notas</th>
+                        <th>Fecha de Registro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in registros %}
+                    <tr>
+                        <td>{{ registro.week }}</td>
+                        <td>{{ registro.weight or 'N/A' }}</td>
+                        <td>{{ registro.symptoms or 'N/A' }}</td>
+                        <td>{{ registro.notes or 'N/A' }}</td>
+                        <td>{{ registro.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table> 
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>Creado con ❤️ para futuras mamás</p>
+            <p>&copy; 2024 Mi Embarazo - Todos los derechos reservados</p>
+        </div>
+    </footer>
+</body>
+</html>

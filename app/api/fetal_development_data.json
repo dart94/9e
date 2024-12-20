@@ -1,0 +1,534 @@
+{
+    "1": {
+        "semana": 1,
+        "desarrollo_bebe": "El óvulo fertilizado comienza a dividirse mientras viaja hacia el útero.",
+        "tamano": "0.1 mm",
+        "peso": "0 g",
+        "comparacion": "Más pequeño que un grano de sal",
+        "sintomas_comunes": [
+            "No hay síntomas visibles aún",
+            "Posible sensibilidad en los senos"
+        ],
+        "consejos": [
+            "Comenzar a tomar ácido fólico",
+            "Mantener una dieta saludable",
+            "Evitar alcohol y tabaco"
+        ],
+        "cambios_madre": "El cuerpo se prepara para el embarazo",
+        "pruebas_medicas": ["Test de embarazo"]
+    },
+    "2": {
+        "semana": 2,
+        "desarrollo_bebe": "El blastocisto viaja por las trompas de Falopio.",
+        "tamano": "0.2 mm",
+        "peso": "0 g",
+        "comparacion": "Tamaño de un punto",
+        "sintomas_comunes": [
+            "Posible sensibilidad en los senos",
+            "Fatiga leve"
+        ],
+        "consejos": [
+            "Continuar con ácido fólico",
+            "Mantener actividad física moderada",
+            "Evitar toxinas ambientales"
+        ],
+        "cambios_madre": "Cambios hormonales iniciales",
+        "pruebas_medicas": ["Test de embarazo"]
+    },
+    "3": {
+        "semana": 3,
+        "desarrollo_bebe": "El blastocisto comienza a implantarse en el útero.",
+        "tamano": "0.3 mm",
+        "peso": "0 g",
+        "comparacion": "Tamaño de un punto decimal",
+        "sintomas_comunes": [
+            "Posible manchado de implantación",
+            "Sensibilidad en los senos",
+            "Fatiga"
+        ],
+        "consejos": [
+            "Aumentar la ingesta de agua",
+            "Descansar adecuadamente",
+            "Evitar esfuerzos excesivos"
+        ],
+        "cambios_madre": "Preparación para la implantación",
+        "pruebas_medicas": ["Test de embarazo"]
+    },
+    "4": {
+        "semana": 4,
+        "desarrollo_bebe": "El embrión se implanta en el útero. Se forman las primeras células que darán origen a órganos.",
+        "tamano": "2 mm",
+        "peso": "0 g",
+        "comparacion": "Tamaño de una semilla de amapola",
+        "sintomas_comunes": [
+            "Náuseas matutinas",
+            "Fatiga",
+            "Sensibilidad en los senos",
+            "Cambios de humor"
+        ],
+        "consejos": [
+            "Descansar adecuadamente",
+            "Mantener una alimentación fraccionada",
+            "Evitar alimentos crudos"
+        ],
+        "cambios_madre": "Inicio de cambios hormonales significativos",
+        "pruebas_medicas": ["Primera visita prenatal"]
+    },
+    "5": {
+        "semana": 5,
+        "desarrollo_bebe": "Comienza la formación del tubo neural y el corazón primitivo.",
+        "tamano": "5 mm",
+        "peso": "0 g",
+        "comparacion": "Tamaño de una semilla de sésamo",
+        "sintomas_comunes": [
+            "Náuseas más frecuentes",
+            "Cambios en el gusto",
+            "Mayor sensibilidad olfativa"
+        ],
+        "consejos": [
+            "Comer pequeñas porciones frecuentemente",
+            "Evitar olores fuertes",
+            "Mantener una buena hidratación"
+        ],
+        "cambios_madre": "Aumento de la producción hormonal",
+        "pruebas_medicas": ["Análisis de sangre inicial"]
+    },
+    "6": {
+        "semana": 6,
+        "desarrollo_bebe": "El corazón comienza a latir. Se forman los primordios de ojos y oídos.",
+        "tamano": "8 mm",
+        "peso": "0.1 g",
+        "comparacion": "Tamaño de una lenteja",
+        "sintomas_comunes": [
+            "Náuseas pronunciadas",
+            "Mayor frecuencia urinaria",
+            "Fatiga significativa"
+        ],
+        "consejos": [
+            "Consumir jengibre para las náuseas",
+            "Descansar cuando sea necesario",
+            "Mantener una dieta equilibrada"
+        ],
+        "cambios_madre": "Posible aumento de talla del sostén",
+        "pruebas_medicas": ["Ecografía transvaginal opcional"]
+    },
+    "7": {
+        "semana": 7,
+        "desarrollo_bebe": "Desarrollo de brazos y piernas. Formación de órganos internos.",
+        "tamano": "13 mm",
+        "peso": "0.3 g",
+        "comparacion": "Tamaño de un arándano",
+        "sintomas_comunes": [
+            "Náuseas persistentes",
+            "Cambios en el apetito",
+            "Sensibilidad mamaria"
+        ],
+        "consejos": [
+            "Mantener comidas pequeñas y frecuentes",
+            "Evitar alimentos que provoquen náuseas",
+            "Dormir las horas necesarias"
+        ],
+        "cambios_madre": "Posible inicio de cambios en la piel",
+        "pruebas_medicas": ["Control de peso y presión"]
+    },
+    "8": {
+        "semana": 8,
+        "desarrollo_bebe": "Todos los órganos principales están formándose. El corazón late.",
+        "tamano": "16 mm",
+        "peso": "1 g",
+        "comparacion": "Tamaño de una frambuesa",
+        "sintomas_comunes": [
+            "Náuseas pronunciadas",
+            "Aversión a ciertos olores",
+            "Cansancio",
+            "Frecuencia urinaria aumentada"
+        ],
+        "consejos": [
+            "Mantener una dieta rica en proteínas",
+            "Realizar ejercicios suaves",
+            "Hidratarse bien"
+        ],
+        "cambios_madre": "Útero del tamaño de una naranja",
+        "pruebas_medicas": ["Ecografía transvaginal", "Análisis de sangre"]
+    },
+    "9": {
+        "semana": 9,
+        "desarrollo_bebe": "El bebé ya no es un embrión, sino un feto. Los órganos continúan desarrollándose.",
+        "tamano": "23 mm",
+        "peso": "2 g",
+        "comparacion": "Tamaño de una uva",
+        "sintomas_comunes": [
+            "Venas más visibles",
+            "Posible acné",
+            "Cambios de humor marcados"
+        ],
+        "consejos": [
+            "Cuidar la piel con productos suaves",
+            "Mantener una rutina de ejercicios leve",
+            "Practicar técnicas de relajación"
+        ],
+        "cambios_madre": "Aumento de la producción de sangre",
+        "pruebas_medicas": ["Control prenatal mensual"]
+    },
+    "10": {
+        "semana": 10,
+        "desarrollo_bebe": "Se forman los dedos de manos y pies. Desarrollo de articulaciones.",
+        "tamano": "3.1 cm",
+        "peso": "4 g",
+        "comparacion": "Tamaño de una fresa",
+        "sintomas_comunes": [
+            "Mejora de náuseas",
+            "Mayor apetito",
+            "Estreñimiento"
+        ],
+        "consejos": [
+            "Aumentar el consumo de fibra",
+            "Mantener una dieta variada",
+            "Realizar ejercicios de suelo pélvico"
+        ],
+        "cambios_madre": "Ligero aumento de peso",
+        "pruebas_medicas": ["Control de peso y presión"]
+    },
+    "11": {
+        "semana": 11,
+        "desarrollo_bebe": "El bebé comienza a moverse. Se desarrollan las uñas.",
+        "tamano": "4.1 cm",
+        "peso": "7 g",
+        "comparacion": "Tamaño de un higo",
+        "sintomas_comunes": [
+            "Menos fatiga",
+            "Cambios en el cabello y uñas",
+            "Posible acidez"
+        ],
+        "consejos": [
+            "Mantener una buena postura",
+            "Usar ropa cómoda",
+            "Evitar comidas pesadas"
+        ],
+        "cambios_madre": "Posible mejoría de síntomas",
+        "pruebas_medicas": ["Preparación para screening"]
+    },
+    "12": {
+        "semana": 12,
+        "desarrollo_bebe": "El bebé tiene todos sus órganos. Comienza a moverse activamente.",
+        "tamano": "6-7 cm",
+        "peso": "14 g",
+        "comparacion": "Tamaño de un limón",
+        "sintomas_comunes": [
+            "Disminución de náuseas",
+            "Más energía",
+            "Posible estreñimiento"
+        ],
+        "consejos": [
+            "Comenzar ejercicios prenatales",
+            "Mantener una dieta balanceada",
+            "Dormir de lado izquierdo"
+        ],
+        "cambios_madre": "El útero se eleva sobre el pubis",
+        "pruebas_medicas": ["Screening del primer trimestre"]
+    },
+    "13": {
+        "semana": 13,
+        "desarrollo_bebe": "El bebé desarrolla sus cuerdas vocales y huesos se endurecen.",
+        "tamano": "7.5 cm",
+        "peso": "23 g",
+        "comparacion": "Tamaño de un melocotón",
+        "sintomas_comunes": [
+            "Mayor energía",
+            "Mejor estado de ánimo",
+            "Menos náuseas"
+        ],
+        "consejos": [
+            "Aumentar actividad física moderada",
+            "Planificar compras para el bebé",
+            "Mantener higiene dental"
+        ],
+        "cambios_madre": "Fin del primer trimestre",
+        "pruebas_medicas": ["Control mensual"]
+    },
+    "14": {
+        "semana": 14,
+        "desarrollo_bebe": "El bebé comienza a hacer expresiones faciales. Desarrollo del cuero cabelludo.",
+        "tamano": "8.5 cm",
+        "peso": "43 g",
+        "comparacion": "Tamaño de un limón grande",
+        "sintomas_comunes": [
+            "Menos fatiga",
+            "Mejor apetito",
+            "Posible congestión nasal"
+        ],
+        "consejos": [
+            "Mantener ejercicio regular",
+            "Cuidar la postura",
+            "Hidratar la piel"
+        ],
+        "cambios_madre": "Mayor energía",
+        "pruebas_medicas": ["Control de peso"]
+    },
+    "15": {
+        "semana": 15,
+        "desarrollo_bebe": "El bebé desarrolla sus sentidos. Comienza a percibir la luz.",
+        "tamano": "10 cm",
+        "peso": "70 g",
+        "comparacion": "Tamaño de una manzana",
+        "sintomas_comunes": [
+            "Sangrado nasal ocasional",
+            "Congestión nasal",
+            "Dolor de cabeza"
+        ],
+        "consejos": [
+            "Mantener la nariz húmeda",
+            "Ejercicios de respiración",
+            "Evitar cambios bruscos de posición"
+        ],
+        "cambios_madre": "Posible inicio de línea negra",
+        "pruebas_medicas": ["Control rutinario"]
+    },
+    "16": {
+        "semana": 16,
+        "desarrollo_bebe": "El bebé puede mover sus articulaciones. Desarrollo de músculos faciales.",
+        "tamano": "11.5 cm",
+        "peso": "100 g",
+        "comparacion": "Tamaño de un aguacate",
+        "sintomas_comunes": [
+            "Posible dolor de espalda",
+            "Inicio de estrías",
+            "Encías sensibles"
+        ],
+        "consejos": [
+            "Usar crema para prevenir estrías",
+            "Mantener buena postura",
+            "Cuidado dental regular"
+        ],
+        "cambios_madre": "Crecimiento del vientre más notable",
+        "pruebas_medicas": ["Control mensual"]
+    },
+    "17": {
+        "semana": 17,
+        "desarrollo_bebe": "El bebé desarrolla grasa corporal. Mejora coordinación.",
+        "tamano": "13 cm",
+        "peso": "140 g",
+        "comparacion": "Tamaño de una pera",
+        "sintomas_comunes": [
+            "Aumento de apetito",
+            "Sueños vívidos",
+            "Picazón en el abdomen"
+        ],
+        "consejos": [
+            "Controlar el aumento de peso",
+            "Hidratar la piel",
+            "Mantener actividad física"
+        ],
+        "cambios_madre": "Aumento del apetito",
+        "pruebas_medicas": ["Control de peso y presión"]
+    },
+    "18": {
+        "semana": 18,
+        "desarrollo_bebe": "El bebé desarrolla sus propios patrones de sueño.",
+        "tamano": "14.2 cm",
+        "peso": "190 g",
+        "comparacion": "Tamaño de un pimiento",
+        "sintomas_comunes": [
+            "Primeros movimientos fetales",
+            "Calambres en las piernas",
+            "Mareos ocasionales"
+        ],
+        "consejos": [
+            "Prestar atención a los movimientos",
+            "Estiramientos suaves",
+            "Mantener buena hidratación"
+        ],
+        "cambios_madre": "Posibles primeros movimientos fetales",
+        "pruebas_medicas": ["Control rutinario"]
+    },
+    "19": {
+        "semana": 19,
+        "desarrollo_bebe": "El bebé comienza a desarrollar una capa protectora llamada vernix caseosa.",
+        "tamano": "15 cm",
+        "peso": "240 g",
+        "comparacion": "Tamaño de un tomate grande",
+        "sintomas_comunes": [
+            "Dolores leves en la espalda",
+            "Mayor movimiento del bebé",
+            "Aumento de peso notable"
+        ],
+        "consejos": [
+            "Usar soporte para la espalda al sentarse",
+            "Incorporar calcio en la dieta",
+            "Dormir de lado izquierdo"
+        ],
+        "cambios_madre": "Mayor crecimiento del vientre",
+        "pruebas_medicas": ["Ecografía anatómica"]
+    },
+    "20": {
+        "semana": 20,
+        "desarrollo_bebe": "El bebé ya puede escuchar sonidos externos.",
+        "tamano": "16.5 cm",
+        "peso": "300 g",
+        "comparacion": "Tamaño de un plátano",
+        "sintomas_comunes": [
+            "Calambres en las piernas",
+            "Hinchazón leve",
+            "Mayor frecuencia urinaria"
+        ],
+        "consejos": [
+            "Estirar antes de dormir",
+            "Usar calzado cómodo",
+            "Aumentar el consumo de agua"
+        ],
+        "cambios_madre": "Posible movimiento del bebé percibido",
+        "pruebas_medicas": ["Control mensual"]
+    },
+    "21": {
+        "semana": 21,
+        "desarrollo_bebe": "El bebé desarrolla papilas gustativas y traga líquido amniótico.",
+        "tamano": "18 cm",
+        "peso": "350 g",
+        "comparacion": "Tamaño de una zanahoria grande",
+        "sintomas_comunes": [
+            "Aumento del apetito",
+            "Mayor sensibilidad en las encías",
+            "Dolor en la parte baja de la espalda"
+        ],
+        "consejos": [
+            "Comer comidas saludables y equilibradas",
+            "Mantener una buena higiene bucal",
+            "Realizar ejercicios de estiramiento"
+        ],
+        "cambios_madre": "El vientre es más prominente",
+        "pruebas_medicas": []
+    },
+    "22": {
+        "semana": 22,
+        "desarrollo_bebe": "Se desarrolla el sentido del tacto y las cejas son más visibles.",
+        "tamano": "19 cm",
+        "peso": "430 g",
+        "comparacion": "Tamaño de una papaya",
+        "sintomas_comunes": [
+            "Estrías en crecimiento",
+            "Hinchazón en pies y tobillos",
+            "Fatiga moderada"
+        ],
+        "consejos": [
+            "Usar cremas hidratantes para prevenir estrías",
+            "Elevar los pies para reducir la hinchazón",
+            "Descansar lo suficiente"
+        ],
+        "cambios_madre": "Mayor peso en el área abdominal",
+        "pruebas_medicas": []
+    },
+    "23": {
+        "semana": 23,
+        "desarrollo_bebe": "El bebé tiene movimientos más coordinados y los pulmones comienzan a producir surfactante.",
+        "tamano": "20 cm",
+        "peso": "500 g",
+        "comparacion": "Tamaño de una berenjena",
+        "sintomas_comunes": [
+            "Dolor pélvico",
+            "Mayor flujo vaginal",
+            "Calambres en las piernas"
+        ],
+        "consejos": [
+            "Realizar ejercicios de relajación",
+            "Usar ropa interior de algodón",
+            "Consumir alimentos ricos en potasio"
+        ],
+        "cambios_madre": "Mayor presión en la pelvis",
+        "pruebas_medicas": []
+    },
+    "24": {
+        "semana": 24,
+        "desarrollo_bebe": "Los órganos internos están más desarrollados y el bebé tiene ciclos de sueño más regulares.",
+        "tamano": "21 cm",
+        "peso": "600 g",
+        "comparacion": "Tamaño de un elote",
+        "sintomas_comunes": [
+            "Dolor en la parte baja de la espalda",
+            "Estreñimiento",
+            "Aumento de la presión arterial"
+        ],
+        "consejos": [
+            "Evitar permanecer de pie por largos periodos",
+            "Incluir fibra en la dieta",
+            "Asistir a los controles médicos regularmente"
+        ],
+        "cambios_madre": "Vientre más grande y redondeado",
+        "pruebas_medicas": ["Prueba de tolerancia a la glucosa"]
+    },
+    "25": {
+        "semana": 25,
+        "desarrollo_bebe": "El bebé responde más a los sonidos y abre los ojos por primera vez.",
+        "tamano": "22 cm",
+        "peso": "700 g",
+        "comparacion": "Tamaño de una coliflor",
+        "sintomas_comunes": [
+            "Acidez estomacal",
+            "Mayor necesidad de orinar",
+            "Dolores de cabeza ocasionales"
+        ],
+        "consejos": [
+            "Comer pequeñas porciones para evitar la acidez",
+            "Realizar caminatas cortas para mejorar la circulación",
+            "Evitar el estrés"
+        ],
+        "cambios_madre": "Mayor sensación de peso en el abdomen",
+        "pruebas_medicas": []
+    },
+    "26": {
+        "semana": 26,
+        "desarrollo_bebe": "Las huellas dactilares están completamente formadas y los pulmones siguen desarrollándose.",
+        "tamano": "23 cm",
+        "peso": "850 g",
+        "comparacion": "Tamaño de un repollo",
+        "sintomas_comunes": [
+            "Dolores musculares",
+            "Dificultad para dormir",
+            "Hinchazón leve"
+        ],
+        "consejos": [
+            "Realizar ejercicios de yoga prenatal",
+            "Usar almohadas para mejorar la postura al dormir",
+            "Mantenerse hidratada"
+        ],
+        "cambios_madre": "Mayor curvatura de la espalda",
+        "pruebas_medicas": []
+    },
+    "39": {
+        "semana": 39,
+        "desarrollo_bebe": "El bebé está completamente desarrollado y listo para nacer.",
+        "tamano": "50 cm",
+        "peso": "3.3 kg",
+        "comparacion": "Tamaño de una sandía pequeña",
+        "sintomas_comunes": [
+            "Presión en la pelvis",
+            "Contracciones de Braxton Hicks",
+            "Dificultad para dormir"
+        ],
+        "consejos": [
+            "Preparar el bolso para el hospital",
+            "Descansar tanto como sea posible",
+            "Hablar con el médico sobre el plan de parto"
+        ],
+        "cambios_madre": "El cuerpo se prepara para el trabajo de parto",
+        "pruebas_medicas": ["Control de dilatación"]
+    },
+    "40": {
+        "semana": 40,
+        "desarrollo_bebe": "El bebé está completamente desarrollado y se espera el nacimiento en cualquier momento.",
+        "tamano": "50 cm",
+        "peso": "3.4 kg",
+        "comparacion": "Tamaño de una calabaza grande",
+        "sintomas_comunes": [
+            "Contracciones regulares",
+            "Mayor presión en la pelvis",
+            "Fatiga intensa"
+        ],
+        "consejos": [
+            "Mantener la calma",
+            "Contactar al médico ante cualquier síntoma de parto",
+            "Hidratarse bien"
+        ],
+        "cambios_madre": "Preparación final para el parto",
+        "pruebas_medicas": ["Monitoreo fetal"]
+    }
+}
