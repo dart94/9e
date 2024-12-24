@@ -48,6 +48,23 @@
     @include r.mobile {
         padding: v.$spacing-unit * 2;
     }
+    
+}
+
+.profile-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+    font-family: 'Nunito', sans-serif;
+
+    @include r.tablet {
+        max-width: 100%;
+        padding: 0.5rem;
+    }
+
+    @include r.mobile {
+        margin: 1rem auto;
+    }
 }
 
 .card:hover {

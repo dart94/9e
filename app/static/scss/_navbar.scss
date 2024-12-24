@@ -55,3 +55,14 @@ nav {
         }
     }
 }
+
+
+.logout-btn {
+    color: v.$color-danger; // Un color distintivo para el botón de cerrar sesión
+    font-weight: bold;
+    transition: color v.$transition-speed ease;
+
+    &:hover {
+        color: v.$color-primary-dark;
+    }
+}

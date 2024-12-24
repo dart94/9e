@@ -1,12 +1,14 @@
-@use'variables' as v;    // Variables globales (colores, tipografías, etc.)
+@use 'variables' as v; // Importar variables
+
 /* Estilos para formularios */
 .styled-form {
     max-width: 600px;
-    margin: 0 auto;
-    background-color: v.$color-background;
+    margin: 2rem auto;
+    background-color: v.$color-white; /* Fondo blanco para mayor contraste */
     padding: v.$spacing-unit * 2;
     border-radius: v.$border-radius;
-    box-shadow: 0 4px 8px v.$color-shadow;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid v.$color-secondary; /* Borde sutil */
 }
 
 .styled-form .form-group {
@@ -15,29 +17,31 @@
 
 .styled-form label {
     font-weight: 600;
-    color: v.$color-primary;
+    color: v.$color-text; /* Texto más oscuro para mejor contraste */
     display: block;
-    margin-bottom: v.$spacing-unit;
+    margin-bottom: v.$spacing-unit * 0.5;
+    font-size: 1rem;
+    cursor: pointer;
 }
 
 .styled-form .form-control {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid v.$color-secondary;
+    padding: 0.8rem;
+    border: 1px solid v.$color-secondary; /* Borde más claro */
     border-radius: v.$border-radius;
     font-size: 1rem;
-    background-color: v.$color-bg;
+    background-color: v.$color-bg; /* Fondo neutro */
     transition: border-color v.$transition-speed ease, box-shadow v.$transition-speed ease;
 }
 
 .styled-form .form-control:focus {
     border-color: v.$color-primary-dark;
-    box-shadow: 0 0 4px v.$color-primary;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); /* Sombra sutil */
     outline: none;
 }
 
 .error-message {
-    color: v.$color-primary-dark;
+    color: v.$color-primary-dark; /* Color de error destacado */
     font-size: 0.875rem;
     margin-top: 0.5rem;
 }
@@ -45,25 +49,17 @@
 /* Botones dentro de formularios */
 .styled-form .btn {
     width: 100%;
-    padding: 0.75rem;
-    background-color: v.$color-primary;
-    color: v.$color-white;
+    padding: 0.8rem;
+    background-color: v.$color-accent; /* Fondo de botón destacado */
+    color: v.$color-white; /* Texto blanco */
     border: none;
     border-radius: v.$border-radius;
     font-weight: 600;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background-color v.$transition-speed ease;
+    transition: background-color v.$transition-speed ease, transform v.$transition-speed ease;
 }
 
 .styled-form .btn:hover {
-    background-color: v.$color-primary-dark;;
-    transform: translateY(-2px);
-}
-
-input:focus + label,
-input:valid + label {
-    transform: translateY(-25px);
-    color: v.$color-primary-dark;
-    font-size: 0.9rem;
-    transition: all v.$transition-speed ease;
+    background-color: darken(v.$color-accent, 10%)
 }

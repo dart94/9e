@@ -26,8 +26,11 @@ def login_required(f):
 # Index
 @routes.route('/')
 def index():
-    return render_template('index.html')
-
+    form = LoginForm()
+    if 'user_id' in session:
+        # Redirigir al dashboard si el usuario ya inició sesión
+        return redirect(url_for('routes.dashboard'))
+    return render_template('index.html', form=form)
 # Dashboard
 @routes.route('/dashboard')
 @login_required
@@ -76,7 +79,7 @@ def login():
         else:
             flash('Correo o contraseña incorrectos.', 'danger')
 
-    return render_template('login.html', form=form)
+    return render_template('index.html', form=form)
 
 # Registro de Usuario
 @routes.route('/registro', methods=['GET', 'POST'])
@@ -162,7 +165,9 @@ def mi_perfil():
         today = datetime.now().date()
         days_since_period = (today - last_record.last_period_date).days
         current_week = max(1, days_since_period // 7)
-        week_info = fetal_data.get_week_info(current_week)
+        progress_percentage = (current_week / 40) * 100
+    else:
+        progress_percentage = 0  # Asegúrate de definir un valor por defecto
 
     return render_template(
         'mi_perfil.html',
@@ -226,3 +231,10 @@ def week_to_month(week):
         return 8
     else:
         return 9
+
+# Logout
+@routes.route('/logout')
+def logout():
+    session.clear()  # Limpia toda la sesión
+    flash('Has cerrado sesión correctamente.', 'success')
+    return redirect(url_for('routes.index'))  # Redirige al inicio

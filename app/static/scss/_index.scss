@@ -1,0 +1,218 @@
+@use 'variables' as v;
+
+// Estilos base
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  background-color: v.$color-bg;
+}
+
+// Contenedor principal
+.index-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  
+  // Estilos comunes para ambas secciones
+  .info-section,
+  .login-section {
+    flex: 1;
+    padding: v.$spacing-unit * 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+  }
+
+  // Sección de información
+  .info-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),url('/static/images/bg.webp') no-repeat center center / cover;
+    color: v.$color-white;
+    
+    header {
+      margin-bottom: v.$spacing-unit * 3;
+      
+      h1 {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        margin-bottom: v.$spacing-unit;
+      }
+      
+      .header-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+    }
+
+    .welcome-content {
+      h2 {
+        font-size: 1.8rem;
+        margin-bottom: v.$spacing-unit * 2;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: v.$spacing-unit * 2;
+      margin-top: v.$spacing-unit * 3;
+
+      .feature-item {
+        padding: v.$spacing-unit * 2;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: v.$border-radius;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: translateY(-5px);
+        }
+
+        i {
+          font-size: 2.5rem;
+          margin-bottom: v.$spacing-unit;
+          color: v.$color-white; 
+          font-size: 2rem; /* Ajusta el tamaño del ícono */
+  
+        }
+
+        h3 {
+          font-size: 1.3rem;
+          margin-bottom: v.$spacing-unit;
+        }
+
+        p {
+          font-size: 1rem;
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+
+  // Sección de login
+  .login-section {
+    background-color: v.$color-white;
+    
+    header {
+      margin-bottom: v.$spacing-unit * 4;
+      
+      h1 {
+        font-size: 2rem;
+        color: v.$color-primary-dark;
+      }
+    }
+
+    .styled-form {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+
+      .form-group {
+        margin-bottom: v.$spacing-unit * 2;
+        text-align: left;
+
+        label {
+          display: block;
+          margin-bottom: v.$spacing-unit;
+          color: v.$color-text;
+          font-weight: 600;
+        }
+
+        .form-control {
+          width: 100%;
+          padding: v.$spacing-unit;
+          border: 2px solid v.$color-border;
+          border-radius: v.$border-radius;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+
+          &:focus {
+            border-color: v.$color-primary;
+            outline: none;
+          }
+        }
+
+        .error-message {
+          color: v.$color-error;
+          font-size: 0.9rem;
+          margin-top: v.$spacing-unit / 2;
+        }
+      }
+
+      .btn {
+        width: 100%;
+        padding: v.$spacing-unit * 1.2;
+        background-color: v.$color-primary;
+        color: v.$color-white;
+        border: none;
+        border-radius: v.$border-radius;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: v.$color-primary-dark;
+        }
+      }
+    }
+
+    .register-link {
+      margin-top: v.$spacing-unit * 3;
+      text-align: center;
+
+      p {
+        margin-bottom: v.$spacing-unit;
+        color: v.$color-text;
+      }
+
+      .btn-secondary {
+        display: inline-block;
+        padding: v.$spacing-unit v.$spacing-unit * 2;
+        background-color: transparent;
+        color: v.$color-primary;
+        border: 2px solid v.$color-primary;
+        
+        &:hover {
+          background-color: v.$color-primary;
+          color: v.$color-white;
+        }
+      }
+    }
+  }
+}
+
+// Responsividad
+@media (max-width: 768px) {
+  .index-container {
+    flex-direction: column;
+    
+    .info-section,
+    .login-section {
+      padding: v.$spacing-unit * 2;
+    }
+
+    .info-section {
+      min-height: 60vh;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .styled-form {
+      padding: 0 v.$spacing-unit;
+    }
+  }
+}
+

@@ -7,18 +7,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/styles.css') }}">
 </head>
 <body>
-    <header class="fade-in">
-        <h1>Historial de Embarazo</h1>
-        <nav>
-            <div class="nav-container">
-                <a href="{{ url_for('routes.index') }}" class="nav-item">Inicio</a>
-                <a href="{{ url_for('routes.nuevo_registro_embarazo') }}" class="nav-item">Registro Semanal</a>
-                <a href="{{ url_for('routes.ver_registros_embarazo') }}" class="nav-item">Historial</a>
-                <a href="#" class="nav-item">Consejos</a>
-                <a href="{{ url_for('routes.mi_perfil') }}" class="nav-item">Mi Perfil</a>
-            </div>
-        </nav>
+    <header class="header">
+        <button id="toggle-sidebar" class="hamburger" aria-label="Abrir/cerrar menú">
+            ☰
+        </button>
+        <h1 class="header-title">Ver historial de embarazo</h1>
     </header>
+    <nav id="sidebar" class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="{{ url_for('routes.index') }}">Inicio</a></li>
+            <li><a href="{{ url_for('routes.nuevo_registro_embarazo') }}">Registro Semanal</a></li>
+            <li><a href="{{ url_for('routes.ver_registros_embarazo') }}">Historial</a></li>
+            <li><a href="#">Consejos</a></li>
+            <li><a href="{{ url_for('routes.mi_perfil') }}">Mi Perfil</a></li>
+            {% if session.get('user_id') %}
+            <li><a href="{{ url_for('routes.logout') }}" class="logout-btn">Cerrar Sesión</a></li>
+            {% endif %}
+        </ul>
+    </nav>
     <main>
         <table>
             <table class="styled-table">
@@ -50,5 +56,6 @@
             <p>&copy; 2024 Mi Embarazo - Todos los derechos reservados</p>
         </div>
     </footer>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

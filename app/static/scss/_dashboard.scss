@@ -213,16 +213,24 @@
 }
 
 
-.development-image {
-    max-width: 100%;
-    height: auto;
-    margin: 1.5rem auto;
-    border-radius: v.$border-radius;
-    box-shadow: 0 4px 8px v.$color-shadow;
-    display: block;
-}
-
 .image-container {
-    text-align: center;
-    margin: 1.5rem 0;
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem auto;
+    max-width: 100%; /* Asegura que no desborde horizontalmente */
+    overflow: hidden; /* Oculta cualquier parte desbordante */
+  }
+  
+  .development-image {
+    width: auto; /* Mantiene la proporción horizontal */
+    height: auto; /* Asegura que la altura también conserve la proporción */
+    max-width: 100%; /* Limita la anchura al contenedor */
+    max-height: 100%; /* Limita la altura al contenedor */
+    object-fit: contain; /* Mantiene la imagen completa visible */
+    transition: transform 0.3s ease; /* Efecto suave al hover */
+  }
+  
+  .development-image:hover {
+    transform: scale(1.05); /* Agrega un leve zoom */
+  }

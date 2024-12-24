@@ -3,50 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Embarazo - Seguimiento y Cuidados</title>
+    <title>Mi Embarazo - Bienvenida</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 </head>
 <body>
-    <header class="fade-in">
-        <h1>Mi Embarazo</h1>
-        <p class="header-subtitle">Un viaje lleno de amor y cuidados</p>
-    </header>
-
-    <main class="fade-in">
-        <section class="welcome-section">
-            <div class="card">
-                <h2>Bienvenidos a su diario de embarazo</h2>
-                <p class="welcome-text">
-                    Acompaña cada momento especial de esta hermosa etapa con nuestra aplicación 
-                    diseñada para ayudarte a registrar y monitorear el progreso de tu embarazo.
-                </p>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h3>Seguimiento Semanal</h3>
-                        <p>Registra los cambios y momentos importantes semana a semana</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Hitos Importantes</h3>
-                        <p>No te pierdas ningún momento crucial del desarrollo de tu bebé</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Consejos y Cuidados</h3>
-                        <p>Accede a información valiosa para cada etapa del embarazo</p>
-                    </div>
-                </div>
-                <div class="cta-container">
-                    <a href="{{ url_for('routes.register') }}" class="btn">Registrarse</a>
-                    <a href="{{ url_for('routes.login') }}" class="btn btn-secondary">Iniciar Sesión</a>
-                </div>
+    <div class="index-container">
+        <!-- Sección izquierda: Información -->
+        <section class="info-section">
+            <h1>Mi Embarazo</h1>
+          <div class="welcome-content">
+            <h2>Bienvenidos a su diario de embarazo</h2>
+            <p>
+              Acompaña cada momento especial de esta hermosa etapa con nuestra aplicación
+              diseñada para ayudarte a registrar y monitorear el progreso de tu embarazo.
+            </p>
+            <div class="features-grid">
+              <div class="feature-item">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Seguimiento Semanal</h3>
+                <p>Registra los cambios y momentos importantes semana a semana</p>
+              </div>
+              <div class="feature-item">
+                <i class="fa-solid fa-heart"></i>
+                <h3>Hitos Importantes</h3>
+                <p>No te pierdas ningún momento crucial del desarrollo de tu bebé</p>
+              </div>
+              <div class="feature-item">
+                <i class="fa-solid fa-star""></i>
+                <h3>Consejos y Cuidados</h3>
+                <p>Accede a información valiosa para cada etapa del embarazo</p>
+              </div>
             </div>
+          </div>
         </section>
-    </main>
+      
+        <!-- Sección derecha: Login -->
+        <section class="login-section">
+            <h1>Iniciar Sesión</h1>
+          <form method="POST" action="{{ url_for('routes.login') }}" class="styled-form">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+              <label for="email">{{ form.email.label }}</label>
+              {{ form.email(class="form-control") }}
+              {% for error in form.email.errors %}
+                <p class="error-message">{{ error }}</p>
+              {% endfor %}
+            </div>
+            <div class="form-group">
+              <label for="password">{{ form.password.label }}</label>
+              {{ form.password(class="form-control") }}
+              {% for error in form.password.errors %}
+                <p class="error-message">{{ error }}</p>
+              {% endfor %}
+            </div>
+            <button type="submit" class="btn">{{ form.submit.label }}</button>
+            <div class="register-link">
+                <p>¿No tienes una cuenta?</p>
+                <a href="{{ url_for('routes.register') }}" class="btn btn-secondary">Regístrate</a>
+          </form>
 
-    <footer>
+          </div>
+        </section>
+      </div>
+      <footer>
         <div class="footer-content">
             <p>Creado con ❤️ para futuras mamás</p>
             <p>&copy; 2024 Mi Embarazo - Todos los derechos reservados</p>
