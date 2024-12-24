@@ -1,0 +1,31 @@
+@forward 'header';
+@forward 'features';
+@use 'variables' as v;
+
+main {
+  width: min(90%, 1200px);
+  margin: v.$spacing-unit * 3 auto;
+  background-color: v.$color-white;
+  border-radius: v.$border-radius;
+  box-shadow: 0 6px 12px v.$color-shadow;
+}
+
+section {
+  margin-bottom: clamp(2rem, 4vw, v.$spacing-unit * 6);
+  padding: clamp(1rem, 3vw, v.$spacing-unit * 4);
+  background-color: v.$color-white;
+  border-radius: v.$border-radius;
+  transition: transform v.$transition-speed ease, box-shadow v.$transition-speed ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px v.$color-shadow;
+  }
+
+  h3 {
+    color: v.$color-primary;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    border-bottom: 3px solid v.$color-secondary;
+    margin-bottom: v.$spacing-unit;
+  }
+}

@@ -1,0 +1,228 @@
+@use 'variables' as v;    
+@use 'responsive' as r;   
+
+/* Dashboard Styles */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+    font-family: 'Nunito', sans-serif;
+
+    @include r.tablet {
+        max-width: 100%;
+        padding: 0.5rem;
+    }
+
+    @include r.mobile {
+        margin: 1rem auto;
+    }
+}
+
+/* Progreso del Embarazo */
+.progress-section {
+    background-color: v.$color-background;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px v.$color-shadow;
+    text-align: center;
+    margin-bottom: 1.5rem;
+
+    @include r.tablet {
+        padding: 1rem;
+    }
+
+    @include r.mobile {
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+    }
+}
+
+.progress-section h2 {
+    font-size: 2rem;
+    color: v.$color-primary-dark;
+    margin-bottom: 1rem;
+
+    @include r.mobile {
+        font-size: 1.6rem;
+    }
+}
+
+.pregnancy-progress {
+    margin: 1rem 0;
+
+    @include r.mobile {
+        margin: 0.5rem 0;
+    }
+}
+
+.progress-bar {
+    background-color: v.$color-secondary;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 20px;
+    position: relative;
+
+    @include r.mobile {
+        height: 16px;
+    }
+}
+
+.progress {
+    background-color: v.$color-primary-dark;
+    height: 100%;
+    transition: width 0.4s ease;
+}
+
+/* Información Semanal */
+.week-info {
+    background-color: v.$color-background;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px v.$color-shadow;
+
+    @include r.tablet {
+        padding: 1rem;
+    }
+
+    @include r.mobile {
+        padding: 0.8rem;
+        margin-bottom: 1rem;
+    }
+}
+
+.week-info h3 {
+    color: v.$color-primary-dark;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+
+    @include r.mobile {
+        font-size: 1.5rem;
+    }
+}
+
+.week-details p {
+    font-size: 1.2rem;
+    color: v.$color-text;
+    margin-bottom: 0.5rem;
+
+    @include r.mobile {
+        font-size: 1rem;
+    }
+}
+
+.week-section h4 {
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    color: v.$color-primary-dark;
+
+    @include r.mobile {
+        font-size: 1.3rem;
+    }
+}
+
+.week-list {
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    color: v.$color-text;
+
+    @include r.mobile {
+        padding-left: 1rem;
+    }
+}
+
+.week-list li {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+
+    @include r.mobile {
+        font-size: 0.9rem;
+    }
+}
+
+/* Grid para el Dashboard */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+
+    @include r.mobile {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Milestones */
+.milestone-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid v.$color-secondary;
+    background-color: v.$color-background;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+
+    @include r.mobile {
+        padding: 0.8rem;
+    }
+}
+
+.milestone-item.completed {
+    border-left-color: v.$color-accent;
+}
+
+.milestone-item.active {
+    background-color: v.$color-secondary;
+}
+
+.milestone-week {
+    font-weight: bold;
+    margin-right: 1rem;
+    color: v.$color-primary-dark;
+    font-size: 1.2rem;
+
+    @include r.mobile {
+        font-size: 1rem;
+    }
+}
+
+/* Weekly Stats */
+.weekly-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+
+    @include r.mobile {
+        grid-template-columns: 1fr;
+        margin-top: 1rem;
+    }
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background-color: v.$color-secondary;
+    border-radius: v.$border-radius;
+
+    @include r.mobile {
+        padding: 0.8rem;
+    }
+}
+
+
+.development-image {
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem auto;
+    border-radius: v.$border-radius;
+    box-shadow: 0 4px 8px v.$color-shadow;
+    display: block;
+}
+
+.image-container {
+    text-align: center;
+    margin: 1.5rem 0;
+}

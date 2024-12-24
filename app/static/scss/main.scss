@@ -1,0 +1,13 @@
+@use'variables';    // Variables globales (colores, tipografías, etc.)
+@use'reset';        // Reseteo de estilos
+@use'layout';       // Estilos generales de layout
+@use'navbar';       // Estilos de la barra de navegación
+@use'dashboard';    // Estilos específicos del dashboard
+@use'forms';        // Estilos de los formularios
+@use'footer';       // Estilos del footer
+@use'components';   // Componentes reutilizables
+@use'tables';       // Estilos de tablas
+@use'week';         // Estilos específicos de semanas
+@use'responsive';   // Estilos responsive
+@use 'header';      // Estilos del header
+@use 'features';    // Estilos de las secciones de la página

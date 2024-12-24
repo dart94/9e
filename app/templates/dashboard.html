@@ -39,7 +39,12 @@
         </section>
 
         <!-- Desarrollo del Embarazo -->
-        <div class="week-info card">
+        <section class="week-info card">
+            {% if image_path %}
+                <div class="image-container">
+                    <img src="{{ image_path }}" alt="Desarrollo del bebé" class="development-image">
+                </div>
+            {% endif %}
             {% if week_info %}
                 <h3 class="week-title">Semana {{ week_info.semana }}</h3>
                 <div class="week-details">
@@ -67,7 +72,7 @@
             {% else %}
                 <p>No hay información disponible para la semana actual.</p>
             {% endif %}
-        </div>
+        </section>
 
         <!-- Secciones del Dashboard -->
         <div class="dashboard-grid">
@@ -76,7 +81,7 @@
                 <h3>Registro de la Semana</h3>
                 <div class="quick-actions">
                     <a href="{{ url_for('routes.nuevo_registro_embarazo') }}" class="btn">Añadir Registro</a>
-                    <a href="{{ url_for('routes.ver_registros_embarazo') }}" class="btn">Ver Historial</a>
+
                 </div>
                 {% if last_record %}
                     <div class="weekly-stats">
@@ -96,41 +101,6 @@
                 {% else %}
                     <p>No hay datos registrados para esta semana.</p>
                 {% endif %}
-            </section>
-
-            <!-- Hitos -->
-            <section class="milestones card">
-                <h3>Próximos Hitos</h3>
-                <ul class="milestone-list">
-                    <li class="milestone-item {% if last_record and last_record.week >= 12 %}completed{% endif %}">
-                        <span class="milestone-week">Semana 12</span>
-                        <p>Primera ecografía</p>
-                    </li>
-                    <li class="milestone-item {% if last_record and last_record.week >= 20 %}active{% endif %}">
-                        <span class="milestone-week">Semana 20</span>
-                        <p>Determinación del sexo</p>
-                    </li>
-                    <li class="milestone-item {% if last_record and last_record.week >= 30 %}active{% endif %}">
-                        <span class="milestone-week">Semana 30</span>
-                        <p>Preparación del hospital</p>
-                    </li>
-                </ul>
-            </section>
-
-            <!-- Consejos -->
-            <section class="quick-tips card">
-                <h3>Consejos de la Semana</h3>
-                <div class="tip-container">
-                    {% if week_info %}
-                        {% for consejo in week_info.consejos %}
-                        <div class="tip">
-                            <p>{{ consejo }}</p>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>Empieza a registrar datos para recibir consejos personalizados.</p>
-                    {% endif %}
-                </div>
             </section>
         </div>
     </main>

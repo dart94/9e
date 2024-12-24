@@ -38,12 +38,19 @@ def dashboard():
     current_week = None
     progress_percentage = 0
     week_info = None
+    image_path = None
 
     if last_record and last_record.last_period_date:
         today = datetime.now().date()
         days_since_period = (today - last_record.last_period_date).days
         current_week = max(1, days_since_period // 7)
         progress_percentage = (current_week / 40) * 100
+
+        # Determinar la imagen
+        month = week_to_month(current_week)
+        image_path = f"/static/images/development/month{month}.png"
+
+        # Obtener datos de la API fetal
         week_info = fetal_data.get_week_info(current_week)
 
     return render_template(
@@ -51,7 +58,8 @@ def dashboard():
         last_record=last_record,
         current_week=current_week,
         progress_percentage=progress_percentage,
-        week_info=week_info
+        week_info=week_info,
+        image_path=image_path
     )
 
 # Login
@@ -196,3 +204,25 @@ def get_fetal_development(week):
     if not week_info:
         return jsonify({"error": "Datos no disponibles para esta semana"}), 404
     return jsonify(week_info), 200
+
+
+# mes segun semana
+def week_to_month(week):
+    if week <= 4:
+        return 1
+    elif week <= 8:
+        return 2
+    elif week <= 12:
+        return 3
+    elif week <= 16:
+        return 4
+    elif week <= 20:
+        return 5
+    elif week <= 24:
+        return 6
+    elif week <= 28:
+        return 7
+    elif week <= 32:
+        return 8
+    else:
+        return 9

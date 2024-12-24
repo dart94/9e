@@ -1,0 +1,148 @@
+@use 'variables' as v;
+@use 'responsive'; // Importar mixins de responsividad
+
+/* Estilo para la sección de información semanal */
+.week-info {
+    background-color: v.$color-white;
+    border-radius: v.$border-radius;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 8px v.$color-shadow;
+    transition: transform v.$transition-speed ease, box-shadow v.$transition-speed ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px v.$color-shadow;
+    }
+
+    @include responsive.tablet {
+        padding: 1rem;
+    }
+
+    @include responsive.mobile {
+        padding: 0.8rem;
+    }
+}
+
+.week-title {
+    color: v.$color-primary;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+
+    @include responsive.mobile {
+        font-size: 1.5rem;
+    }
+}
+
+.week-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+    text-align: center;
+    background-color: v.$color-secondary;
+    border-radius: v.$border-radius;
+    padding: 1rem;
+    box-shadow: 0 4px 8px v.$color-shadow;
+    transition: transform v.$transition-speed ease, box-shadow v.$transition-speed ease;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px v.$color-shadow;
+    }
+
+    @include responsive.tablet {
+        grid-template-columns: 1fr;
+        padding: 0.8rem;
+    }
+
+    @include responsive.mobile {
+        padding: 0.5rem;
+        gap: 1rem;
+    }
+}
+
+.week-details p {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: v.$color-text;
+
+    @include responsive.mobile {
+        font-size: 0.9rem;
+    }
+}
+
+.week-details-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: v.$color-white;
+    border-radius: v.$border-radius;
+    padding: 1rem;
+    box-shadow: 0 2px 4px v.$color-shadow;
+    transition: transform v.$transition-speed ease, box-shadow v.$transition-speed ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px v.$color-shadow;
+    }
+
+    @include responsive.mobile {
+        padding: 0.8rem;
+    }
+}
+
+.week-details-item p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+
+    @include responsive.mobile {
+        font-size: 0.85rem;
+    }
+}
+
+.week-details-item strong {
+    font-size: 1rem;
+    color: v.$color-primary;
+
+    @include responsive.mobile {
+        font-size: 0.9rem;
+    }
+}
+
+.week-section {
+    margin-top: 1.5rem;
+
+    @include responsive.mobile {
+        margin-top: 1rem;
+    }
+}
+
+.week-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+}
+
+.week-item {
+    background-color: v.$color-secondary;
+    border-radius: v.$border-radius;
+    padding: 0.5rem 1rem;
+    margin: 0.3rem 0;
+    font-size: 0.9rem;
+    color: v.$color-text;
+    box-shadow: 0 2px 4px v.$color-shadow;
+
+    &:hover {
+        background-color: v.$color-primary;
+        color: v.$color-white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px v.$color-shadow;
+    }
+
+    @include responsive.mobile {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+}

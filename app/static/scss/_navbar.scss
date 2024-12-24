@@ -1,0 +1,57 @@
+@use 'variables' as v;
+@use 'responsive'; 
+
+/* Navegación */
+nav {
+    background-color: v.$color-white;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px v.$color-shadow;
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+
+        // Versión responsive
+        @include responsive.tablet {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        @include responsive.mobile {
+            gap: 0.5rem;
+        }
+    }
+
+    a {
+        text-decoration: none;
+        color: v.$color-text;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: v.$border-radius;
+        transition: all v.$transition-speed ease;
+
+        &:hover {
+            color: v.$color-primary;
+            background-color: v.$color-secondary;
+            transform: translateY(-2px);
+        }
+
+        // Ajustes responsive
+        @include responsive.tablet {
+            font-size: 0.9rem;
+            padding: 0.5rem;
+        }
+
+        @include responsive.mobile {
+            font-size: 0.8rem;
+            padding: 0.3rem;
+        }
+    }
+}

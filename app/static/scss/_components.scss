@@ -1,0 +1,166 @@
+@use 'variables' as v;
+@use 'responsive' as r;
+
+/* Botones */
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    background-color: v.$color-primary;
+    color: v.$color-white;
+    padding: v.$spacing-unit * 2 v.$spacing-unit * 4;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: v.$border-radius;
+    transition: all v.$transition-speed ease;
+    border: none;
+    cursor: pointer;
+    margin: v.$spacing-unit * .5 0;
+
+    @include r.tablet {
+        font-size: 1rem;
+        padding: v.$spacing-unit * 1.5 v.$spacing-unit * 3;
+        width: 100%; 
+    }
+
+    @include r.mobile {
+        font-size: 0.9rem;
+        padding: v.$spacing-unit;
+    }
+}
+
+.btn:hover {
+    background-color: v.$color-primary-dark;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px v.$color-shadow;
+}
+
+/* Cards para información */
+.card {
+    background-color: v.$color-white;
+    border-radius: v.$border-radius;
+    box-shadow: 0 2px 4px v.$color-shadow;
+    transition: transform v.$transition-speed ease;
+
+    @include r.tablet {
+        padding: v.$spacing-unit * 3; 
+    }
+
+    @include r.mobile {
+        padding: v.$spacing-unit * 2;
+    }
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px v.$color-shadow;
+}
+
+/* Consejos */
+.tip {
+    background-color: v.$color-secondary;
+    padding: v.$spacing-unit * 2;
+    border-radius: v.$border-radius;
+    margin-bottom: v.$spacing-unit * 2;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    @include r.tablet {
+        font-size: 0.95rem;
+    }
+
+    @include r.mobile {
+        font-size: 0.9rem;
+        padding: v.$spacing-unit;
+    }
+}
+
+.tip h4 {
+    color: v.$color-primary-dark;
+    font-size: 1.2rem;
+    margin-bottom: v.$spacing-unit;
+
+    @include r.mobile {
+        font-size: 1rem; 
+    }
+}
+
+/* Milestone List */
+.milestone-list {
+    list-style: none;
+    padding: 0;
+
+    @include r.mobile {
+        padding: 0 v.$spacing-unit; 
+    }
+}
+
+.milestone-item {
+    padding: v.$spacing-unit * 2;
+    margin-bottom: v.$spacing-unit * 2;
+    border-left: 3px solid v.$color-secondary;
+    transition: all v.$transition-speed ease;
+
+    @include r.tablet {
+        padding: v.$spacing-unit * 1.5;
+    }
+
+    @include r.mobile {
+        padding: v.$spacing-unit;
+        font-size: 0.9rem;
+    }
+}
+
+.milestone-item.completed {
+    border-left-color: v.$color-accent;
+}
+
+.milestone-item.active {
+    border-left-color: v.$color-primary;
+    background-color: v.$color-secondary;
+}
+
+.milestone-week {
+    font-weight: bold;
+    color: v.$color-primary;
+
+    @include r.mobile {
+        font-size: 0.9rem;
+    }
+}
+
+/* Quick Tips */
+.tip-container {
+    display: grid;
+
+    @include r.mobile {
+        grid-template-columns: 1fr; 
+    }
+}
+
+.tip {
+    padding: v.$spacing-unit * 2;
+    background-color: v.$color-secondary;
+    border-radius: v.$border-radius;
+
+    @include r.mobile {
+        padding: v.$spacing-unit;
+    }
+}
+
+/* Estilo para botón secundario */
+.btn-secondary {
+    background-color: v.$color-secondary;
+    color: v.$color-text;
+    border: 1px solid v.$color-primary;
+
+    @include r.mobile {
+        font-size: 0.9rem;
+        padding: v.$spacing-unit;
+        width: 100%; 
+    }
+}
+
+.btn-secondary:hover {
+    background-color: v.$color-primary;
+    color: v.$color-white;
+}

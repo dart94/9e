@@ -1,0 +1,62 @@
+@use 'variables' as v; // Importar las variables con alias `v`
+@use 'responsive'; // Importar los mixins de responsive
+
+/* Estilo para tablas */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: v.$spacing-unit 0;
+    font-size: 1rem;
+    font-family: v.$font-primary;
+    text-align: center;
+    box-shadow: 0 4px 8px v.$color-shadow;
+    border-radius: v.$border-radius;
+    overflow: hidden;
+
+    thead tr {
+        background-color: v.$color-primary;
+        color: v.$color-white;
+        font-weight: bold;
+    }
+
+    th,
+    td {
+        padding: v.$spacing-unit;
+        border: 1px solid v.$color-secondary;
+    }
+
+    tbody tr:nth-of-type(even) {
+        background-color: v.$color-secondary;
+    }
+
+    tbody tr:nth-of-type(odd) {
+        background-color: v.$color-white;
+    }
+
+    tbody tr:hover {
+        background-color: v.$color-accent;
+        color: v.$color-white;
+        transition: background-color v.$transition-speed ease;
+    }
+
+    // Responsividad
+    @include responsive.tablet {
+        font-size: 0.9rem;
+
+        th,
+        td {
+            padding: clamp(0.5rem, 2vw, v.$spacing-unit);
+        }
+    }
+
+    @include responsive.mobile {
+        display: block; // Hacer la tabla scrollable en móviles
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+
+        th,
+        td {
+            white-space: nowrap; // Evitar que el contenido se rompa
+        }
+    }
+}
