@@ -1,10 +1,13 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, session, jsonify, request
+from flask import Blueprint, render_template, redirect, url_for, flash, session, jsonify, request, current_app
 from functools import wraps
 from datetime import datetime, timezone  # Importación correcta
-from .forms import RegistrationForm, PregnancyDataForm, LoginForm, EditProfileForm
+from .forms import RegistrationForm, PregnancyDataForm, LoginForm, EditProfileForm, ResetPasswordRequestForm, ResetPasswordForm
 from .models import User, PregnancyData
 from . import db, bcrypt
 from app.api.fetal_development_api import FetalDevelopmentData
+from flask_mail import Message
+from app import mail
+
 
 # Blueprints
 fetal_api = Blueprint('fetal_development_api', __name__)
@@ -238,3 +241,53 @@ def logout():
     session.clear()  # Limpia toda la sesión
     flash('Has cerrado sesión correctamente.', 'success')
     return redirect(url_for('routes.index'))  # Redirige al inicio
+
+# Solicitar restablecimiento de contraseña
+@routes.route('/reset_password', methods=['GET', 'POST'])
+def reset_password_request():
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            # Generar token de recuperación
+            serializer = current_app.extensions['serializer']
+            token = serializer.dumps(user.email, salt='password-reset-salt')
+            reset_url = url_for('routes.reset_password', token=token, _external=True)
+            send_reset_email(user.email, reset_url)
+            flash('Se ha enviado un enlace de recuperación a su correo.', 'info')
+        else:
+            flash('No se encontró una cuenta con ese correo.', 'danger')
+        return redirect(url_for('routes.login'))
+    return render_template('reset_password.html', form=form)
+
+# Página para restablecer contraseña
+@routes.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    serializer = current_app.extensions['serializer']
+    try:
+        email = serializer.loads(token, salt='password-reset-salt', max_age=3600)
+    except:
+        flash('El enlace de recuperación ha expirado o es inválido.', 'danger')
+        return redirect(url_for('routes.reset_password_request'))
+
+    user = User.query.filter_by(email=email).first_or_404()
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        # Actualizar contraseña
+        user.password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        db.session.commit()
+        flash('Su contraseña ha sido actualizada.', 'success')
+        return redirect(url_for('routes.login'))
+    return render_template('reset_password_form.html', form=form)
+
+# Enviar correo de recuperación
+def send_reset_email(to_email, reset_url):
+    msg = Message('Restablecimiento de Contraseña', recipients=[to_email])
+    msg.body = f'''
+    Para restablecer su contraseña, haga clic en el siguiente enlace:
+    {reset_url}
+
+    Este enlace es válido por 1 hora.
+    '''
+    mail.send(msg)
+ 

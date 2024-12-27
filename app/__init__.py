@@ -2,20 +2,45 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
+from flask_mail import Mail
+from dotenv import load_dotenv
+from itsdangerous import URLSafeTimedSerializer
+import os
 from app.api.fetal_development_api import fetal_api
 
+# Inicializar extensiones
 db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
+mail = Mail()
+
 
 def create_app():
+    # Cargar variables desde .env
+    load_dotenv()
+
     app = Flask(__name__)
     app.config.from_object('config.Config')
+
+    # Configurar Flask-Mail desde variables de entorno
+    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+    app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
+    app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
+    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+
 
     # Inicializar extensiones
     db.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
+    mail.init_app(app)
+
+    # Inicializar URLSafeTimedSerializer
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    app.extensions['serializer'] = serializer
 
     # Registrar blueprints
     from .routes import routes

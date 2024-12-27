@@ -1,14 +1,14 @@
 @use 'variables' as v; // Importar variables
+@use 'sass:color';
 
 /* Estilos para formularios */
 .styled-form {
     max-width: 600px;
-    margin: 2rem auto;
-    background-color: v.$color-white; /* Fondo blanco para mayor contraste */
+    background-color: v.$color-white; 
     padding: v.$spacing-unit * 2;
     border-radius: v.$border-radius;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid v.$color-secondary; /* Borde sutil */
+    border: 1px solid v.$color-secondary; 
 }
 
 .styled-form .form-group {
@@ -17,7 +17,7 @@
 
 .styled-form label {
     font-weight: 600;
-    color: v.$color-text; /* Texto más oscuro para mejor contraste */
+    color: v.$color-text; 
     display: block;
     margin-bottom: v.$spacing-unit * 0.5;
     font-size: 1rem;
@@ -27,21 +27,21 @@
 .styled-form .form-control {
     width: 100%;
     padding: 0.8rem;
-    border: 1px solid v.$color-secondary; /* Borde más claro */
+    border: 1px solid v.$color-secondary; 
     border-radius: v.$border-radius;
     font-size: 1rem;
-    background-color: v.$color-bg; /* Fondo neutro */
+    background-color: v.$color-bg; 
     transition: border-color v.$transition-speed ease, box-shadow v.$transition-speed ease;
 }
 
 .styled-form .form-control:focus {
     border-color: v.$color-primary-dark;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
     outline: none;
 }
 
 .error-message {
-    color: v.$color-primary-dark; /* Color de error destacado */
+    color: v.$color-primary-dark;
     font-size: 0.875rem;
     margin-top: 0.5rem;
 }
@@ -61,5 +61,58 @@
 }
 
 .styled-form .btn:hover {
-    background-color: darken(v.$color-accent, 10%)
+    background-color: color.adjust(v.$color-accent, $lightness: -10%);
 }
+
+.redirect-link {
+    text-align: center;
+    margin-top: v.$spacing-unit * 1;
+  
+    p {
+      color: v.$color-text;
+    }
+  
+    .btn-secondary {
+      display: inline-block;
+      padding: v.$spacing-unit v.$spacing-unit * 1;
+      background-color: transparent;
+      color: v.$color-primary;
+      border: 2px solid v.$color-primary;
+      border-radius: v.$border-radius;
+      transition: background-color 0.3s ease, color 0.3s ease;
+  
+      &:hover {
+        background-color: v.$color-primary;
+        color: v.$color-white;
+      }
+    }
+  }
+
+
+  //recuperar contraseña
+  .reset-password-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: v.$spacing-unit * 2;
+  
+    .card {
+      max-width: 400px;
+      padding: v.$spacing-unit * 3;
+      background-color: v.$color-white;
+      border-radius: v.$border-radius;
+      box-shadow: 0 4px 8px v.$color-shadow;
+  
+      h2 {
+        margin-bottom: v.$spacing-unit * 2;
+        color: v.$color-primary-dark;
+      }
+  
+      p {
+        font-size: 0.95rem;
+        color: v.$color-text;
+        margin-bottom: v.$spacing-unit * 3;
+      }
+    }
+  }

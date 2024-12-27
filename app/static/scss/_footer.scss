@@ -5,7 +5,6 @@
 footer {
     background: linear-gradient(135deg, v.$color-primary, v.$color-primary-dark);
     color: v.$color-white;
-    margin-top: 3rem;
     text-align: center;
 
     @include r.tablet {

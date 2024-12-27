@@ -13,37 +13,31 @@ body {
   display: flex;
   min-height: 100vh;
   width: 100%;
-  
-  // Estilos comunes para ambas secciones
-  .info-section,
-  .login-section {
+
+  // Sección de información
+  .info-section {
     flex: 1;
     padding: v.$spacing-unit * 4;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    h1 {
-      margin: 0;
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-align: center;
-    }
-  }
-
-  // Sección de información
-  .info-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),url('/static/images/bg.webp') no-repeat center center / cover;
+    align-items: center;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.7),
+        rgba(0, 0, 0, 0.7)
+      ),
+      url('/static/images/bg.webp') no-repeat center center / cover;
     color: v.$color-white;
-    
+
     header {
       margin-bottom: v.$spacing-unit * 3;
-      
+
       h1 {
         font-size: clamp(2.5rem, 5vw, 3.5rem);
         margin-bottom: v.$spacing-unit;
+        text-align: center;
       }
-      
+
       .header-subtitle {
         font-size: 1.2rem;
         opacity: 0.9;
@@ -54,11 +48,13 @@ body {
       h2 {
         font-size: 1.8rem;
         margin-bottom: v.$spacing-unit * 2;
+        text-align: center;
       }
 
       p {
         font-size: 1.1rem;
         line-height: 1.6;
+        text-align: center;
       }
     }
 
@@ -79,11 +75,9 @@ body {
         }
 
         i {
-          font-size: 2.5rem;
+          font-size: 2rem;
           margin-bottom: v.$spacing-unit;
-          color: v.$color-white; 
-          font-size: 2rem; /* Ajusta el tamaño del ícono */
-  
+          color: v.$color-white;
         }
 
         h3 {
@@ -101,15 +95,21 @@ body {
 
   // Sección de login
   .login-section {
-    background-color: v.$color-white;
-    
-    header {
-      margin-bottom: v.$spacing-unit * 4;
-      
-      h1 {
-        font-size: 2rem;
-        color: v.$color-primary-dark;
-      }
+    flex: 1;
+    padding: v.$spacing-unit * 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: v.$color-bg;
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-align: center;
+      color: v.$color-primary-dark;
     }
 
     .styled-form {
@@ -145,14 +145,13 @@ body {
         .error-message {
           color: v.$color-error;
           font-size: 0.9rem;
-          margin-top: v.$spacing-unit / 2;
         }
       }
 
       .btn {
         width: 100%;
         padding: v.$spacing-unit * 1.2;
-        background-color: v.$color-primary;
+        background-color: v.$color-accent-dark;
         color: v.$color-white;
         border: none;
         border-radius: v.$border-radius;
@@ -168,11 +167,10 @@ body {
     }
 
     .register-link {
-      margin-top: v.$spacing-unit * 3;
+      margin-top: v.$spacing-unit * 1;
       text-align: center;
 
       p {
-        margin-bottom: v.$spacing-unit;
         color: v.$color-text;
       }
 
@@ -182,7 +180,7 @@ body {
         background-color: transparent;
         color: v.$color-primary;
         border: 2px solid v.$color-primary;
-        
+
         &:hover {
           background-color: v.$color-primary;
           color: v.$color-white;
@@ -196,7 +194,7 @@ body {
 @media (max-width: 768px) {
   .index-container {
     flex-direction: column;
-    
+
     .info-section,
     .login-section {
       padding: v.$spacing-unit * 2;
@@ -216,3 +214,33 @@ body {
   }
 }
 
+.no-scroll {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    overflow: auto; // Habilita scroll
+    height: auto;
+    display: block;
+  }
+}
+
+
+.forgot-password {
+  text-align: center;
+
+
+  .forgot-link {
+      font-size: 0.95rem;
+      color: v.$color-primary;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+          text-decoration: underline;
+      }
+  }
+}

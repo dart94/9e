@@ -34,6 +34,7 @@
     @include r.mobile {
         margin-bottom: 1rem;
         padding: 0.8rem;
+        margin-top: 1rem;
     }
 }
 
@@ -54,6 +55,8 @@
         margin: 0.5rem 0;
     }
 }
+
+
 
 .progress-bar {
     background-color: v.$color-secondary;
@@ -218,19 +221,19 @@
     justify-content: center;
     align-items: center;
     margin: 1rem auto;
-    max-width: 100%; /* Asegura que no desborde horizontalmente */
-    overflow: hidden; /* Oculta cualquier parte desbordante */
+    max-width: 100%; 
+    overflow: hidden; 
   }
   
   .development-image {
-    width: auto; /* Mantiene la proporción horizontal */
-    height: auto; /* Asegura que la altura también conserve la proporción */
-    max-width: 100%; /* Limita la anchura al contenedor */
-    max-height: 100%; /* Limita la altura al contenedor */
-    object-fit: contain; /* Mantiene la imagen completa visible */
-    transition: transform 0.3s ease; /* Efecto suave al hover */
+    width: auto; 
+    height: auto; 
+    max-width: 100%; 
+    max-height: 100%; 
+    object-fit: contain; 
+    transition: transform 0.3s ease; 
   }
   
   .development-image:hover {
-    transform: scale(1.05); /* Agrega un leve zoom */
+    transform: scale(1.05); 
   }

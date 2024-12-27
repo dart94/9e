@@ -42,3 +42,17 @@ class PregnancyDataForm(FlaskForm):
     symptoms = StringField('Síntomas', validators=[Optional()])
     notes = StringField('Notas', validators=[Optional()])
     submit = SubmitField('Guardar Información')
+
+
+#Formulario para recuperar contraseña
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Correo Electrónico', validators=[DataRequired(), Email()])
+    submit = SubmitField('Enviar Enlace de Restablecimiento')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Nueva Contraseña', validators=[DataRequired()])
+    confirm_password = PasswordField(
+        'Confirmar Contraseña', 
+        validators=[DataRequired(), EqualTo('password', message='Las contraseñas deben coincidir')]
+    )
+    submit = SubmitField('Restablecer Contraseña')
