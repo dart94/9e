@@ -1,0 +1,23 @@
+# Ignorar entornos virtuales
+venv/
+.venv/
+
+# Ignorar archivos de entorno
+.env
+
+# Ignorar archivos y carpetas de compilación
+__pycache__/
+*.py[cod]
+*.log
+
+# Ignorar configuraciones de IDE
+.vscode/
+.idea/
+
+# Ignorar bases de datos locales
+*.sqlite3
+
+# Ignorar archivos estáticos compilados
+static/css/
+static/js/
+static/scss/
