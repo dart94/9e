@@ -21,3 +21,5 @@ __pycache__/
 static/css/
 static/js/
 static/scss/
+
+app/__pycache__/
