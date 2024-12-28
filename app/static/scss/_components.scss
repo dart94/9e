@@ -181,3 +181,14 @@
     background-color: v.$color-primary;
     color: v.$color-white;
 }
+
+.invalid {
+    border: 1px solid v.$color-error;
+}
+
+.error-message {
+    color: v.$color-error;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: block;
+}

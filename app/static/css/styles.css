@@ -978,6 +978,17 @@ footer p {
   color: #ffffff;
 }
 
+.invalid {
+  border: 1px solid #F44336;
+}
+
+.error-message {
+  color: #F44336;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
 /* Estilo para tablas */
 .styled-table {
   width: 100%;

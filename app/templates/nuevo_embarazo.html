@@ -20,6 +20,9 @@
             <li><a href="{{ url_for('routes.ver_registros_embarazo') }}">Historial</a></li>
             <li><a href="#">Consejos</a></li>
             <li><a href="{{ url_for('routes.mi_perfil') }}">Mi Perfil</a></li>
+            {% if session.get('user_id') %}
+            <li><a href="{{ url_for('routes.logout') }}" class="logout-btn">Cerrar Sesión</a></li>
+            {% endif %}
         </ul>
     </nav>
     <main>
