@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="no-scroll">
+  <!-- Contenedor de notificaciones -->
+  <div id="notification" class="notification"></div>
+
   <div class="index-container">
       <!-- Sección izquierda: Información -->
       <section class="info-section">
@@ -65,13 +68,20 @@
                   <p>¿No tienes una cuenta?</p>
                   <a href="{{ url_for('routes.register') }}" class="btn btn-secondary">Regístrate</a>
               </div>
-                        <!-- Enlace de recuperación de contraseña -->
-          <div class="forgot-password">
-            <a href="{{ url_for('routes.reset_password_request') }}" class="forgot-link">¿Olvidaste tu contraseña?</a>
-        </div>
+              <!-- Enlace de recuperación de contraseña -->
+              <div class="forgot-password">
+                  <a href="{{ url_for('routes.reset_password_request') }}" class="forgot-link">¿Olvidaste tu contraseña?</a>
+              </div>
           </form>
-
       </section>
   </div>
+
+  <!-- Mensajes flash en JSON -->
+  <script id="flash-messages" type="application/json">
+    {{ get_flashed_messages(with_categories=true)|tojson }}
+  </script>
+
+  <!-- Archivo JavaScript -->
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

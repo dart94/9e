@@ -1,4 +1,36 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Flash Messages    // Función para mostrar notificaciones centradas
+    const showNotification = ({ text, type = "success", duration = 3000 }) => {
+        const notification = document.createElement("div");
+        notification.className = `notification ${type}`;
+        notification.textContent = text;
+
+        document.body.appendChild(notification);
+
+        // Mostrar notificación
+        notification.style.display = "block";
+
+        // Ocultar automáticamente después de la duración
+        setTimeout(() => {
+            notification.style.display = "none";
+            notification.remove();
+        }, duration);
+    };
+
+    // SweetAlert2 para Flash Messages
+    const flashMessagesElement = document.getElementById("flash-messages");
+    if (flashMessagesElement) {
+        const flashMessages = JSON.parse(flashMessagesElement.textContent || "[]");
+        if (flashMessages.length > 0) {
+            flashMessages.forEach(([category, message]) => {
+                showNotification({
+                    text: message,
+                    type: category === "success" ? "success" : "error",
+                });
+            });
+        }
+    }
+
     // Función reutilizable para SweetAlert2
     const showAlert = ({ title, text, icon = "info", showLoading = false }) => {
         Swal.fire({
@@ -12,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // SweetAlert2 para Flash Messages
-    const flashMessagesElement = document.getElementById("flash-messages");
     if (flashMessagesElement) {
         const flashMessages = JSON.parse(flashMessagesElement.textContent || "[]");
         if (flashMessages.length > 0) {
@@ -120,4 +151,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         console.error("No se encontraron los elementos del DOM necesarios para el sidebar.");
     }
+
+
 });
+
+
