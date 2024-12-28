@@ -254,30 +254,34 @@ def reset_password_request():
             token = serializer.dumps(user.email, salt='password-reset-salt')
             reset_url = url_for('routes.reset_password', token=token, _external=True)
             send_reset_email(user.email, reset_url)
-            flash('Se ha enviado un enlace de recuperación a su correo.', 'info')
+
+            # Agregar mensaje para SweetAlert2
+            flash('Se ha enviado un enlace de recuperación a su correo.', 'success')
         else:
+            # Agregar mensaje de error para SweetAlert2
             flash('No se encontró una cuenta con ese correo.', 'danger')
-        return redirect(url_for('routes.login'))
+        return redirect(url_for('routes.reset_password_request'))
     return render_template('reset_password.html', form=form)
 
 # Página para restablecer contraseña
 @routes.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    serializer = current_app.extensions['serializer']
     try:
-        email = serializer.loads(token, salt='password-reset-salt', max_age=3600)
-    except:
+        email = current_app.extensions['serializer'].loads(token, salt='password-reset-salt', max_age=3600)
+    except Exception:
         flash('El enlace de recuperación ha expirado o es inválido.', 'danger')
         return redirect(url_for('routes.reset_password_request'))
 
     user = User.query.filter_by(email=email).first_or_404()
     form = ResetPasswordForm()
+
     if form.validate_on_submit():
         # Actualizar contraseña
         user.password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         db.session.commit()
-        flash('Su contraseña ha sido actualizada.', 'success')
+        flash('Tu contraseña ha sido actualizada con éxito.', 'success')
         return redirect(url_for('routes.login'))
+
     return render_template('reset_password_form.html', form=form)
 
 # Enviar correo de recuperación

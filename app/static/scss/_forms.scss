@@ -1,5 +1,6 @@
 @use 'variables' as v; // Importar variables
 @use 'sass:color';
+@use 'responsive' as r; // Mixins para breakpoints
 
 /* Estilos para formularios */
 .styled-form {
@@ -89,30 +90,129 @@
   }
 
 
-  //recuperar contraseña
-  .reset-password-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-    padding: v.$spacing-unit * 2;
-  
-    .card {
-      max-width: 400px;
-      padding: v.$spacing-unit * 3;
-      background-color: v.$color-white;
-      border-radius: v.$border-radius;
-      box-shadow: 0 4px 8px v.$color-shadow;
-  
-      h2 {
+// Recuperar contraseña
+.reset-password-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; // Altura total para centrar mejor
+  padding: v.$spacing-unit * 2;
+
+  .card {
+    width: 100%; // Ocupar toda la pantalla en dispositivos pequeños
+    max-width: 600px; // Ampliar en pantallas grandes
+    padding: v.$spacing-unit * 3;
+    background-color: v.$color-white;
+    border-radius: v.$border-radius;
+    box-shadow: 0 4px 8px v.$color-shadow;
+
+    h2 {
+      margin-bottom: v.$spacing-unit * 2;
+      color: v.$color-primary-dark;
+      font-size: clamp(1.5rem, 2.5vw, 2rem); // Escalable según la pantalla
+    }
+
+    p {
+      font-size: 1rem;
+      color: v.$color-text;
+      margin-bottom: v.$spacing-unit * 3;
+      line-height: 1.6;
+    }
+
+    .styled-form {
+      .form-group {
         margin-bottom: v.$spacing-unit * 2;
-        color: v.$color-primary-dark;
+
+        label {
+          font-size: 1rem;
+          margin-bottom: v.$spacing-unit;
+          color: v.$color-primary-dark;
+        }
+
+        .form-control {
+          width: 100%;
+          padding: 0.75rem;
+          font-size: 1rem;
+          border: 1px solid v.$color-border;
+          border-radius: v.$border-radius;
+          background-color: v.$color-bg;
+          transition: border-color 0.3s ease;
+
+          &:focus {
+            border-color: v.$color-primary;
+            outline: none;
+          }
+        }
+
+        .error-message {
+          color: v.$color-error;
+          font-size: 0.875rem;
+        }
       }
-  
-      p {
-        font-size: 0.95rem;
-        color: v.$color-text;
-        margin-bottom: v.$spacing-unit * 3;
+
+      .btn {
+        width: 100%;
+        padding: v.$spacing-unit * 1.2;
+        font-size: 1.1rem;
+        background-color: v.$color-primary;
+        color: v.$color-white;
+        border: none;
+        border-radius: v.$border-radius;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: v.$color-primary-dark;
+        }
       }
     }
   }
+}
+
+// Responsividad
+@include r.mobile {
+  .reset-password-section {
+    padding: v.$spacing-unit;
+
+    .card {
+      padding: v.$spacing-unit * 2;
+      max-width: 100%; // Ocupar todo el ancho en pantallas pequeñas
+    }
+
+    h2 {
+      font-size: 1.8rem; // Ajustar tamaño del encabezado
+    }
+
+    .styled-form {
+      .form-group {
+        .form-control {
+          padding: 0.65rem; // Reducir padding en campos de texto
+        }
+      }
+
+      .btn {
+        padding: v.$spacing-unit;
+        font-size: 1rem; // Reducir el tamaño del texto del botón
+      }
+    }
+  }
+}
+
+// Media query adicional para pantallas ultrapequeñas (480px o menos)
+@media (max-width: 480px) {
+  .reset-password-section {
+    .card {
+      padding: v.$spacing-unit * 1.5;
+    }
+
+    h2 {
+      font-size: 1.6rem; // Reducir encabezado en móviles muy pequeños
+    }
+
+    .styled-form {
+      .btn {
+        font-size: 0.9rem; // Asegurar botones adaptados a móviles pequeños
+      }
+    }
+  }
+}

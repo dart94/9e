@@ -656,11 +656,12 @@ nav a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
+  min-height: 100vh;
   padding: 2rem;
 }
 .reset-password-section .card {
-  max-width: 400px;
+  width: 100%;
+  max-width: 600px;
   padding: 3rem;
   background-color: #ffffff;
   border-radius: 12px;
@@ -669,13 +670,84 @@ nav a:hover {
 .reset-password-section .card h2 {
   margin-bottom: 2rem;
   color: #4A9B8F;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
 }
 .reset-password-section .card p {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #2D3436;
   margin-bottom: 3rem;
+  line-height: 1.6;
+}
+.reset-password-section .card .styled-form .form-group {
+  margin-bottom: 2rem;
+}
+.reset-password-section .card .styled-form .form-group label {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #4A9B8F;
+}
+.reset-password-section .card .styled-form .form-group .form-control {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #E0E0E0;
+  border-radius: 12px;
+  background-color: #FAFBFC;
+  transition: border-color 0.3s ease;
+}
+.reset-password-section .card .styled-form .form-group .form-control:focus {
+  border-color: #5FBFAF;
+  outline: none;
+}
+.reset-password-section .card .styled-form .form-group .error-message {
+  color: #FF4A4A;
+  font-size: 0.875rem;
+}
+.reset-password-section .card .styled-form .btn {
+  width: 100%;
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  background-color: #5FBFAF;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.reset-password-section .card .styled-form .btn:hover {
+  background-color: #4A9B8F;
 }
 
+@media (max-width: 480px) {
+  .reset-password-section {
+    padding: 1rem;
+  }
+  .reset-password-section .card {
+    padding: 2rem;
+    max-width: 100%;
+  }
+  .reset-password-section h2 {
+    font-size: 1.8rem;
+  }
+  .reset-password-section .styled-form .form-group .form-control {
+    padding: 0.65rem;
+  }
+  .reset-password-section .styled-form .btn {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+@media (max-width: 480px) {
+  .reset-password-section .card {
+    padding: 1.5rem;
+  }
+  .reset-password-section h2 {
+    font-size: 1.6rem;
+  }
+  .reset-password-section .styled-form .btn {
+    font-size: 0.9rem;
+  }
+}
 /* Footer */
 footer {
   background: linear-gradient(135deg, #5FBFAF, #4A9B8F);
@@ -1283,13 +1355,6 @@ body {
   .index-container .styled-form {
     padding: 0 1rem;
   }
-}
-.no-scroll {
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 @media (max-width: 768px) {
   .no-scroll {
