@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from itsdangerous import URLSafeTimedSerializer
 import os
 from app.api.fetal_development_api import fetal_api
+from flask_cors import CORS
 
 # Inicializar extensiones
 db = SQLAlchemy()
@@ -19,8 +20,12 @@ def create_app():
     # Cargar variables desde .env
     load_dotenv()
 
+    # Inicializar Flask
     app = Flask(__name__)
     app.config.from_object('config.Config')
+
+    # Aplicar CORS después de inicializar `app`
+    CORS(app)
 
     # Configurar Flask-Mail desde variables de entorno
     app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
@@ -30,7 +35,6 @@ def create_app():
     app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
     app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
     app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
-
 
     # Inicializar extensiones
     db.init_app(app)
