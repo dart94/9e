@@ -89,4 +89,10 @@ export const styles = StyleSheet.create({
     textDecorationLine: 'underline', // Subrayado para destacar el enlace
     alignSelf: 'center', // Asegura que el texto esté centrado
   },
+  image: {
+    width: '100%', // Ajusta el ancho al de la tarjeta
+    height: 200, // Altura fija
+    resizeMode: 'contain', // Asegura que la imagen mantenga su proporción
+    marginVertical: SIZES.margin, // Espaciado
+  },
 });

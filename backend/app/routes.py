@@ -356,9 +356,7 @@ def register_user():
 
 @routes.route('/api/dashboard', methods=['GET'])
 def get_dashboard_data():
-    # Simulación de un user_id en caso de que quieras que no dependa de la sesión
     user_id = session.get('user_id') or request.args.get('user_id')
-
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
 
@@ -378,10 +376,11 @@ def get_dashboard_data():
 
     if not week_info:
         return jsonify({"error": "Datos fetales no disponibles para esta semana"}), 404
-
+    month = week_to_month(current_week)
     return jsonify({
         "current_week": current_week,
         "progress_percentage": (current_week / 40) * 100,
+        "month": month,
         "week_info": week_info,
         "last_record": {
             "id": last_record.id,

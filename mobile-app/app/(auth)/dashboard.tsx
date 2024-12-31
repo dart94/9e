@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, FlatList, Alert, ScrollView } from 'react-native';
+import { View, Text, ActivityIndicator, FlatList, Alert, ScrollView, Image } from 'react-native';
 import axios from 'axios';
 import { API_CONFIG } from '../config/config';
 import { styles } from '../theme/styles';
@@ -56,7 +56,7 @@ export default function DashboardScreen() {
     );
   }
 
-  const { current_week, progress_percentage, week_info } = data;
+  const { current_week, progress_percentage, week_info, month } = data;
 
   return (
     <ScrollView style={styles.container}>
@@ -64,6 +64,11 @@ export default function DashboardScreen() {
           {/* Información de la Semana */}
           <Text style={styles.title}>Semana {current_week || 'N/A'}</Text>
 
+          <Image
+           source={{ uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png` }}
+           style={styles.image}
+          />
+          
           {/* Texto del Progreso */}
           <Text style={styles.subtitle}>
           Progreso: {progress_percentage ? `${progress_percentage.toFixed(0)}%` : 'N/A'}
