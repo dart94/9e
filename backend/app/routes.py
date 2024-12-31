@@ -309,3 +309,85 @@ def send_reset_email(to_email, reset_url):
     '''
     mail.send(msg)
  
+
+#Endpoints para la API
+@routes.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()  # Obtener datos JSON enviados desde el frontend
+    email = data.get('email')
+
+    if not email:
+        return jsonify({'message': 'El correo es obligatorio'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if user:
+        # Generar token de recuperación
+        serializer = current_app.extensions['serializer']
+        token = serializer.dumps(user.email, salt='password-reset-salt')
+        reset_url = url_for('routes.reset_password', token=token, _external=True)
+        send_reset_email(user.email, reset_url)
+
+        return jsonify({'message': 'Se ha enviado un enlace de recuperación a tu correo.'}), 200
+    else:
+        return jsonify({'message': 'No se encontró una cuenta con ese correo.'}), 404
+
+
+@routes.route('/register2', methods=['POST'])
+def register_user():
+    data = request.get_json()
+    if not data or not all(key in data for key in ("username", "email", "password")):
+        return jsonify({"error": "Datos incompletos"}), 400
+
+    # Verificar si el correo ya está registrado
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({"error": "El correo ya está registrado"}), 400
+
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    new_user = User(username=data['username'], email=data['email'], password=hashed_password)
+
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"message": "Usuario registrado exitosamente"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al registrar usuario: {str(e)}"}), 500
+    
+
+@routes.route('/api/dashboard', methods=['GET'])
+def get_dashboard_data():
+    # Simulación de un user_id en caso de que quieras que no dependa de la sesión
+    user_id = session.get('user_id') or request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    # Obtener el último registro de embarazo del usuario
+    last_record = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.id.desc()).first()
+
+    if not last_record or not last_record.last_period_date:
+        return jsonify({"error": "No hay datos de embarazo registrados"}), 404
+
+    # Calcula la semana actual
+    today = datetime.now().date()
+    days_since_period = (today - last_record.last_period_date).days
+    current_week = max(1, days_since_period // 7)
+
+    # Obtiene los datos fetales para la semana actual
+    week_info = fetal_data.get_week_info(current_week)
+
+    if not week_info:
+        return jsonify({"error": "Datos fetales no disponibles para esta semana"}), 404
+
+    return jsonify({
+        "current_week": current_week,
+        "progress_percentage": (current_week / 40) * 100,
+        "week_info": week_info,
+        "last_record": {
+            "id": last_record.id,
+            "weight": last_record.weight,
+            "symptoms": last_record.symptoms,
+            "notes": last_record.notes,
+            "last_period_date": last_record.last_period_date.strftime('%Y-%m-%d'),
+        },
+    }), 200

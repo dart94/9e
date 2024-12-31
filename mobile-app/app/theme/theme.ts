@@ -24,6 +24,7 @@ export const SIZES = {
   fontLarge: 24,      // Fuente grande
   fontExtraLarge: 32, // Fuente extra grande
   shadowOffset: 4,    // Desplazamiento de sombras
+  lineHeight: 22,     // Altura de línea
 };
 
 export const FONTS = {
