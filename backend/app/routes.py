@@ -72,31 +72,18 @@ def dashboard():
 @routes.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-
-    if request.method == 'POST':
-        data = request.get_json()  # Obtener datos JSON del cliente
-        email = data.get('email')
-        password = data.get('password')
-
-        if not email or not password:
-            return jsonify({"error": "Faltan credenciales"}), 400
-
-        user = User.query.filter_by(email=email).first()
-        if user and bcrypt.check_password_hash(user.password, password):
-            # Datos de sesión
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['user_id'] = user.id
             session['username'] = user.username
-
-            return jsonify({
-                "message": "Inicio de sesión exitoso.",
-                "id": user.id,
-                "username": user.username
-            }), 200
+            flash('Inicio de sesión exitoso.', 'success')
+            return redirect(url_for('routes.dashboard'))
         else:
-            return jsonify({"error": "Correo o contraseña incorrectos"}), 401
+            flash('Correo o contraseña incorrectos.', 'danger')
 
-    # Para solicitudes GET, renderizar el formulario de inicio de sesión
-    return render_template('index.html', form=form)
+    return render_template('login.html', form=form)
+
 
 # Registro de Usuario
 @routes.route('/registro', methods=['GET', 'POST'])
@@ -445,3 +432,32 @@ def api_editar_perfil():
         return jsonify({"error": "Error al actualizar el perfil"}), 500
     
 
+# Login
+@routes.route('/login2', methods=['GET', 'POST'])
+def login2():
+    form = LoginForm()
+
+    if request.method == 'POST':
+        data = request.get_json()  # Obtener datos JSON del cliente
+        email = data.get('email')
+        password = data.get('password')
+
+        if not email or not password:
+            return jsonify({"error": "Faltan credenciales"}), 400
+
+        user = User.query.filter_by(email=email).first()
+        if user and bcrypt.check_password_hash(user.password, password):
+            # Datos de sesión
+            session['user_id'] = user.id
+            session['username'] = user.username
+
+            return jsonify({
+                "message": "Inicio de sesión exitoso.",
+                "id": user.id,
+                "username": user.username
+            }), 200
+        else:
+            return jsonify({"error": "Correo o contraseña incorrectos"}), 401
+
+    # Para solicitudes GET, renderizar el formulario de inicio de sesión
+    return render_template('index.html', form=form)
