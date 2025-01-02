@@ -6,7 +6,8 @@ export const COLORS = {
   accentDark: '#FF8C1A',      // Naranja acento oscuro
   text: '#2D3436',            // Gris oscuro para texto
   textLight: '#555',          // Gris claro para subtítulos
-  background: '#FAFBFC',      // Fondo claro principal
+  background: '#FAFBFC',      // Fondo claro
+  background2: '#6B7280',     // Fondo oscuro
   backgroundAlt: '#F5F9F8',   // Fondo alternativo
   white: '#ffffff',           // Blanco puro
   border: '#E0E0E0',          // Borde suave

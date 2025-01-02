@@ -32,8 +32,8 @@ export const styles = StyleSheet.create({
     fontSize: SIZES.fontMedium,
     fontWeight: '600',
     color: COLORS.primary,
-    marginTop: SIZES.margin, // Asegura que haya margen superior desde la barra
-    textAlign: 'center', // Centra el texto para alinearlo mejor con la barra
+    marginTop: SIZES.margin, 
+    textAlign: 'center', 
   },
   paragraph: {
     fontSize: SIZES.fontSmall,
@@ -90,9 +90,30 @@ export const styles = StyleSheet.create({
     alignSelf: 'center', // Asegura que el texto esté centrado
   },
   image: {
-    width: '100%', // Ajusta el ancho al de la tarjeta
-    height: 200, // Altura fija
-    resizeMode: 'contain', // Asegura que la imagen mantenga su proporción
-    marginVertical: SIZES.margin, // Espaciado
+    width: '100%', 
+    height: 200, 
+    resizeMode: 'contain', 
+    marginVertical: SIZES.margin, 
+  },
+  cardTitle: {
+    fontSize: SIZES.fontLarge,
+    fontWeight: 'bold',
+    color: COLORS.primaryDark,
+    marginBottom: SIZES.margin,
+    textAlign: 'center',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    marginVertical: SIZES.margin / 2,
+  },
+  infoLabel: {
+    fontSize: SIZES.fontMedium,
+    fontWeight: '600',
+    color: COLORS.textLight,
+  },
+  infoValue: {
+    fontSize: SIZES.fontMedium,
+    color: COLORS.text,
+    textAlign: 'left',
   },
 });

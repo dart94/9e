@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, FlatList, Alert, ScrollView, Image } from 'react-native';
+import { View, Text, ActivityIndicator, FlatList, ScrollView, Image } from 'react-native';
 import axios from 'axios';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG } from '../config/config';
 import { styles } from '../theme/styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ProgressBar } from 'react-native-paper';
+import SettingsScreen from './settings'; 
 
-export default function DashboardScreen() {
+// Tab Navigator
+const Tab = createBottomTabNavigator();
+
+function DashboardContent() {
   const [data, setData] = useState<any>(null); // Datos del backend
   const [loading, setLoading] = useState(true); // Estado de carga
   const [error, setError] = useState<string | null>(null); // Manejo de errores
@@ -60,29 +66,21 @@ export default function DashboardScreen() {
 
   return (
     <ScrollView style={styles.container}>
-          <View style={styles.card}>
-          {/* Información de la Semana */}
-          <Text style={styles.title}>Semana {current_week || 'N/A'}</Text>
-
-          <Image
-           source={{ uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png` }}
-           style={styles.image}
-          />
-          
-          {/* Texto del Progreso */}
-          <Text style={styles.subtitle}>
+      <View style={styles.card}>
+        <Text style={styles.title}>Semana {current_week || 'N/A'} de 40</Text>
+        <Image
+          source={{ uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png` }}
+          style={styles.image}
+        />
+        <Text style={styles.subtitle}>
           Progreso: {progress_percentage ? `${progress_percentage.toFixed(0)}%` : 'N/A'}
-          </Text>
-
-          {/* Barra de Progreso */}
-          <ProgressBar
-            progress={progress_percentage ? progress_percentage / 100 : 0}
-            color={styles.subtitle.color}
-            style={styles.progressBar}
-          />
-
-
-        </View>
+        </Text>
+        <ProgressBar
+          progress={progress_percentage ? progress_percentage / 100 : 0}
+          color={styles.subtitle.color}
+          style={styles.progressBar}
+        />
+      </View>
 
       {week_info ? (
         <>
@@ -90,12 +88,10 @@ export default function DashboardScreen() {
             <Text style={styles.subtitle}>Desarrollo del Bebé</Text>
             <Text style={styles.paragraph}>{week_info.desarrollo_bebe}</Text>
           </View>
-
           <View style={styles.card}>
             <Text style={styles.subtitle}>Cambios en la Madre</Text>
             <Text style={styles.paragraph}>{week_info.cambios_madre}</Text>
           </View>
-
           <View style={styles.card}>
             <Text style={styles.subtitle}>Síntomas Comunes</Text>
             <FlatList
@@ -104,7 +100,6 @@ export default function DashboardScreen() {
               renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
             />
           </View>
-
           <View style={styles.card}>
             <Text style={styles.subtitle}>Consejos</Text>
             <FlatList
@@ -113,7 +108,6 @@ export default function DashboardScreen() {
               renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
             />
           </View>
-
           <View style={styles.card}>
             <Text style={styles.subtitle}>Pruebas Médicas</Text>
             <FlatList
@@ -127,5 +121,39 @@ export default function DashboardScreen() {
         <Text style={styles.errorText}>No hay información disponible para esta semana.</Text>
       )}
     </ScrollView>
+  );
+}
+
+// Configuración del Tab.Navigator
+export default function DashboardScreen() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarStyle: { backgroundColor: '#A1CEDC' },
+        tabBarActiveTintColor: '#fff',
+        tabBarInactiveTintColor: '#f0f0f0',
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName = 'help-circle-outline';
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+          return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
+        },
+      })}
+    >
+        <Tab.Screen
+          name="Home"
+          component={DashboardContent}
+          options={{ title: 'Inicio', tabBarLabel: 'Inicio' }}
+        />
+        <Tab.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{ title: 'Configuración', tabBarLabel: 'Perfil' }}
+        />
+    </Tab.Navigator>
   );
 }
