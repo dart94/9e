@@ -8,6 +8,8 @@ import { API_CONFIG } from '../config/config';
 import { styles } from '../theme/styles';
 import { ProgressBar } from 'react-native-paper';
 import SettingsScreen from './settings'; 
+import ViewPregnancyRecordsScreen from './viewPregnancy';
+import NewPregnancyRecordScreen from './newPregnancy';
 
 // Tab Navigator
 const Tab = createBottomTabNavigator();
@@ -124,7 +126,6 @@ function DashboardContent() {
   );
 }
 
-// Configuración del Tab.Navigator
 export default function DashboardScreen() {
   return (
     <Tab.Navigator
@@ -135,25 +136,41 @@ export default function DashboardScreen() {
         tabBarInactiveTintColor: '#f0f0f0',
         tabBarIcon: ({ focused, color, size }) => {
           let iconName = 'help-circle-outline';
-          if (route.name === 'Home') {
+
+          if (route.name === 'Dashboard') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Settings') {
-            iconName = focused ? 'person' : 'person-outline';
+            iconName = focused ? 'person' : 'person-circle-outline';
+          } else if (route.name === 'NewPregnancyRecord') {
+            iconName = focused ? 'add-circle' : 'add-circle-outline';
+          } else if (route.name === 'ViewPregnancyRecords') {
+            iconName = focused ? 'list' : 'list-outline';
           }
+
           return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
         },
       })}
     >
-        <Tab.Screen
-          name="Home"
-          component={DashboardContent}
-          options={{ title: 'Inicio', tabBarLabel: 'Inicio' }}
-        />
-        <Tab.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{ title: 'Configuración', tabBarLabel: 'Perfil' }}
-        />
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardContent}
+        options={{ title: 'Inicio', tabBarLabel: 'Dashboard' }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ title: 'Configuración', tabBarLabel: 'Perfil' }}
+      />
+      <Tab.Screen
+        name="NewPregnancyRecord"
+        component={NewPregnancyRecordScreen}
+        options={{ title: 'Nuevo Registro', tabBarLabel: 'Nuevo' }}
+      />
+      <Tab.Screen
+        name="ViewPregnancyRecords"
+        component={ViewPregnancyRecordsScreen}
+        options={{ title: 'Ver Registros', tabBarLabel: 'Registros' }}
+      />
     </Tab.Navigator>
   );
 }

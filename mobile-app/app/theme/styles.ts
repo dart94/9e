@@ -116,4 +116,81 @@ export const styles = StyleSheet.create({
     color: COLORS.text,
     textAlign: 'left',
   },
+  floatingButton: {
+    position: 'absolute',
+    right: SIZES.margin * 2,
+    bottom: SIZES.margin * 2,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8,
+    shadowColor: COLORS.boxshadow,
+    shadowOffset: { width: 0, height: SIZES.shadowOffset },
+    shadowOpacity: 0.3,
+    shadowRadius: SIZES.shadowOffset,
+  },
+
+  // Estilo para el contenedor del modal
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)', // Fondo semitransparente oscuro
+  },
+
+  // Estilo para el contenido del modal
+  modalContent: {
+    backgroundColor: COLORS.white, // Fondo blanco para contraste
+    width: '90%',
+    maxHeight: '80%',
+    borderRadius: SIZES.borderRadius,
+    padding: SIZES.padding,
+    shadowColor: COLORS.boxshadow,
+    shadowOffset: { width: 0, height: SIZES.shadowOffset },
+    shadowOpacity: 0.3,
+    shadowRadius: SIZES.shadowOffset,
+    elevation: 10,
+    zIndex: 100,
+  },
+
+  // Encabezado del modal
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SIZES.margin,
+  },
+
+  // Título del modal
+  modalTitle: {
+    fontSize: SIZES.fontLarge,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+
+  // Botón para cerrar el modal
+  closeButton: {
+    padding: SIZES.padding / 2,
+    backgroundColor: COLORS.error,
+    borderRadius: SIZES.borderRadius / 2,
+  },
+
+  // Etiqueta general
+  label: {
+    fontSize: SIZES.fontMedium,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    marginBottom: SIZES.margin / 2,
+  },
+
+  // Etiqueta para temas oscuros
+  labelLight: {
+    fontSize: SIZES.fontMedium,
+    fontWeight: 'bold',
+    color: COLORS.white,
+    marginBottom: SIZES.margin / 2,
+  },
 });

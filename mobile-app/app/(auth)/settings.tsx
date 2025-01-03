@@ -4,6 +4,7 @@ import axios from 'axios';
 import { API_CONFIG } from '../config/config';
 import { styles } from '../theme/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SettingsScreen() {
   const [profileData, setProfileData] = useState<any>(null);
@@ -13,9 +14,7 @@ export default function SettingsScreen() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      try {
-        console.log('Consultando datos del perfil...');
-        
+      try {    
         // Obtiene el userId desde AsyncStorage
         const userId = await AsyncStorage.getItem('userId');
         if (!userId) {
@@ -30,7 +29,6 @@ export default function SettingsScreen() {
           withCredentials: true,
         });
         
-
         setProfileData(response.data);
         setForm({ username: response.data.username, email: response.data.email });
       } catch (error) {
@@ -104,32 +102,38 @@ export default function SettingsScreen() {
           <Text style={styles.cardTitle}>Información de Perfil</Text>
           
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Nombre de Usuario: </Text>
+            <Ionicons name="person-outline" size={24} color={styles.infoLabel.color} />
+            <Text style={styles.infoLabel}> Nombre de Usuario: </Text>
             <Text style={styles.infoValue}>{profileData.username}</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Correo Electrónico: </Text>
+            <Ionicons name="mail-outline" size={24} color={styles.infoLabel.color} />
+            <Text style={styles.infoLabel}> Correo Electrónico: </Text>
             <Text style={styles.infoValue}>{profileData.email}</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Progreso de Embarazo: </Text>
+            <Ionicons name="calendar-outline" size={24} color={styles.infoLabel.color} />
+            <Text style={styles.infoLabel}> Progreso de Embarazo: </Text>
             <Text style={styles.infoValue}>{profileData.progress_percentage?.toFixed(2) || '0'}%</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Peso: </Text>
+            <Ionicons name="scale-outline" size={24} color={styles.infoLabel.color} />
+            <Text style={styles.infoLabel}> Peso: </Text>
             <Text style={styles.infoValue}>{profileData.last_record?.weight || 'N/A'} Kg</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Últimos Síntomas: </Text>
+            <Ionicons name="medical-outline" size={24} color={styles.infoLabel.color} />
+            <Text style={styles.infoLabel} >Últimos Síntomas: </Text>
             <Text style={styles.infoValue}>{profileData.last_record?.symptoms || 'N/A'}</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Notas: </Text>
+            <Ionicons name="clipboard-outline" size={24} color={styles.infoLabel.color} />
+            <Text style={styles.infoLabel}> Notas: </Text>
             <Text style={styles.infoValue}>{profileData.last_record?.notes || 'N/A'}</Text>
           </View>
         </View>

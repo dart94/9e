@@ -13,7 +13,7 @@ export const COLORS = {
   border: '#E0E0E0',          // Borde suave
   success: '#4CAF50',         // Verde para éxito
   error: '#F44336',           // Rojo para errores
-  shadow: 'rgba(95, 191, 175, 0.1)', // Sombra basada en el primary
+  boxshadow: 'rgba(95, 191, 175, 0.1)', // Sombra basada en el primary
 };
 
 export const SIZES = {

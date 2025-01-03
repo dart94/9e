@@ -8,7 +8,6 @@ from app.api.fetal_development_api import FetalDevelopmentData
 from flask_mail import Message
 from app import mail
 
-
 # Blueprints
 fetal_api = Blueprint('fetal_development_api', __name__)
 routes = Blueprint('routes', __name__)
@@ -34,6 +33,7 @@ def index():
         # Redirigir al dashboard si el usuario ya inició sesión
         return redirect(url_for('routes.dashboard'))
     return render_template('index.html', form=form)
+
 # Dashboard
 @routes.route('/dashboard')
 @login_required
@@ -83,7 +83,6 @@ def login():
             flash('Correo o contraseña incorrectos.', 'danger')
 
     return render_template('login.html', form=form)
-
 
 # Registro de Usuario
 @routes.route('/registro', methods=['GET', 'POST'])
@@ -380,7 +379,7 @@ def get_dashboard_data():
         },
     }), 200
 
-# API: Obtener registros de embarazo
+# API: Obtener registros del perfil
 @routes.route('/api/mi-perfil', methods=['GET'])
 def api_mi_perfil():
     user_id = request.args.get('user_id')
@@ -431,7 +430,6 @@ def api_editar_perfil():
         db.session.rollback()
         return jsonify({"error": "Error al actualizar el perfil"}), 500
     
-
 # Login
 @routes.route('/login2', methods=['GET', 'POST'])
 def login2():
@@ -461,3 +459,70 @@ def login2():
 
     # Para solicitudes GET, renderizar el formulario de inicio de sesión
     return render_template('index.html', form=form)
+
+
+@routes.route('/api/embarazos', methods=['GET', 'POST'])
+def manejar_registros_embarazo():
+    user_id = session.get('user_id') or request.json.get('user_id')  # Acepta ambos
+    if not user_id:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+
+    if request.method == 'GET':
+        # Lógica para manejar el GET (como ya tienes)
+        registros = PregnancyData.query.filter_by(user_id=user_id).all()
+        if not registros:
+            return jsonify([])  # Devuelve una lista vacía si no hay registros
+
+        registros_serializados = [
+            {
+                "week": r.week,
+                "weight": r.weight,
+                "symptoms": r.symptoms,
+                "notes": r.notes,
+                "last_period_date": r.last_period_date.strftime('%Y-%m-%d') if r.last_period_date else None
+            }
+            for r in registros
+        ]
+        return jsonify(registros_serializados), 200
+
+    elif request.method == 'POST':
+    # Obtén los datos del cuerpo de la solicitud
+        data = request.get_json()
+
+        # Validación de datos obligatorios
+        if not data or not data.get('last_period_date') or not data.get('weight'):
+            return jsonify({"error": "Faltan campos obligatorios: 'last_period_date' y 'weight'"}), 400
+
+        try:
+            # Convertir last_period_date a un objeto date
+            from datetime import datetime
+            last_period_date = datetime.strptime(data.get('last_period_date'), '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({"error": "El formato de la fecha debe ser YYYY-MM-DD"}), 400
+
+        # Calcula la semana si no se proporciona
+        week = data.get('week')
+        if not week:
+            # Utiliza la lógica para calcular la semana basada en last_period_date
+            today = datetime.utcnow().date()
+            delta = today - last_period_date
+            week = max(1, delta.days // 7)  # Al menos 1 semana
+
+        # Crea un nuevo registro de embarazo
+        nuevo_registro = PregnancyData(
+            user_id=user_id,
+            last_period_date=last_period_date,
+            weight=float(data.get('weight')),
+            symptoms=data.get('symptoms'),
+            notes=data.get('notes'),
+            week=week,
+        )
+
+        try:
+            # Guarda el nuevo registro en la base de datos
+            db.session.add(nuevo_registro)
+            db.session.commit()
+            return jsonify({"message": "Registro de embarazo añadido correctamente"}), 201
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Error al guardar en la base de datos: {str(e)}"}), 500
