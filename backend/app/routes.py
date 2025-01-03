@@ -463,12 +463,13 @@ def login2():
 
 @routes.route('/api/embarazos', methods=['GET', 'POST'])
 def manejar_registros_embarazo():
-    user_id = session.get('user_id') or request.json.get('user_id')  # Acepta ambos
-    if not user_id:
-        return jsonify({"error": "Usuario no autenticado"}), 401
-
     if request.method == 'GET':
-        # Lógica para manejar el GET (como ya tienes)
+        # Obtener user_id de los parámetros de la URL
+        user_id = session.get('user_id') or request.args.get('user_id')  # Cambiar a `request.args`
+        if not user_id:
+            return jsonify({"error": "Usuario no autenticado"}), 401
+
+        # Lógica para manejar el GET
         registros = PregnancyData.query.filter_by(user_id=user_id).all()
         if not registros:
             return jsonify([])  # Devuelve una lista vacía si no hay registros

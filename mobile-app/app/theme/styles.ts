@@ -193,4 +193,27 @@ export const styles = StyleSheet.create({
     color: COLORS.white,
     marginBottom: SIZES.margin / 2,
   },
+
+  actionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  editButton: {
+    flex: 1,
+    backgroundColor: '#4CAF50', // Verde para editar
+    padding: 10,
+    marginRight: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  deleteButton: {
+    flex: 1,
+    backgroundColor: '#F44336', // Rojo para eliminar
+    padding: 10,
+    marginLeft: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
 });
+

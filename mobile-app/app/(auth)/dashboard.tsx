@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, FlatList, ScrollView, Image } from 'react-native';
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  Image,
+} from 'react-native';
 import axios from 'axios';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG } from '../config/config';
 import { styles } from '../theme/styles';
 import { ProgressBar } from 'react-native-paper';
-import SettingsScreen from './settings'; 
+import SettingsScreen from './settings';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
 import NewPregnancyRecordScreen from './newPregnancy';
 
@@ -47,40 +54,47 @@ function DashboardContent() {
     fetchDashboardData();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={[styles.container, styles.center]}>
-        <ActivityIndicator size="large" color={styles.title.color} />
-        <Text style={styles.title}>Cargando datos...</Text>
-      </View>
-    );
-  }
+  if (loading) return <View style={[styles.container, styles.center]}>
+    <ActivityIndicator size="large" color={styles.title.color} />
+    <Text style={styles.title}>Cargando datos...</Text>
+  </View>;
 
-  if (error) {
-    return (
-      <View style={[styles.container, styles.center]}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
+  if (error) return <View style={[styles.container, styles.center]}>
+    <Text style={styles.errorText}>{error}</Text>
+  </View>;
 
   const { current_week, progress_percentage, week_info, month } = data;
+
+  // Convertir el progreso a un número entero entre 0 y 100
+  const normalizedProgress = progress_percentage 
+    ? Math.min(100, Math.max(0, Math.floor(progress_percentage)))
+    : 0;
+
+  // Convertir a valor entre 0 y 1 usando división entera
+  const safeProgress = normalizedProgress / 100;
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.title}>Semana {current_week || 'N/A'} de 40</Text>
         <Image
-          source={{ uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png` }}
+          source={{
+            uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png`,
+          }}
           style={styles.image}
         />
         <Text style={styles.subtitle}>
-          Progreso: {progress_percentage ? `${progress_percentage.toFixed(0)}%` : 'N/A'}
+          Progreso: {normalizedProgress}%
         </Text>
         <ProgressBar
-          progress={progress_percentage ? progress_percentage / 100 : 0}
+          progress={safeProgress}
           color={styles.subtitle.color}
-          style={styles.progressBar}
+          style={[styles.progressBar, { height: 8 }]} // Aumentamos la altura para mejor visibilidad
+          theme={{
+            colors: {
+              primary: styles.subtitle.color,
+            },
+          }}
         />
       </View>
 
@@ -147,7 +161,13 @@ export default function DashboardScreen() {
             iconName = focused ? 'list' : 'list-outline';
           }
 
-          return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
+          return (
+            <Ionicons
+              name={iconName as keyof typeof Ionicons.glyphMap}
+              size={size}
+              color={color}
+            />
+          );
         },
       })}
     >
