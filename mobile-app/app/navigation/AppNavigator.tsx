@@ -11,6 +11,7 @@ import RegisterScreen from '../(auth)/register';
 import SettingsScreen from '../(auth)/settings';
 import NewPregnancyRecordScreen from '../(auth)/newPregnancy';
 import ViewPregnancyRecordsScreen from '../(auth)/viewPregnancy';
+import LogoutScreen from '../(auth)/logout';
 
 // Tipos de parámetros para navegadores
 export type RootStackParamList = {
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   ForgotPassword: undefined;
   NewPregnancyRecord: undefined;
   ViewPregnancyRecords: undefined;
+  Logout: undefined;
 };
 
 export type TabParamList = {
@@ -27,6 +29,7 @@ export type TabParamList = {
   Settings: undefined;
   NewPregnancyRecord: undefined;
   ViewPregnancyRecords: undefined;
+  Logout: undefined;
 };
 
 // Instancias de navegadores
@@ -54,6 +57,8 @@ function MainTabs() {
             iconName = focused ? 'add-circle' : 'add-circle-outline';
           } else if (route.name === 'ViewPregnancyRecords') {
             iconName = focused ? 'list' : 'list-outline';
+          } else if (route.name === 'Logout') {
+            iconName = focused ? 'log-out' : 'log-out-outline';
           }
 
           return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
@@ -79,6 +84,16 @@ function MainTabs() {
         name="ViewPregnancyRecords"
         component={ViewPregnancyRecordsScreen}
         options={{ title: 'Ver Registros', tabBarLabel: 'Registros' }}
+      />
+      <Tab.Screen
+        name="Logout"
+        component={LogoutScreen}
+        options={{ title: 'Cerrar Sesión', tabBarLabel: 'Cerrar Sesión' }}
+      />
+      <Tab.Screen
+        name="Logout"
+        component={LogoutScreen}
+        options={{ title: 'Cerrar Sesión', tabBarLabel: 'Cerrar Sesión' }}
       />
     </Tab.Navigator>
   );

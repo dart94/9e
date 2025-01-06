@@ -14,7 +14,7 @@ export default function Layout() {
         name="(auth)/dashboard" 
         options={{ 
           title: 'Dashboard',
-          headerShown: true 
+          headerShown: false 
         }} 
       />
     </Stack>
