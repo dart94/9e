@@ -17,6 +17,8 @@ import { ProgressBar } from 'react-native-paper';
 import SettingsScreen from './settings';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
 import NewPregnancyRecordScreen from './newPregnancy';
+import LogoutScreen from './logout';
+
 
 // Tab Navigator
 const Tab = createBottomTabNavigator();
@@ -159,8 +161,9 @@ export default function DashboardScreen() {
             iconName = focused ? 'add-circle' : 'add-circle-outline';
           } else if (route.name === 'ViewPregnancyRecords') {
             iconName = focused ? 'list' : 'list-outline';
+          } else if (route.name === 'Logout') {
+            iconName = focused ? 'log-out' : 'log-out-outline';
           }
-
           return (
             <Ionicons
               name={iconName as keyof typeof Ionicons.glyphMap}
@@ -191,6 +194,11 @@ export default function DashboardScreen() {
         component={ViewPregnancyRecordsScreen}
         options={{ title: 'Ver Registros', tabBarLabel: 'Registros' }}
       />
+      <Tab.Screen
+              name="Logout"
+              component={LogoutScreen}
+              options={{ title: 'Cerrar Sesión', tabBarLabel: 'Cerrar Sesión' }}
+            />
     </Tab.Navigator>
   );
 }

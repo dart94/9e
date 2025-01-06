@@ -15,6 +15,9 @@ routes = Blueprint('routes', __name__)
 # Instancia de datos fetales
 fetal_data = FetalDevelopmentData()
 
+def get_user_id():
+    return session.get('user_id') or request.args.get('user_id') or request.json.get('user_id')
+
 # Decorador para verificar sesión del usuario
 def login_required(f):
     @wraps(f)
@@ -463,16 +466,15 @@ def login2():
 
 @routes.route('/api/embarazos', methods=['GET', 'POST'])
 def manejar_registros_embarazo():
-    if request.method == 'GET':
-        # Obtener user_id de los parámetros de la URL
-        user_id = session.get('user_id') or request.args.get('user_id')  # Cambiar a `request.args`
-        if not user_id:
-            return jsonify({"error": "Usuario no autenticado"}), 401
+    user_id = get_user_id()
+    if not user_id:
+        return jsonify({"error": "Usuario no autenticado"}), 401
 
-        # Lógica para manejar el GET
+    # Manejar GET
+    if request.method == 'GET':
         registros = PregnancyData.query.filter_by(user_id=user_id).all()
         if not registros:
-            return jsonify([])  # Devuelve una lista vacía si no hay registros
+            return jsonify([]), 200  # Devuelve una lista vacía si no hay registros
 
         registros_serializados = [
             {
@@ -486,44 +488,66 @@ def manejar_registros_embarazo():
         ]
         return jsonify(registros_serializados), 200
 
+    # Manejar POST
     elif request.method == 'POST':
-    # Obtén los datos del cuerpo de la solicitud
         data = request.get_json()
+        if not data:
+            return jsonify({"error": "No se recibieron datos"}), 400
 
-        # Validación de datos obligatorios
-        if not data or not data.get('last_period_date') or not data.get('weight'):
-            return jsonify({"error": "Faltan campos obligatorios: 'last_period_date' y 'weight'"}), 400
+        # Validar campos obligatorios
+        required_fields = ['last_period_date', 'weight']
+        missing_fields = [field for field in required_fields if not data.get(field)]
+        if missing_fields:
+            return jsonify({"error": f"Faltan campos obligatorios: {', '.join(missing_fields)}"}), 400
 
         try:
-            # Convertir last_period_date a un objeto date
-            from datetime import datetime
-            last_period_date = datetime.strptime(data.get('last_period_date'), '%Y-%m-%d').date()
+            # Validar y convertir fecha
+            last_period_date = datetime.strptime(data['last_period_date'], '%Y-%m-%d').date()
         except ValueError:
             return jsonify({"error": "El formato de la fecha debe ser YYYY-MM-DD"}), 400
 
-        # Calcula la semana si no se proporciona
+        # Calcular la semana
         week = data.get('week')
         if not week:
-            # Utiliza la lógica para calcular la semana basada en last_period_date
             today = datetime.utcnow().date()
             delta = today - last_period_date
-            week = max(1, delta.days // 7)  # Al menos 1 semana
+            week = max(1, delta.days // 7)
 
-        # Crea un nuevo registro de embarazo
+        # Crear registro
         nuevo_registro = PregnancyData(
             user_id=user_id,
             last_period_date=last_period_date,
-            weight=float(data.get('weight')),
+            weight=float(data['weight']),
             symptoms=data.get('symptoms'),
             notes=data.get('notes'),
-            week=week,
+            week=week
         )
 
         try:
-            # Guarda el nuevo registro en la base de datos
             db.session.add(nuevo_registro)
             db.session.commit()
             return jsonify({"message": "Registro de embarazo añadido correctamente"}), 201
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": f"Error al guardar en la base de datos: {str(e)}"}), 500
+
+# Ruta para eliminar registro
+@routes.route('/api/embarazos', methods=['DELETE'])
+def eliminar_registro_embarazo():
+    user_id = request.args.get('user_id')  # Obtener de los parámetros
+    week = request.args.get('week')       # Obtener de los parámetros
+
+    if not user_id or not week:
+        return jsonify({"error": "Faltan datos"}), 400
+
+    registro = PregnancyData.query.filter_by(user_id=user_id, week=week).first()
+    if not registro:
+        return jsonify({"error": "Registro no encontrado"}), 404
+
+    try:
+        db.session.delete(registro)
+        db.session.commit()
+        return jsonify({"message": "Registro eliminado correctamente"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500
