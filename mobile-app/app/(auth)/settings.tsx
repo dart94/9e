@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import axios from 'axios';
 import { API_CONFIG } from '../config/config';
 import { styles } from '../theme/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
 
 export default function SettingsScreen() {
   const [profileData, setProfileData] = useState<any>(null);
@@ -14,8 +22,7 @@ export default function SettingsScreen() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      try {    
-        // Obtiene el userId desde AsyncStorage
+      try {
         const userId = await AsyncStorage.getItem('userId');
         if (!userId) {
           Alert.alert('Error', 'No se pudo obtener el usuario autenticado.');
@@ -23,12 +30,11 @@ export default function SettingsScreen() {
           return;
         }
 
-        // Realiza la solicitud al backend
         const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
-          params: { user_id: userId }, 
+          params: { user_id: userId },
           withCredentials: true,
         });
-        
+
         setProfileData(response.data);
         setForm({ username: response.data.username, email: response.data.email });
       } catch (error) {
@@ -42,22 +48,19 @@ export default function SettingsScreen() {
     fetchProfile();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={[styles.container, styles.center]}>
-        <ActivityIndicator size="large" color={styles.title.color} />
-        <Text style={styles.title}>Cargando perfil...</Text>
-      </View>
-    );
-  }
-
-  if (!profileData) {
-    return (
-      <View style={[styles.container, styles.center]}>
-        <Text style={styles.errorText}>No se pudo cargar el perfil.</Text>
-      </View>
-    );
-  }
+  const handleToggleBiometricAuth = async (enable: boolean) => {
+    try {
+      if (enable) {
+        Alert.alert('Configuración', 'Autenticación biométrica habilitada.');
+      } else {
+        await SecureStore.deleteItemAsync('userToken');
+        Alert.alert('Configuración', 'Autenticación biométrica deshabilitada.');
+      }
+    } catch (error) {
+      console.error('Error al cambiar la configuración de autenticación biométrica:', error);
+      Alert.alert('Error', 'No se pudo cambiar la configuración.');
+    }
+  };
 
   const handleSave = async () => {
     try {
@@ -75,6 +78,23 @@ export default function SettingsScreen() {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.center]}>
+        <ActivityIndicator size="large" color={styles.title.color} />
+        <Text style={styles.title}>Cargando perfil...</Text>
+      </View>
+    );
+  }
+
+  if (!profileData) {
+    return (
+      <View style={[styles.container, styles.center]}>
+        <Text style={styles.errorText}>No se pudo cargar el perfil.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -99,46 +119,59 @@ export default function SettingsScreen() {
       ) : (
         <>
           <View style={styles.card}>
-          <Text style={styles.cardTitle}>Información de Perfil</Text>
-          
-          <View style={styles.infoRow}>
-            <Ionicons name="person-outline" size={24} color={styles.infoLabel.color} />
-            <Text style={styles.infoLabel}> Nombre de Usuario: </Text>
-            <Text style={styles.infoValue}>{profileData.username}</Text>
+            <Text style={styles.cardTitle}>Información de Perfil</Text>
+
+            <View style={styles.infoRow}>
+              <Ionicons name="person-outline" size={24} color={styles.infoLabel.color} />
+              <Text style={styles.infoLabel}> Nombre de Usuario: </Text>
+              <Text style={styles.infoValue}>{profileData.username}</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Ionicons name="mail-outline" size={24} color={styles.infoLabel.color} />
+              <Text style={styles.infoLabel}> Correo Electrónico: </Text>
+              <Text style={styles.infoValue}>{profileData.email}</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Ionicons name="calendar-outline" size={24} color={styles.infoLabel.color} />
+              <Text style={styles.infoLabel}> Progreso de Embarazo: </Text>
+              <Text style={styles.infoValue}>{profileData.progress_percentage?.toFixed(2) || '0'}%</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Ionicons name="scale-outline" size={24} color={styles.infoLabel.color} />
+              <Text style={styles.infoLabel}> Peso: </Text>
+              <Text style={styles.infoValue}>{profileData.last_record?.weight || 'N/A'} Kg</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Ionicons name="medical-outline" size={24} color={styles.infoLabel.color} />
+              <Text style={styles.infoLabel}> Últimos Síntomas: </Text>
+              <Text style={styles.infoValue}>{profileData.last_record?.symptoms || 'N/A'}</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Ionicons name="clipboard-outline" size={24} color={styles.infoLabel.color} />
+              <Text style={styles.infoLabel}> Notas: </Text>
+              <Text style={styles.infoValue}>{profileData.last_record?.notes || 'N/A'}</Text>
+            </View>
           </View>
 
-          <View style={styles.infoRow}>
-            <Ionicons name="mail-outline" size={24} color={styles.infoLabel.color} />
-            <Text style={styles.infoLabel}> Correo Electrónico: </Text>
-            <Text style={styles.infoValue}>{profileData.email}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Ionicons name="calendar-outline" size={24} color={styles.infoLabel.color} />
-            <Text style={styles.infoLabel}> Progreso de Embarazo: </Text>
-            <Text style={styles.infoValue}>{profileData.progress_percentage?.toFixed(2) || '0'}%</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Ionicons name="scale-outline" size={24} color={styles.infoLabel.color} />
-            <Text style={styles.infoLabel}> Peso: </Text>
-            <Text style={styles.infoValue}>{profileData.last_record?.weight || 'N/A'} Kg</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Ionicons name="medical-outline" size={24} color={styles.infoLabel.color} />
-            <Text style={styles.infoLabel} >Últimos Síntomas: </Text>
-            <Text style={styles.infoValue}>{profileData.last_record?.symptoms || 'N/A'}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Ionicons name="clipboard-outline" size={24} color={styles.infoLabel.color} />
-            <Text style={styles.infoLabel}> Notas: </Text>
-            <Text style={styles.infoValue}>{profileData.last_record?.notes || 'N/A'}</Text>
-          </View>
-        </View>
           <TouchableOpacity style={styles.button} onPress={() => setEditing(true)}>
             <Text style={styles.buttonText}>Editar Perfil</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleToggleBiometricAuth(true)}
+          >
+            <Text style={styles.buttonText}>Habilitar Huella</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleToggleBiometricAuth(false)}
+          >
+            <Text style={styles.buttonText}>Deshabilitar Huella</Text>
           </TouchableOpacity>
         </>
       )}

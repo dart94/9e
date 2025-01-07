@@ -111,6 +111,30 @@ function DashboardContent() {
             <Text style={styles.subtitle}>Cambios en la Madre</Text>
             <Text style={styles.paragraph}>{week_info.cambios_madre}</Text>
           </View>
+          <View style={styles.card}>
+            <Text style={styles.subtitle}>Síntomas Comunes</Text>
+            <FlatList
+              data={week_info.sintomas_comunes}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
+            />
+          </View>
+          <View style={styles.card}>
+            <Text style={styles.subtitle}>Consejos</Text>
+            <FlatList
+              data={week_info.consejos}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
+            />
+          </View>
+          <View style={styles.card}>
+            <Text style={styles.subtitle}>Pruebas Médicas</Text>
+            <FlatList
+              data={week_info.pruebas_medicas}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
+            />
+          </View>
         </>
       ) : (
         <Text style={styles.errorText}>No hay información disponible para esta semana.</Text>

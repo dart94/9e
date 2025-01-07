@@ -1,12 +1,15 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session, jsonify, request, current_app
 from functools import wraps
-from datetime import datetime, timezone  # Importación correcta
+from datetime import datetime, timezone, timedelta  # Importación correcta
 from .forms import RegistrationForm, PregnancyDataForm, LoginForm, EditProfileForm, ResetPasswordRequestForm, ResetPasswordForm
 from .models import User, PregnancyData
 from . import db, bcrypt
 from app.api.fetal_development_api import FetalDevelopmentData
 from flask_mail import Message
 from app import mail
+from flask_jwt_extended import create_access_token
+from datetime import timedelta
+
 
 # Blueprints
 fetal_api = Blueprint('fetal_development_api', __name__)
@@ -434,29 +437,37 @@ def api_editar_perfil():
 @routes.route('/login2', methods=['GET', 'POST'])
 def login2():
     form = LoginForm()
-
     if request.method == 'POST':
         data = request.get_json()  # Obtener datos JSON del cliente
         email = data.get('email')
         password = data.get('password')
-
+        
         if not email or not password:
             return jsonify({"error": "Faltan credenciales"}), 400
-
+            
         user = User.query.filter_by(email=email).first()
+        
         if user and bcrypt.check_password_hash(user.password, password):
+            # Crear token JWT
+            expires = timedelta(days=1)  # Token válido por 1 día
+            access_token = create_access_token(
+                identity=user.id,
+                expires_delta=expires
+            )
+            
             # Datos de sesión
             session['user_id'] = user.id
             session['username'] = user.username
-
+            
             return jsonify({
                 "message": "Inicio de sesión exitoso.",
                 "id": user.id,
-                "username": user.username
+                "username": user.username,
+                "token": access_token
             }), 200
         else:
             return jsonify({"error": "Correo o contraseña incorrectos"}), 401
-
+            
     # Para solicitudes GET, renderizar el formulario de inicio de sesión
     return render_template('index.html', form=form)
 

@@ -8,6 +8,7 @@ from itsdangerous import URLSafeTimedSerializer
 import os
 from app.api.fetal_development_api import fetal_api
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 # Inicializar extensiones
 db = SQLAlchemy()
@@ -41,6 +42,7 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     mail.init_app(app)
+    jwt = JWTManager(app)
 
     # Inicializar URLSafeTimedSerializer
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])

@@ -215,5 +215,22 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
   },
+  biometricButton: {
+    backgroundColor: '#4CAF50',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    width: '80%',
+  },
+  biometricButtonText: {
+    color: '#ffffff',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  marginBottom: {
+    marginBottom: 20,
+  },
 });
+
 

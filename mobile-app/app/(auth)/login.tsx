@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,56 +11,109 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG } from '../config/config';
 import { styles } from '../theme/styles';
+import * as LocalAuthentication from 'expo-local-authentication';
+import { Ionicons } from '@expo/vector-icons';
+import { storage } from '../../utils/storageHelper';
 
-// Ruta actualizada
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const checkBiometricSupport = async () => {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      setIsBiometricSupported(compatible);
+    };
+    checkBiometricSupport();
+  }, []);
 
   const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleLogin = async () => {
-    if (!email || !validateEmail(email)) {
+  const handleBiometricAuth = async () => {
+    try {
+      const savedEmail = await storage.getItem('userEmail');
+      if (!savedEmail) {
+        Alert.alert(
+          'No hay datos guardados',
+          'Por favor, inicia sesión primero con tu correo y contraseña.'
+        );
+        return;
+      }
+
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Autenticación biométrica',
+        disableDeviceFallback: false,
+        cancelLabel: 'Cancelar',
+      });
+
+      if (result.success) {
+        const savedPassword = await storage.getItem('userPassword');
+        setEmail(savedEmail);
+        setPassword(savedPassword || '');
+        await handleLogin(savedEmail, savedPassword || '');
+      }
+    } catch (error) {
+      console.error('Error en autenticación biométrica:', error);
+      Alert.alert('Error', 'No se pudo completar la autenticación biométrica');
+    }
+  };
+
+  const handleLogin = async (loginEmail = email, loginPassword = password) => {
+    if (!loginEmail || !validateEmail(loginEmail)) {
       setEmailError(true);
       Alert.alert('Error', 'Por favor ingresa un correo electrónico válido.');
       return;
     }
-
-    if (!password) {
+    if (!loginPassword) {
       setPasswordError(true);
       Alert.alert('Error', 'Por favor ingresa tu contraseña.');
       return;
     }
-
+  
     setLoading(true);
-
     try {
       const response = await axios.post(`${API_CONFIG.BASE_URL}/login2`, {
-        email,
-        password,
+        email: loginEmail,
+        password: loginPassword,
       });
-
+  
       if (response.status === 200) {
-        const userId = response.data.id;
-
-        // Guarda el usuario en AsyncStorage
-        await AsyncStorage.setItem('userId', userId.toString());
+        const { id, username, token } = response.data;
+  
+        // Guardar datos de usuario
+        await AsyncStorage.setItem('userId', id.toString());
         await AsyncStorage.setItem(
           'user',
-          JSON.stringify({ id: response.data.id, name: response.data.username })
+          JSON.stringify({ id, name: username })
         );
-
-        // Navega al Dashboard
+  
+        // Guardar token y credenciales
+        await storage.setItem('userToken', token);
+        await storage.setItem('userEmail', loginEmail);
+        await storage.setItem('userPassword', loginPassword);
+  
+        // Configurar interceptor de Axios
+        axios.interceptors.request.use(
+          async (config) => {
+            const token = await storage.getItem('userToken');
+            if (token) {
+              config.headers.Authorization = `Bearer ${token}`;
+            }
+            return config;
+          },
+          (error) => Promise.reject(error)
+        );
+  
+        // Navegar al Dashboard
         router.replace('/dashboard');
       }
     } catch (error) {
       console.error('Error detallado:', error);
-
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.message ||
@@ -108,13 +161,23 @@ export default function LoginScreen() {
 
       <TouchableOpacity
         style={[styles.button, loading && styles.buttonDisabled]}
-        onPress={handleLogin}
+        onPress={() => handleLogin()}
         disabled={loading}
       >
         <Text style={styles.buttonText}>
           {loading ? 'Cargando...' : 'Ingresar'}
         </Text>
       </TouchableOpacity>
+
+      {isBiometricSupported && (
+        <TouchableOpacity
+          style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]}
+          onPress={handleBiometricAuth}
+        >
+          <Ionicons name="finger-print-outline" size={32} color={styles.buttonText.color} />
+          <Text style={[styles.buttonText, { marginRight: 8 }]}>Ingresar con Huella</Text>
+        </TouchableOpacity>
+      )}
 
       <TouchableOpacity onPress={() => router.push('/(auth)/forgotPassword')}>
         <Text style={styles.link}>¿Olvidaste tu contraseña?</Text>
