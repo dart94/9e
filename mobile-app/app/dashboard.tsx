@@ -6,17 +6,19 @@ import {
   FlatList,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import axios from 'axios';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_CONFIG } from '../config/config';
-import { styles } from '../theme/styles';
+import { API_CONFIG } from '../app/config/config';
+import { styles } from '../app/theme/styles';
 import { ProgressBar } from 'react-native-paper';
-import SettingsScreen from './settings';
+import SettingsScreen from './(auth)/settings';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
 import NewPregnancyRecordScreen from './newPregnancy';
+import { useRouter } from 'expo-router'; // Usar el router para manejar la navegación
 
 // Tab Navigator
 const Tab = createBottomTabNavigator();
@@ -29,7 +31,6 @@ function DashboardContent() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        console.log('Consultando datos del dashboard...');
         const userId = await AsyncStorage.getItem('userId');
         if (!userId) {
           setError('No se pudo obtener el usuario autenticado.');
@@ -54,23 +55,27 @@ function DashboardContent() {
     fetchDashboardData();
   }, []);
 
-  if (loading) return <View style={[styles.container, styles.center]}>
-    <ActivityIndicator size="large" color={styles.title.color} />
-    <Text style={styles.title}>Cargando datos...</Text>
-  </View>;
+  if (loading)
+    return (
+      <View style={[styles.container, styles.center]}>
+        <ActivityIndicator size="large" color={styles.title.color} />
+        <Text style={styles.title}>Cargando datos...</Text>
+      </View>
+    );
 
-  if (error) return <View style={[styles.container, styles.center]}>
-    <Text style={styles.errorText}>{error}</Text>
-  </View>;
+  if (error)
+    return (
+      <View style={[styles.container, styles.center]}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
 
   const { current_week, progress_percentage, week_info, month } = data;
 
-  // Convertir el progreso a un número entero entre 0 y 100
-  const normalizedProgress = progress_percentage 
+  const normalizedProgress = progress_percentage
     ? Math.min(100, Math.max(0, Math.floor(progress_percentage)))
     : 0;
 
-  // Convertir a valor entre 0 y 1 usando división entera
   const safeProgress = normalizedProgress / 100;
 
   return (
@@ -83,13 +88,11 @@ function DashboardContent() {
           }}
           style={styles.image}
         />
-        <Text style={styles.subtitle}>
-          Progreso: {normalizedProgress}%
-        </Text>
+        <Text style={styles.subtitle}>Progreso: {normalizedProgress}%</Text>
         <ProgressBar
           progress={safeProgress}
           color={styles.subtitle.color}
-          style={[styles.progressBar, { height: 8 }]} // Aumentamos la altura para mejor visibilidad
+          style={[styles.progressBar, { height: 8 }]}
           theme={{
             colors: {
               primary: styles.subtitle.color,
@@ -108,30 +111,6 @@ function DashboardContent() {
             <Text style={styles.subtitle}>Cambios en la Madre</Text>
             <Text style={styles.paragraph}>{week_info.cambios_madre}</Text>
           </View>
-          <View style={styles.card}>
-            <Text style={styles.subtitle}>Síntomas Comunes</Text>
-            <FlatList
-              data={week_info.sintomas_comunes}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
-            />
-          </View>
-          <View style={styles.card}>
-            <Text style={styles.subtitle}>Consejos</Text>
-            <FlatList
-              data={week_info.consejos}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
-            />
-          </View>
-          <View style={styles.card}>
-            <Text style={styles.subtitle}>Pruebas Médicas</Text>
-            <FlatList
-              data={week_info.pruebas_medicas}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
-            />
-          </View>
         </>
       ) : (
         <Text style={styles.errorText}>No hay información disponible para esta semana.</Text>
@@ -141,6 +120,28 @@ function DashboardContent() {
 }
 
 export default function DashboardScreen() {
+  const router = useRouter(); // Usar el router para manejar la navegación
+
+  const logout = async () => {
+    Alert.alert('Confirmación', '¿Estás seguro de que deseas cerrar sesión?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Cerrar Sesión',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem('userId');
+            await AsyncStorage.removeItem('user');
+            router.replace('/(auth)/login'); // Redirigir al login
+          } catch (error) {
+            console.error('Error al cerrar sesión:', error);
+            Alert.alert('Error', 'No se pudo cerrar sesión.');
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -154,20 +155,14 @@ export default function DashboardScreen() {
           if (route.name === 'Dashboard') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Settings') {
-            iconName = focused ? 'person' : 'person-circle-outline';
-          } else if (route.name === 'NewPregnancyRecord') {
-            iconName = focused ? 'add-circle' : 'add-circle-outline';
+            iconName = focused ? 'settings' : 'settings-outline';
           } else if (route.name === 'ViewPregnancyRecords') {
             iconName = focused ? 'list' : 'list-outline';
+          } else if (route.name === 'Logout') {
+            iconName = 'log-out-outline';
           }
 
-          return (
-            <Ionicons
-              name={iconName as keyof typeof Ionicons.glyphMap}
-              size={size}
-              color={color}
-            />
-          );
+          return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
         },
       })}
     >
@@ -190,6 +185,21 @@ export default function DashboardScreen() {
         name="ViewPregnancyRecords"
         component={ViewPregnancyRecordsScreen}
         options={{ title: 'Ver Registros', tabBarLabel: 'Registros' }}
+      />
+      <Tab.Screen
+        name="Logout"
+        component={() => null}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault(); // Evita la navegación
+            logout(); // Ejecuta el logout
+          },
+        }}
+        options={{
+          title: 'Cerrar Sesión',
+          tabBarLabel: 'Logout',
+          tabBarStyle: { backgroundColor: '#FF4D4F' },
+        }}
       />
     </Tab.Navigator>
   );

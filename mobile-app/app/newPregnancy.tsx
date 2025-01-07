@@ -9,8 +9,9 @@ import {
 } from 'react-native';
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { styles } from '../theme/styles';
-import { API_CONFIG } from '../config/config';
+import { styles } from '../app/theme/styles';
+import { API_CONFIG } from '../app/config/config';
+import { useRouter } from 'expo-router';
 
 export default function NewPregnancyRecordScreen() {
   const [form, setForm] = useState({
@@ -20,14 +21,15 @@ export default function NewPregnancyRecordScreen() {
     notes: '',
   });
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchLastPeriodDate = async () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
-        console.log('userId:', userId);
         if (!userId) {
           Alert.alert('Error', 'No se pudo obtener el usuario autenticado.');
+          router.replace('/(auth)/login'); // Redirigir si no está autenticado
           return;
         }
 
@@ -37,13 +39,8 @@ export default function NewPregnancyRecordScreen() {
           withCredentials: true,
         });
 
-        console.log('Respuesta de la API:', response.data);
-
-        // Verificar si hay registros y actualizar solo last_period_date
         if (response.data && response.data.length > 0) {
           const latestRecord = response.data[0];
-
-          // Solo actualizar last_period_date
           setForm((prevForm) => ({
             ...prevForm,
             last_period_date: latestRecord?.last_period_date || '',
@@ -72,18 +69,16 @@ export default function NewPregnancyRecordScreen() {
       Alert.alert('Error', 'Por favor, completa todos los campos obligatorios.');
       return;
     }
-  
+
     try {
       setLoading(true);
-  
-      // Obtener user_id desde AsyncStorage
       const userId = await AsyncStorage.getItem('userId');
       if (!userId) {
         Alert.alert('Error', 'Usuario no autenticado. Intenta iniciar sesión nuevamente.');
+        router.replace('/(auth)/login');
         return;
       }
-  
-      // Preparar los datos para enviar
+
       const payload = {
         user_id: userId,
         last_period_date: form.last_period_date,
@@ -91,32 +86,19 @@ export default function NewPregnancyRecordScreen() {
         symptoms: form.symptoms,
         notes: form.notes,
       };
-  
-      console.log('Enviando datos:', payload);
-  
-      // Realizar la solicitud POST
-      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/embarazos`, payload, {
+
+      await axios.post(`${API_CONFIG.BASE_URL}/api/embarazos`, payload, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-  
+
       Alert.alert('Éxito', 'Registro de embarazo añadido correctamente.');
+      router.replace('/dashboard'); // Redirigir al Dashboard
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error('Error al guardar el registro:', error.response?.data || error.message);
-      } else {
-        console.error('Error al guardar el registro:', error);
-      }
-  
-      // Mostrar mensaje de error
       const axiosError = error as AxiosError;
       const errorData = axiosError.response?.data as { error?: string };
-      if (errorData?.error) {
-        Alert.alert('Error', errorData.error);
-      } else {
-        Alert.alert('Error', 'No se pudo guardar el registro.');
-      }
+      Alert.alert('Error', errorData?.error || 'No se pudo guardar el registro.');
     } finally {
       setLoading(false);
     }
@@ -124,9 +106,7 @@ export default function NewPregnancyRecordScreen() {
 
   return (
     <View style={styles.container}>
-      {loading && (
-        <ActivityIndicator size="large" color={styles.title.color} />
-      )}
+      {loading && <ActivityIndicator size="large" color={styles.title.color} />}
       <Text style={styles.title}>Nuevo Registro de Embarazo</Text>
 
       <Text style={styles.label}>Última Fecha de Periodo</Text>

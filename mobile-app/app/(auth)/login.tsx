@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG } from '../config/config';
 import { styles } from '../theme/styles';
 
-
+// Ruta actualizada
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,16 +20,12 @@ export default function LoginScreen() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
+  const router = useRouter();
+
+  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const handleLogin = async () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!email) {
-      setEmailError(true);
-      Alert.alert('Error', 'Por favor ingresa tu correo.');
-      return;
-    }
-
-    if (!emailRegex.test(email)) {
+    if (!email || !validateEmail(email)) {
       setEmailError(true);
       Alert.alert('Error', 'Por favor ingresa un correo electrónico válido.');
       return;
@@ -48,29 +44,19 @@ export default function LoginScreen() {
         email,
         password,
       });
-  
+
       if (response.status === 200) {
-        console.log('Usuario autenticado:', response.data);
-  
         const userId = response.data.id;
-  
-        // Guarda el `userId` en AsyncStorage
+
+        // Guarda el usuario en AsyncStorage
         await AsyncStorage.setItem('userId', userId.toString());
-  
-        // Guarda el objeto completo del usuario en AsyncStorage
         await AsyncStorage.setItem(
           'user',
           JSON.stringify({ id: response.data.id, name: response.data.username })
         );
-        
-        // Navega al Dashboard con los datos del usuario guardados en AsyncStorage
-        router.push({
-          pathname: '/(auth)/dashboard',
-          params: {
-            id: response.data.id,
-            name: response.data.username,
-          },
-        });
+
+        // Navega al Dashboard
+        router.replace('/dashboard');
       }
     } catch (error) {
       console.error('Error detallado:', error);
@@ -93,11 +79,9 @@ export default function LoginScreen() {
   return (
     <View style={[styles.container, styles.center]}>
       <Text style={styles.title}>Iniciar Sesión</Text>
+
       <TextInput
-        style={[
-          styles.input,
-          emailError && { borderColor: 'red', borderWidth: 2 },
-        ]}
+        style={[styles.input, emailError && { borderColor: 'red' }]}
         placeholder="Correo electrónico"
         value={email}
         onChangeText={(text) => {
@@ -105,18 +89,14 @@ export default function LoginScreen() {
           setEmail(text);
         }}
         onBlur={() => {
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setEmailError(true);
-          }
+          if (!validateEmail(email)) setEmailError(true);
         }}
         keyboardType="email-address"
         autoCapitalize="none"
       />
+
       <TextInput
-        style={[
-          styles.input,
-          passwordError && { borderColor: 'red', borderWidth: 2 },
-        ]}
+        style={[styles.input, passwordError && { borderColor: 'red' }]}
         placeholder="Contraseña"
         value={password}
         onChangeText={(text) => {
@@ -125,6 +105,7 @@ export default function LoginScreen() {
         }}
         secureTextEntry
       />
+
       <TouchableOpacity
         style={[styles.button, loading && styles.buttonDisabled]}
         onPress={handleLogin}
@@ -135,15 +116,11 @@ export default function LoginScreen() {
         </Text>
       </TouchableOpacity>
 
-      {/* Botones para recuperar contraseña y registrarse */}
-      <TouchableOpacity
-        onPress={() => router.push('/(auth)/forgotPassword')}
-      >
+      <TouchableOpacity onPress={() => router.push('/(auth)/forgotPassword')}>
         <Text style={styles.link}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => router.push('/(auth)/register')}
-      >
+
+      <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
         <Text style={styles.link}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
     </View>

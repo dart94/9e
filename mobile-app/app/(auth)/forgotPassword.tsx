@@ -3,15 +3,21 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { styles } from '../theme/styles';
 import axios from 'axios';
 import { API_CONFIG } from '../config/config';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+
+  const router = useRouter();
+
+  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleForgotPassword = async () => {
-    if (!email) {
-      Alert.alert('Error', 'Por favor ingresa tu correo.');
+    if (!email || !validateEmail(email)) {
+      setEmailError(true);
+      Alert.alert('Error', 'Por favor ingresa un correo electrónico válido.');
       return;
     }
 
@@ -42,23 +48,29 @@ export default function ForgotPasswordScreen() {
     <View style={[styles.container, styles.center]}>
       <Text style={styles.title}>Recuperar Contraseña</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, emailError && { borderColor: 'red', borderWidth: 2 }]}
         placeholder="Correo electrónico"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(text) => {
+          setEmailError(false);
+          setEmail(text);
+        }}
+        onBlur={() => {
+          if (!validateEmail(email)) setEmailError(true);
+        }}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TouchableOpacity style={styles.button} onPress={handleForgotPassword} disabled={loading}>
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={handleForgotPassword}
+        disabled={loading}
+      >
         <Text style={styles.buttonText}>
           {loading ? 'Enviando...' : 'Enviar instrucciones'}
         </Text>
       </TouchableOpacity>
-      {/* Botón para redirigir al login */}
-      <TouchableOpacity
-        style={styles.link}
-        onPress={() => router.push('/(auth)/login')}
-      >
+      <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
         <Text style={styles.link}>¿Ya tienes una cuenta? Inicia sesión</Text>
       </TouchableOpacity>
     </View>

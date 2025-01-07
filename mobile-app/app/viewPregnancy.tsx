@@ -10,9 +10,10 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { styles } from '../theme/styles';
-import { API_CONFIG } from '../config/config';
-import NewPregnancyRecordScreen from './newPregnancy';
+import { styles } from '../app/theme/styles';
+import { API_CONFIG } from '../app/config/config';
+import { useRouter } from 'expo-router';
+import NewPregnancyRecordScreen from './newPregnancy'; // Ruta actualizada
 
 interface PregnancyRecord {
   week: number;
@@ -25,14 +26,15 @@ export default function ViewPregnancyRecordsScreen() {
   const [records, setRecords] = useState<PregnancyRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchRecords = async () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
         if (!userId) {
-          Alert.alert('Error', 'No se pudo obtener el usuario autenticado.');
-          setLoading(false);
+          Alert.alert('Error', 'Usuario no autenticado.');
+          router.replace('/(auth)/login'); // Redirigir al login si no está autenticado
           return;
         }
 
@@ -54,7 +56,6 @@ export default function ViewPregnancyRecordsScreen() {
   }, []);
 
   const handleEdit = (record: PregnancyRecord) => {
-    // Lógica para manejar la edición (puedes mostrar un modal con datos precargados)
     Alert.alert('Editar', `Editar el registro de la semana ${record.week}`);
   };
 
@@ -80,7 +81,6 @@ export default function ViewPregnancyRecordsScreen() {
               });
 
               Alert.alert('Éxito', 'Registro eliminado correctamente.');
-              // Actualizar la lista local
               setRecords((prevRecords) =>
                 prevRecords.filter((record) => record.week !== week)
               );
@@ -111,8 +111,6 @@ export default function ViewPregnancyRecordsScreen() {
         <Text style={styles.infoLabel}>Notas: </Text>
         <Text style={styles.infoValue}>{item.notes || 'N/A'}</Text>
       </View>
-
-      {/* Botones de acciones */}
       <View style={styles.actionsRow}>
         <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)}>
           <Text style={styles.buttonText}>Editar</Text>
@@ -153,8 +151,6 @@ export default function ViewPregnancyRecordsScreen() {
           <Text style={styles.buttonText}>Nuevo Registro</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Modal */}
       <Modal
         visible={isModalVisible}
         animationType="slide"
