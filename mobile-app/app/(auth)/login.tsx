@@ -171,7 +171,7 @@ export default function LoginScreen() {
 
       {isBiometricSupported && (
         <TouchableOpacity
-          style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]}
+          style={[styles.button, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
           onPress={handleBiometricAuth}
         >
           <Ionicons name="finger-print-outline" size={32} color={styles.buttonText.color} />
