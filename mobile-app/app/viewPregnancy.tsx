@@ -7,13 +7,24 @@ import {
   Alert,
   Modal,
   TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+<<<<<<< HEAD:mobile-app/app/viewPregnancy.tsx
 import { styles } from '../app/theme/styles';
 import { API_CONFIG } from '../app/config/config';
 import { useRouter } from 'expo-router';
 import NewPregnancyRecordScreen from './newPregnancy'; // Ruta actualizada
+=======
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { styles } from '../theme/styles';
+import { API_CONFIG } from '../config/config';
+import NewPregnancyRecordScreen from './newPregnancy';
+import { Ionicons } from '@expo/vector-icons';
+>>>>>>> origin/main:mobile-app/app/(auth)/viewPregnancy.tsx
 
 interface PregnancyRecord {
   week: number;
@@ -55,9 +66,12 @@ export default function ViewPregnancyRecordsScreen() {
     fetchRecords();
   }, []);
 
+<<<<<<< HEAD:mobile-app/app/viewPregnancy.tsx
   const handleEdit = (record: PregnancyRecord) => {
     Alert.alert('Editar', `Editar el registro de la semana ${record.week}`);
   };
+=======
+>>>>>>> origin/main:mobile-app/app/(auth)/viewPregnancy.tsx
 
   const handleDelete = async (week: number) => {
     Alert.alert(
@@ -69,21 +83,34 @@ export default function ViewPregnancyRecordsScreen() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
+            console.log('Intentando eliminar registro de la semana:', week);
             try {
               const userId = await AsyncStorage.getItem('userId');
               if (!userId) {
                 Alert.alert('Error', 'Usuario no autenticado.');
                 return;
               }
-
-              await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos`, {
+  
+              const response = await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos`, {
                 params: { user_id: userId, week },
               });
+<<<<<<< HEAD:mobile-app/app/viewPregnancy.tsx
 
               Alert.alert('Éxito', 'Registro eliminado correctamente.');
               setRecords((prevRecords) =>
                 prevRecords.filter((record) => record.week !== week)
               );
+=======
+  
+              if (response.status === 200) {
+                Alert.alert('Éxito', 'Registro eliminado correctamente.');
+                setRecords((prevRecords) =>
+                  prevRecords.filter((record) => record.week !== week)
+                );
+              } else {
+                Alert.alert('Error', 'El servidor no pudo procesar la solicitud.');
+              }
+>>>>>>> origin/main:mobile-app/app/(auth)/viewPregnancy.tsx
             } catch (error) {
               console.error('Error al eliminar registro:', error);
               Alert.alert('Error', 'No se pudo eliminar el registro.');
@@ -98,23 +125,23 @@ export default function ViewPregnancyRecordsScreen() {
     <View style={styles.card}>
       <Text style={styles.subtitle}>Semana: {item.week}</Text>
       <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>Peso: </Text>
+      <Ionicons name="scale-outline" size={24} color={styles.infoLabel.color} />
+        <Text style={styles.infoLabel}> Peso: </Text>
         <Text style={styles.infoValue}>
           {item.weight ? `${item.weight} Kg` : 'N/A'}
         </Text>
       </View>
       <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>Síntomas: </Text>
+      <Ionicons name="medical-outline" size={24} color={styles.infoLabel.color} />
+        <Text style={styles.infoLabel}> Síntomas: </Text>
         <Text style={styles.infoValue}>{item.symptoms || 'N/A'}</Text>
       </View>
       <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>Notas: </Text>
+        <Ionicons name="clipboard-outline" size={24} color={styles.infoLabel.color} />
+        <Text style={styles.infoLabel}> Notas: </Text>
         <Text style={styles.infoValue}>{item.notes || 'N/A'}</Text>
       </View>
       <View style={styles.actionsRow}>
-        <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)}>
-          <Text style={styles.buttonText}>Editar</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.week)}>
           <Text style={styles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
@@ -132,7 +159,7 @@ export default function ViewPregnancyRecordsScreen() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.title}>Registros de Embarazo</Text>
         {records.length > 0 ? (
@@ -151,15 +178,34 @@ export default function ViewPregnancyRecordsScreen() {
           <Text style={styles.buttonText}>Nuevo Registro</Text>
         </TouchableOpacity>
       </View>
+<<<<<<< HEAD:mobile-app/app/viewPregnancy.tsx
+=======
+
+>>>>>>> origin/main:mobile-app/app/(auth)/viewPregnancy.tsx
       <Modal
         visible={isModalVisible}
         animationType="slide"
         transparent={true}
         onRequestClose={() => setIsModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalContainer}
+        >
           <View style={styles.modalContent}>
-            <NewPregnancyRecordScreen />
+            {/* Usamos FlatList con nestedScrollEnabled */}
+            <FlatList
+              data={[]} // Asegúrate de manejar datos aquí si es necesario
+              ListHeaderComponent={
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                  <NewPregnancyRecordScreen />
+                </ScrollView>
+              }
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={() => null} // Render vacío si no hay datos
+              nestedScrollEnabled={true}
+            />
+            {/* Botón de cierre */}
             <TouchableOpacity
               style={[styles.button, { marginTop: 20 }]}
               onPress={() => setIsModalVisible(false)}
@@ -167,8 +213,8 @@ export default function ViewPregnancyRecordsScreen() {
               <Text style={styles.buttonText}>Cerrar</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }

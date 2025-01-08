@@ -34,7 +34,12 @@ export default function Layout() {
         name="dashboard"
         options={{
           title: 'Dashboard',
+<<<<<<< HEAD
         }}
+=======
+          headerShown: false 
+        }} 
+>>>>>>> origin/main
       />
       <Stack.Screen
         name="settings"

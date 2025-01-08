@@ -1,5 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { COLORS, SIZES } from './theme';
+
 
 export const styles = StyleSheet.create({
   container: {
@@ -21,6 +22,10 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+  },
+
+  linkContainer: {
+    marginTop: SIZES.margin,
   },
   title: {
     fontSize: SIZES.fontLarge,
@@ -139,23 +144,21 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.6)', // Fondo semitransparente oscuro
+    padding: 20, // Asegura espacio para dispositivos pequeños
   },
-
-  // Estilo para el contenido del modal
+  
   modalContent: {
-    backgroundColor: COLORS.white, // Fondo blanco para contraste
+    backgroundColor: 'white',
     width: '90%',
     maxHeight: '80%',
-    borderRadius: SIZES.borderRadius,
-    padding: SIZES.padding,
-    shadowColor: COLORS.boxshadow,
-    shadowOffset: { width: 0, height: SIZES.shadowOffset },
+    padding: 20,
+    borderRadius: Platform.OS === 'ios' ? 20 : 10, // Diferente para iOS y Android
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: SIZES.shadowOffset,
-    elevation: 10,
-    zIndex: 100,
+    shadowRadius: 4,
+    elevation: 5, // Para sombras en Android
   },
-
   // Encabezado del modal
   modalHeader: {
     flexDirection: 'row',

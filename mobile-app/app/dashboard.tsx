@@ -18,7 +18,12 @@ import { ProgressBar } from 'react-native-paper';
 import SettingsScreen from './(auth)/settings';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
 import NewPregnancyRecordScreen from './newPregnancy';
+<<<<<<< HEAD:mobile-app/app/dashboard.tsx
 import { useRouter } from 'expo-router'; // Usar el router para manejar la navegación
+=======
+import LogoutScreen from './logout';
+
+>>>>>>> origin/main:mobile-app/app/(auth)/dashboard.tsx
 
 // Tab Navigator
 const Tab = createBottomTabNavigator();
@@ -183,10 +188,22 @@ export default function DashboardScreen() {
           } else if (route.name === 'ViewPregnancyRecords') {
             iconName = focused ? 'list' : 'list-outline';
           } else if (route.name === 'Logout') {
+<<<<<<< HEAD:mobile-app/app/dashboard.tsx
             iconName = 'log-out-outline';
           }
 
           return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
+=======
+            iconName = focused ? 'log-out' : 'log-out-outline';
+          }
+          return (
+            <Ionicons
+              name={iconName as keyof typeof Ionicons.glyphMap}
+              size={size}
+              color={color}
+            />
+          );
+>>>>>>> origin/main:mobile-app/app/(auth)/dashboard.tsx
         },
       })}
     >
@@ -211,6 +228,7 @@ export default function DashboardScreen() {
         options={{ title: 'Ver Registros', tabBarLabel: 'Registros' }}
       />
       <Tab.Screen
+<<<<<<< HEAD:mobile-app/app/dashboard.tsx
         name="Logout"
         component={() => null}
         listeners={{
@@ -225,6 +243,12 @@ export default function DashboardScreen() {
           tabBarStyle: { backgroundColor: '#FF4D4F' },
         }}
       />
+=======
+              name="Logout"
+              component={LogoutScreen}
+              options={{ title: 'Cerrar Sesión', tabBarLabel: 'Cerrar Sesión' }}
+            />
+>>>>>>> origin/main:mobile-app/app/(auth)/dashboard.tsx
     </Tab.Navigator>
   );
 }
