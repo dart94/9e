@@ -80,7 +80,7 @@ export default function NewPregnancyRecordScreen() {
       }
 
       const payload = {
-        user_id: userId,
+        user_id: Number(userId),
         last_period_date: form.last_period_date,
         weight: form.weight,
         symptoms: form.symptoms,
