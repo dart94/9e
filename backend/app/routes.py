@@ -512,7 +512,10 @@ def manejar_registros_embarazo():
 
         # Extraer user_id
         user_id = data.get('user_id')
-        if not isinstance(user_id, int):
+        # Convertir a número entero si es necesario
+        try:
+            user_id = int(user_id)
+        except (ValueError, TypeError):
             return jsonify({"error": "'user_id' debe ser un número entero"}), 400
 
         # Calcula la semana si no se proporciona
