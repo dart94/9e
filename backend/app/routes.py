@@ -501,16 +501,19 @@ def manejar_registros_embarazo():
     # Obtén los datos del cuerpo de la solicitud
         data = request.get_json()
 
-        # Validación de datos obligatorios
-        if not data or not data.get('last_period_date') or not data.get('weight'):
-            return jsonify({"error": "Faltan campos obligatorios: 'last_period_date' y 'weight'"}), 400
+        # Validación de campos obligatorios
+        if not data or not data.get('last_period_date') or not data.get('weight') or not data.get('user_id'):
+            return jsonify({"error": "Faltan campos obligatorios: 'user_id', 'last_period_date', y 'weight'"}), 400
 
         try:
-            # Convertir last_period_date a un objeto date
-            from datetime import datetime
             last_period_date = datetime.strptime(data.get('last_period_date'), '%Y-%m-%d').date()
         except ValueError:
             return jsonify({"error": "El formato de la fecha debe ser YYYY-MM-DD"}), 400
+
+        # Extraer user_id
+        user_id = data.get('user_id')
+        if not isinstance(user_id, int):
+            return jsonify({"error": "'user_id' debe ser un número entero"}), 400
 
         # Calcula la semana si no se proporciona
         week = data.get('week')
