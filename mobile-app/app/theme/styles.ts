@@ -139,21 +139,20 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.6)', // Fondo semitransparente oscuro
+    padding: 20, // Asegura espacio en dispositivos pequeños
   },
-
-  // Estilo para el contenido del modal
+  
   modalContent: {
-    backgroundColor: COLORS.white, // Fondo blanco para contraste
-    width: '90%',
-    maxHeight: '80%',
-    borderRadius: SIZES.borderRadius,
-    padding: SIZES.padding,
-    shadowColor: COLORS.boxshadow,
-    shadowOffset: { width: 0, height: SIZES.shadowOffset },
+    backgroundColor: 'white',
+    width: '90%', // Ajusta el ancho relativo
+    maxHeight: '80%', // Evita que exceda la altura de la pantalla
+    borderRadius: 10,
+    padding: 20, // Espaciado interno
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: SIZES.shadowOffset,
-    elevation: 10,
-    zIndex: 100,
+    shadowRadius: 4,
+    elevation: 10, // Sombra en Android
   },
 
   // Encabezado del modal
