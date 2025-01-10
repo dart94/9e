@@ -7,6 +7,9 @@ import {
   Alert,
   Modal,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -54,10 +57,6 @@ export default function ViewPregnancyRecordsScreen() {
 
     fetchRecords();
   }, []);
-
-  const handleEdit = (record: PregnancyRecord) => {
-    Alert.alert('Editar', `Editar el registro de la semana ${record.week}`);
-  };
 
   const handleDelete = async (week: number) => {
     Alert.alert(
@@ -112,9 +111,6 @@ export default function ViewPregnancyRecordsScreen() {
         <Text style={styles.infoValue}>{item.notes || 'N/A'}</Text>
       </View>
       <View style={styles.actionsRow}>
-        <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)}>
-          <Text style={styles.buttonText}>Editar</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.week)}>
           <Text style={styles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
@@ -151,24 +147,30 @@ export default function ViewPregnancyRecordsScreen() {
           <Text style={styles.buttonText}>Nuevo Registro</Text>
         </TouchableOpacity>
       </View>
+     
       <Modal
-        visible={isModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setIsModalVisible(false)}
+      visible={isModalVisible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setIsModalVisible(false)}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.modalContainer}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+        <View style={styles.modalContent}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <NewPregnancyRecordScreen />
-            <TouchableOpacity
-              style={[styles.button, { marginTop: 20 }]}
-              onPress={() => setIsModalVisible(false)}
-            >
-              <Text style={styles.buttonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
+          </ScrollView>
+          <TouchableOpacity
+            style={[styles.button, { marginTop: 20 }]}
+            onPress={() => setIsModalVisible(false)}
+          >
+            <Text style={styles.buttonText}>Cerrar</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
+      </KeyboardAvoidingView>
+    </Modal>
     </View>
   );
 }
