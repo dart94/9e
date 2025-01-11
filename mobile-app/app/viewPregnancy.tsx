@@ -8,7 +8,6 @@ import {
   Modal,
   TouchableOpacity,
   KeyboardAvoidingView,
-  ScrollView,
   Platform,
 } from 'react-native';
 import axios from 'axios';
@@ -20,7 +19,7 @@ import { miscStyles } from '../app/theme/styles/miscStyles';
 import { modalStyles } from '../app/theme/styles/modalStyles';
 import { API_CONFIG } from '../app/config/config';
 import { useRouter } from 'expo-router';
-import NewPregnancyRecordScreen from './newPregnancy'; // Ruta actualizada
+import NewPregnancyRecordScreen from './newPregnancy';
 
 interface PregnancyRecord {
   week: number;
@@ -41,7 +40,7 @@ export default function ViewPregnancyRecordsScreen() {
         const userId = await AsyncStorage.getItem('userId');
         if (!userId) {
           Alert.alert('Error', 'Usuario no autenticado.');
-          router.replace('/(auth)/login'); // Redirigir al login si no está autenticado
+          router.replace('/(auth)/login');
           return;
         }
 
@@ -138,8 +137,9 @@ export default function ViewPregnancyRecordsScreen() {
         {records.length > 0 ? (
           <FlatList
             data={records}
-            keyExtractor={(_, index) => index.toString()}
+            keyExtractor={(item) => item.week.toString()}
             renderItem={renderRecord}
+            contentContainerStyle={{ paddingBottom: 20 }}
           />
         ) : (
           <Text style={textStyles.errorText}>No se encontraron registros.</Text>
@@ -163,9 +163,7 @@ export default function ViewPregnancyRecordsScreen() {
           style={modalStyles.modalContainer}
         >
           <View style={modalStyles.modalContent}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-              <NewPregnancyRecordScreen />
-            </ScrollView>
+            <NewPregnancyRecordScreen />
             <TouchableOpacity
               style={[buttonStyles.button, { marginTop: 20 }]}
               onPress={() => setIsModalVisible(false)}
