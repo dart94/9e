@@ -13,7 +13,11 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { styles } from '../app/theme/styles';
+import { layoutStyles } from '../app/theme/styles/layoutStyles';
+import { textStyles } from '../app/theme/styles/textStyles';
+import { buttonStyles } from '../app/theme/styles/buttonStyles';
+import { miscStyles } from '../app/theme/styles/miscStyles';
+import { modalStyles } from '../app/theme/styles/modalStyles';
 import { API_CONFIG } from '../app/config/config';
 import { useRouter } from 'expo-router';
 import NewPregnancyRecordScreen from './newPregnancy'; // Ruta actualizada
@@ -94,25 +98,25 @@ export default function ViewPregnancyRecordsScreen() {
   };
 
   const renderRecord = ({ item }: { item: PregnancyRecord }) => (
-    <View style={styles.card}>
-      <Text style={styles.subtitle}>Semana: {item.week}</Text>
-      <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>Peso: </Text>
-        <Text style={styles.infoValue}>
+    <View style={miscStyles.card}>
+      <Text style={textStyles.subtitle}>Semana: {item.week}</Text>
+      <View style={layoutStyles.infoRow}>
+        <Text style={textStyles.infoLabel}>Peso: </Text>
+        <Text style={textStyles.infoValue}>
           {item.weight ? `${item.weight} Kg` : 'N/A'}
         </Text>
       </View>
-      <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>Síntomas: </Text>
-        <Text style={styles.infoValue}>{item.symptoms || 'N/A'}</Text>
+      <View style={layoutStyles.infoRow}>
+        <Text style={textStyles.infoLabel}>Síntomas: </Text>
+        <Text style={textStyles.infoValue}>{item.symptoms || 'N/A'}</Text>
       </View>
-      <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>Notas: </Text>
-        <Text style={styles.infoValue}>{item.notes || 'N/A'}</Text>
+      <View style={layoutStyles.infoRow}>
+        <Text style={textStyles.infoLabel}>Notas: </Text>
+        <Text style={textStyles.infoValue}>{item.notes || 'N/A'}</Text>
       </View>
-      <View style={styles.actionsRow}>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.week)}>
-          <Text style={styles.buttonText}>Eliminar</Text>
+      <View style={layoutStyles.actionsRow}>
+        <TouchableOpacity style={buttonStyles.deleteButton} onPress={() => handleDelete(item.week)}>
+          <Text style={buttonStyles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -120,17 +124,17 @@ export default function ViewPregnancyRecordsScreen() {
 
   if (loading) {
     return (
-      <View style={[styles.container, styles.center]}>
-        <ActivityIndicator size="large" color={styles.title.color} />
-        <Text style={styles.title}>Cargando registros...</Text>
+      <View style={[layoutStyles.container, layoutStyles.center]}>
+        <ActivityIndicator size="large" color={textStyles.title.color} />
+        <Text style={textStyles.title}>Cargando registros...</Text>
       </View>
     );
   }
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Registros de Embarazo</Text>
+      <View style={layoutStyles.container}>
+        <Text style={textStyles.title}>Registros de Embarazo</Text>
         {records.length > 0 ? (
           <FlatList
             data={records}
@@ -138,39 +142,39 @@ export default function ViewPregnancyRecordsScreen() {
             renderItem={renderRecord}
           />
         ) : (
-          <Text style={styles.errorText}>No se encontraron registros.</Text>
+          <Text style={textStyles.errorText}>No se encontraron registros.</Text>
         )}
         <TouchableOpacity
-          style={styles.button}
+          style={buttonStyles.button}
           onPress={() => setIsModalVisible(true)}
         >
-          <Text style={styles.buttonText}>Nuevo Registro</Text>
+          <Text style={buttonStyles.buttonText}>Nuevo Registro</Text>
         </TouchableOpacity>
       </View>
-     
+
       <Modal
-      visible={isModalVisible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setIsModalVisible(false)}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.modalContainer}
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
       >
-        <View style={styles.modalContent}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            <NewPregnancyRecordScreen />
-          </ScrollView>
-          <TouchableOpacity
-            style={[styles.button, { marginTop: 20 }]}
-            onPress={() => setIsModalVisible(false)}
-          >
-            <Text style={styles.buttonText}>Cerrar</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={modalStyles.modalContainer}
+        >
+          <View style={modalStyles.modalContent}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <NewPregnancyRecordScreen />
+            </ScrollView>
+            <TouchableOpacity
+              style={[buttonStyles.button, { marginTop: 20 }]}
+              onPress={() => setIsModalVisible(false)}
+            >
+              <Text style={buttonStyles.buttonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }

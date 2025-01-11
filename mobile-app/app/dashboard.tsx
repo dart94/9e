@@ -13,20 +13,22 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG } from '../app/config/config';
-import { styles } from '../app/theme/styles';
+import { layoutStyles } from '../app/theme/styles/layoutStyles';
+import { textStyles } from '../app/theme/styles/textStyles';
+import { buttonStyles } from '../app/theme/styles/buttonStyles';
+import { miscStyles } from '../app/theme/styles/miscStyles';
 import { ProgressBar } from 'react-native-paper';
 import SettingsScreen from './(auth)/settings';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
 import NewPregnancyRecordScreen from './newPregnancy';
-import { useRouter } from 'expo-router'; // Usar el router para manejar la navegación
+import { useRouter } from 'expo-router';
 
-// Tab Navigator
 const Tab = createBottomTabNavigator();
 
 function DashboardContent() {
-  const [data, setData] = useState<any>(null); // Datos del backend
-  const [loading, setLoading] = useState(true); // Estado de carga
-  const [error, setError] = useState<string | null>(null); // Manejo de errores
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -57,16 +59,16 @@ function DashboardContent() {
 
   if (loading)
     return (
-      <View style={[styles.container, styles.center]}>
-        <ActivityIndicator size="large" color={styles.title.color} />
-        <Text style={styles.title}>Cargando datos...</Text>
+      <View style={[layoutStyles.container, layoutStyles.center]}>
+        <ActivityIndicator size="large" color={textStyles.title.color} />
+        <Text style={textStyles.title}>Cargando datos...</Text>
       </View>
     );
 
   if (error)
     return (
-      <View style={[styles.container, styles.center]}>
-        <Text style={styles.errorText}>{error}</Text>
+      <View style={[layoutStyles.container, layoutStyles.center]}>
+        <Text style={textStyles.errorText}>{error}</Text>
       </View>
     );
 
@@ -79,72 +81,67 @@ function DashboardContent() {
   const safeProgress = normalizedProgress / 100;
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Semana {current_week || 'N/A'} de 40</Text>
+    <ScrollView style={layoutStyles.container}>
+      <View style={miscStyles.card}>
+        <Text style={textStyles.title}>Semana {current_week || 'N/A'} de 40</Text>
         <Image
           source={{
             uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png`,
           }}
-          style={styles.image}
+          style={miscStyles.image}
         />
-        <Text style={styles.subtitle}>Progreso: {normalizedProgress}%</Text>
+        <Text style={textStyles.subtitle}>Progreso: {normalizedProgress}%</Text>
         <ProgressBar
           progress={safeProgress}
-          color={styles.subtitle.color}
-          style={[styles.progressBar, { height: 8 }]}
-          theme={{
-            colors: {
-              primary: styles.subtitle.color,
-            },
-          }}
+          color={textStyles.subtitle.color}
+          style={[miscStyles.progressBar, { height: 8 }]}
         />
       </View>
 
       {week_info ? (
         <>
-          <View style={styles.card}>
-            <Text style={styles.subtitle}>Desarrollo del Bebé</Text>
-            <Text style={styles.paragraph}>{week_info.desarrollo_bebe}</Text>
+          <View style={miscStyles.card}>
+            <Text style={textStyles.subtitle}>Desarrollo del Bebé</Text>
+            <Text style={textStyles.paragraph}>{week_info.desarrollo_bebe}</Text>
           </View>
-          <View style={styles.card}>
-            <Text style={styles.subtitle}>Cambios en la Madre</Text>
-            <Text style={styles.paragraph}>{week_info.cambios_madre}</Text>
+          <View style={miscStyles.card}>
+            <Text style={textStyles.subtitle}>Cambios en la Madre</Text>
+            <Text style={textStyles.paragraph}>{week_info.cambios_madre}</Text>
           </View>
-          <View style={styles.card}>
-            <Text style={styles.subtitle}>Síntomas Comunes</Text>
+          <View style={miscStyles.card}>
+            <Text style={textStyles.subtitle}>Síntomas Comunes</Text>
             <FlatList
               data={week_info.sintomas_comunes}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
+              renderItem={({ item }) => <Text style={textStyles.listItem}>- {item}</Text>}
             />
           </View>
-          <View style={styles.card}>
-            <Text style={styles.subtitle}>Consejos</Text>
+          <View style={miscStyles.card}>
+            <Text style={textStyles.subtitle}>Consejos</Text>
             <FlatList
               data={week_info.consejos}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
+              renderItem={({ item }) => <Text style={textStyles.listItem}>- {item}</Text>}
             />
           </View>
-          <View style={styles.card}>
-            <Text style={styles.subtitle}>Pruebas Médicas</Text>
+          <View style={miscStyles.card}>
+            <Text style={textStyles.subtitle}>Pruebas Médicas</Text>
             <FlatList
               data={week_info.pruebas_medicas}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Text style={styles.listItem}>- {item}</Text>}
+              renderItem={({ item }) => <Text style={textStyles.listItem}>- {item}</Text>}
             />
           </View>
         </>
       ) : (
-        <Text style={styles.errorText}>No hay información disponible para esta semana.</Text>
+        <Text style={textStyles.errorText}>No hay información disponible para esta semana.</Text>
       )}
     </ScrollView>
   );
 }
 
 export default function DashboardScreen() {
-  const router = useRouter(); // Usar el router para manejar la navegación
+  const router = useRouter();
 
   const logout = async () => {
     Alert.alert('Confirmación', '¿Estás seguro de que deseas cerrar sesión?', [
@@ -156,7 +153,7 @@ export default function DashboardScreen() {
           try {
             await AsyncStorage.removeItem('userId');
             await AsyncStorage.removeItem('user');
-            router.replace('/(auth)/login'); // Redirigir al login
+            router.replace('/(auth)/login');
           } catch (error) {
             console.error('Error al cerrar sesión:', error);
             Alert.alert('Error', 'No se pudo cerrar sesión.');
@@ -215,8 +212,8 @@ export default function DashboardScreen() {
         component={() => null}
         listeners={{
           tabPress: (e) => {
-            e.preventDefault(); // Evita la navegación
-            logout(); // Ejecuta el logout
+            e.preventDefault();
+            logout();
           },
         }}
         options={{

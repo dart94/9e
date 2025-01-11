@@ -10,7 +10,10 @@ import { useRouter } from 'expo-router';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG } from '../config/config';
-import { styles } from '../theme/styles';
+import { layoutStyles } from '../theme/styles/layoutStyles';
+import { textStyles } from '../theme/styles/textStyles';
+import { buttonStyles } from '../theme/styles/buttonStyles';
+import { miscStyles } from '../theme/styles/miscStyles';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Ionicons } from '@expo/vector-icons';
 import { storage } from '../../utils/storageHelper';
@@ -130,11 +133,11 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={[styles.container, styles.center]}>
-      <Text style={styles.title}>Iniciar Sesión</Text>
+    <View style={[layoutStyles.container, layoutStyles.center]}>
+      <Text style={textStyles.title}>Iniciar Sesión</Text>
 
       <TextInput
-        style={[styles.input, emailError && { borderColor: 'red' }]}
+        style={[miscStyles.input, emailError && { borderColor: 'red' }]}
         placeholder="Correo electrónico"
         value={email}
         onChangeText={(text) => {
@@ -149,7 +152,7 @@ export default function LoginScreen() {
       />
 
       <TextInput
-        style={[styles.input, passwordError && { borderColor: 'red' }]}
+        style={[miscStyles.input, passwordError && { borderColor: 'red' }]}
         placeholder="Contraseña"
         value={password}
         onChangeText={(text) => {
@@ -160,31 +163,34 @@ export default function LoginScreen() {
       />
 
       <TouchableOpacity
-        style={[styles.button, loading && styles.buttonDisabled]}
+        style={[buttonStyles.button, loading && buttonStyles.buttonDisabled]}
         onPress={() => handleLogin()}
         disabled={loading}
       >
-        <Text style={styles.buttonText}>
+        <Text style={buttonStyles.buttonText}>
           {loading ? 'Cargando...' : 'Ingresar'}
         </Text>
       </TouchableOpacity>
 
       {isBiometricSupported && (
         <TouchableOpacity
-          style={[styles.button, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
+          style={[
+            buttonStyles.button,
+            { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
+          ]}
           onPress={handleBiometricAuth}
         >
-          <Ionicons name="finger-print-outline" size={32} color={styles.buttonText.color} />
-          <Text style={styles.buttonText}>Ingresar con Huella</Text>
+          <Ionicons name="finger-print-outline" size={32} color={buttonStyles.buttonText.color} />
+          <Text style={buttonStyles.buttonText}>Ingresar con Huella</Text>
         </TouchableOpacity>
       )}
 
       <TouchableOpacity onPress={() => router.push('/(auth)/forgotPassword')}>
-        <Text style={styles.link}>¿Olvidaste tu contraseña?</Text>
+        <Text style={textStyles.link}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-        <Text style={styles.link}>¿No tienes cuenta? Regístrate</Text>
+        <Text style={textStyles.link}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
     </View>
   );

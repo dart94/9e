@@ -9,7 +9,10 @@ import {
 } from 'react-native';
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { styles } from '../app/theme/styles';
+import { layoutStyles } from '../app/theme/styles/layoutStyles';
+import { textStyles } from '../app/theme/styles/textStyles';
+import { buttonStyles } from '../app/theme/styles/buttonStyles';
+import { miscStyles } from '../app/theme/styles/miscStyles';
 import { API_CONFIG } from '../app/config/config';
 import { useRouter } from 'expo-router';
 
@@ -105,46 +108,46 @@ export default function NewPregnancyRecordScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      {loading && <ActivityIndicator size="large" color={styles.title.color} />}
-      <Text style={styles.title}>Nuevo Registro de Embarazo</Text>
+    <View style={layoutStyles.container}>
+      {loading && <ActivityIndicator size="large" color={textStyles.title.color} />}
+      <Text style={textStyles.title}>Nuevo Registro de Embarazo</Text>
 
-      <Text style={styles.label}>Última Fecha de Periodo</Text>
+      <Text style={textStyles.label}>Última Fecha de Periodo</Text>
       <TextInput
-        style={styles.input}
+        style={miscStyles.input}
         value={form.last_period_date}
         onChangeText={(value) => handleInputChange('last_period_date', value)}
         placeholder="YYYY-MM-DD"
       />
 
-      <Text style={styles.label}>Peso Inicial (Kg)</Text>
+      <Text style={textStyles.label}>Peso Inicial (Kg)</Text>
       <TextInput
-        style={styles.input}
+        style={miscStyles.input}
         value={form.weight}
         onChangeText={(value) => handleInputChange('weight', value)}
         placeholder="Peso"
         keyboardType="numeric"
       />
 
-      <Text style={styles.label}>Síntomas</Text>
+      <Text style={textStyles.label}>Síntomas</Text>
       <TextInput
-        style={styles.input}
+        style={miscStyles.input}
         value={form.symptoms}
         onChangeText={(value) => handleInputChange('symptoms', value)}
         placeholder="Síntomas"
       />
 
-      <Text style={styles.label}>Notas</Text>
+      <Text style={textStyles.label}>Notas</Text>
       <TextInput
-        style={styles.input}
+        style={miscStyles.input}
         value={form.notes}
         onChangeText={(value) => handleInputChange('notes', value)}
         placeholder="Notas"
         multiline
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Guardar Registro</Text>
+      <TouchableOpacity style={buttonStyles.button} onPress={handleSubmit}>
+        <Text style={buttonStyles.buttonText}>Guardar Registro</Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { styles } from '../theme/styles';
+import { layoutStyles } from '../theme/styles/layoutStyles';
+import { textStyles } from '../theme/styles/textStyles';
+import { buttonStyles } from '../theme/styles/buttonStyles';
+import { miscStyles } from '../theme/styles/miscStyles';
 import axios from 'axios';
 import { API_CONFIG } from '../config/config';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleRegister = async () => {
-    console.log('Intentando registrar...');
     if (!username || !email || !password) {
       Alert.alert('Error', 'Por favor completa todos los campos.');
       return;
@@ -20,36 +23,27 @@ export default function RegisterScreen() {
 
     setLoading(true);
     try {
-      console.log('Enviando datos al servidor...');
       const response = await axios.post(`${API_CONFIG.BASE_URL}/register2`, {
         username,
         email,
         password,
       });
 
-      console.log('Respuesta del servidor:', response.data);
-
       if (response.status === 201) {
-        console.log('Registro exitoso. Mostrando alerta...');
         Alert.alert(
           '¡Registro exitoso!',
           'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.',
           [
             {
               text: 'OK',
-              onPress: () => {
-                console.log('Redirigiendo al login...');
-                router.push('/(auth)/login');
-              },
+              onPress: () => router.push('/(auth)/login'),
             },
           ]
         );
       } else {
-        console.error('Estado inesperado del servidor:', response.status);
         Alert.alert('Error', 'Hubo un problema al registrar el usuario.');
       }
     } catch (error) {
-      console.error('Error detallado:', error);
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.error || 'Hubo un problema al registrar el usuario.';
@@ -63,17 +57,17 @@ export default function RegisterScreen() {
   };
 
   return (
-    <View style={[styles.container, styles.center]}>
-      <Text style={styles.title}>Crear Cuenta</Text>
+    <View style={[layoutStyles.container, layoutStyles.center]}>
+      <Text style={textStyles.title}>Crear Cuenta</Text>
       <TextInput
-        style={styles.input}
+        style={miscStyles.input}
         placeholder="Nombre de usuario"
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
       />
       <TextInput
-        style={styles.input}
+        style={miscStyles.input}
         placeholder="Correo electrónico"
         value={email}
         onChangeText={setEmail}
@@ -81,20 +75,23 @@ export default function RegisterScreen() {
         autoCapitalize="none"
       />
       <TextInput
-        style={styles.input}
+        style={miscStyles.input}
         placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading}>
-        <Text style={styles.buttonText}>{loading ? 'Registrando...' : 'Registrar'}</Text>
-      </TouchableOpacity>
       <TouchableOpacity
-        style={styles.linkContainer}
-        onPress={() => router.push('/(auth)/login')}
+        style={[buttonStyles.button, loading && buttonStyles.buttonDisabled]}
+        onPress={handleRegister}
+        disabled={loading}
       >
-        <Text style={styles.link}>¿Ya tienes una cuenta? Inicia sesión</Text>
+        <Text style={buttonStyles.buttonText}>
+          {loading ? 'Registrando...' : 'Registrar'}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
+        <Text style={textStyles.link}>¿Ya tienes una cuenta? Inicia sesión</Text>
       </TouchableOpacity>
     </View>
   );

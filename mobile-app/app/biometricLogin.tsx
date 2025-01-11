@@ -3,7 +3,9 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 import { useRouter } from 'expo-router';
-import { styles } from '../app/theme/styles';
+import { layoutStyles } from '../app/theme/styles/layoutStyles';
+import { textStyles } from '../app/theme/styles/textStyles';
+import { buttonStyles } from '../app/theme/styles/buttonStyles';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function BiometricLogin() {
@@ -47,15 +49,15 @@ export default function BiometricLogin() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Autenticación Biométrica</Text>
+    <View style={layoutStyles.container}>
+      <Text style={textStyles.title}>Autenticación Biométrica</Text>
       {isBiometricAvailable ? (
-        <TouchableOpacity style={styles.button} onPress={handleBiometricAuth}>
-        <Ionicons name="finger-print-outline" size={32} color={styles.buttonText.color} />
-        <Text style={styles.buttonText}>Ingresar con Huella</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={buttonStyles.button} onPress={handleBiometricAuth}>
+          <Ionicons name="finger-print-outline" size={32} color={buttonStyles.buttonText.color} />
+          <Text style={buttonStyles.buttonText}>Ingresar con Huella</Text>
+        </TouchableOpacity>
       ) : (
-        <Text style={styles.errorText}>
+        <Text style={textStyles.errorText}>
           La autenticación biométrica no está disponible en este dispositivo.
         </Text>
       )}
