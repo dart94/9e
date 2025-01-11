@@ -9,17 +9,19 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { layoutStyles } from '../app/theme/styles/layoutStyles';
 import { textStyles } from '../app/theme/styles/textStyles';
 import { buttonStyles } from '../app/theme/styles/buttonStyles';
-import { miscStyles } from '../app/theme/styles/miscStyles';
 import { modalStyles } from '../app/theme/styles/modalStyles';
+import { miscStyles as miscStylesStyles } from '../app/theme/styles/miscStyles';
 import { API_CONFIG } from '../app/config/config';
 import { useRouter } from 'expo-router';
 import NewPregnancyRecordScreen from './newPregnancy';
+
 
 interface PregnancyRecord {
   week: number;
@@ -97,7 +99,7 @@ export default function ViewPregnancyRecordsScreen() {
   };
 
   const renderRecord = ({ item }: { item: PregnancyRecord }) => (
-    <View style={miscStyles.card}>
+    <View style={miscStylesStyles.card}>
       <Text style={textStyles.subtitle}>Semana: {item.week}</Text>
       <View style={layoutStyles.infoRow}>
         <Text style={textStyles.infoLabel}>Peso: </Text>
@@ -137,7 +139,7 @@ export default function ViewPregnancyRecordsScreen() {
         {records.length > 0 ? (
           <FlatList
             data={records}
-            keyExtractor={(item) => item.week.toString()}
+            keyExtractor={(item, index) => `${item.week}-${index}`}
             renderItem={renderRecord}
             contentContainerStyle={{ paddingBottom: 20 }}
           />
@@ -163,7 +165,9 @@ export default function ViewPregnancyRecordsScreen() {
           style={modalStyles.modalContainer}
         >
           <View style={modalStyles.modalContent}>
-            <NewPregnancyRecordScreen />
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <NewPregnancyRecordScreen />
+            </ScrollView>
             <TouchableOpacity
               style={[buttonStyles.button, { marginTop: 20 }]}
               onPress={() => setIsModalVisible(false)}
