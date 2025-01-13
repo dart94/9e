@@ -9,10 +9,13 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { API_CONFIG } from '../config/config';
-import { styles } from '../theme/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
+import { layoutStyles } from '../theme/styles/layoutStyles';
+import { textStyles } from '../theme/styles/textStyles';
+import { miscStyles } from '../theme/styles/miscStyles';
+import { buttonStyles } from '../theme/styles/buttonStyles';
 
 export default function SettingsScreen() {
   const [profileData, setProfileData] = useState<any>(null);
@@ -81,97 +84,97 @@ export default function SettingsScreen() {
 
   if (loading) {
     return (
-      <View style={[styles.container, styles.center]}>
-        <ActivityIndicator size="large" color={styles.title.color} />
-        <Text style={styles.title}>Cargando perfil...</Text>
+      <View style={[layoutStyles.container, layoutStyles.center]}>
+        <ActivityIndicator size="large" color={textStyles.title.color} />
+        <Text style={textStyles.title}>Cargando perfil...</Text>
       </View>
     );
   }
 
   if (!profileData) {
     return (
-      <View style={[styles.container, styles.center]}>
-        <Text style={styles.errorText}>No se pudo cargar el perfil.</Text>
+      <View style={[layoutStyles.container, layoutStyles.center]}>
+        <Text style={textStyles.errorText}>No se pudo cargar el perfil.</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Perfil</Text>
+    <View style={layoutStyles.container}>
+      <Text style={textStyles.title}>Perfil</Text>
 
       {editing ? (
         <>
-          <Text style={styles.subtitle}>Nombre de Usuario</Text>
+          <Text style={textStyles.subtitle}>Nombre de Usuario</Text>
           <TextInput
-            style={styles.input}
+            style={miscStyles.input}
             value={form.username}
             onChangeText={(text) => setForm({ ...form, username: text })}
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleSave}>
-            <Text style={styles.buttonText}>Guardar</Text>
+          <TouchableOpacity style={buttonStyles.button} onPress={handleSave}>
+            <Text style={buttonStyles.buttonText}>Guardar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => setEditing(false)}>
-            <Text style={styles.buttonText}>Cancelar</Text>
+          <TouchableOpacity style={buttonStyles.button} onPress={() => setEditing(false)}>
+            <Text style={buttonStyles.buttonText}>Cancelar</Text>
           </TouchableOpacity>
         </>
       ) : (
         <>
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Información de Perfil</Text>
+          <View style={miscStyles.card}>
+            <Text style={miscStyles.cardTitle}>Información de Perfil</Text>
 
-            <View style={styles.infoRow}>
-              <Ionicons name="person-outline" size={24} color={styles.infoLabel.color} />
-              <Text style={styles.infoLabel}> Nombre de Usuario: </Text>
-              <Text style={styles.infoValue}>{profileData.username}</Text>
+            <View style={textStyles.infoRow}>
+              <Ionicons name="person-outline" size={24} color={textStyles.infoLabel.color} />
+              <Text style={textStyles.infoLabel}> Nombre de Usuario: </Text>
+              <Text style={textStyles.infoValue}>{profileData.username}</Text>
             </View>
 
-            <View style={styles.infoRow}>
-              <Ionicons name="mail-outline" size={24} color={styles.infoLabel.color} />
-              <Text style={styles.infoLabel}> Correo Electrónico: </Text>
-              <Text style={styles.infoValue}>{profileData.email}</Text>
+            <View style={textStyles.infoRow}>
+              <Ionicons name="mail-outline" size={24} color={textStyles.infoLabel.color} />
+              <Text style={textStyles.infoLabel}> Correo Electrónico: </Text>
+              <Text style={textStyles.infoValue}>{profileData.email}</Text>
             </View>
 
-            <View style={styles.infoRow}>
-              <Ionicons name="calendar-outline" size={24} color={styles.infoLabel.color} />
-              <Text style={styles.infoLabel}> Progreso de Embarazo: </Text>
-              <Text style={styles.infoValue}>{profileData.progress_percentage?.toFixed(2) || '0'}%</Text>
+            <View style={textStyles.infoRow}>
+              <Ionicons name="calendar-outline" size={24} color={textStyles.infoLabel.color} />
+              <Text style={textStyles.infoLabel}> Progreso de Embarazo: </Text>
+              <Text style={textStyles.infoValue}>{profileData.progress_percentage?.toFixed(2) || '0'}%</Text>
             </View>
 
-            <View style={styles.infoRow}>
-              <Ionicons name="scale-outline" size={24} color={styles.infoLabel.color} />
-              <Text style={styles.infoLabel}> Peso: </Text>
-              <Text style={styles.infoValue}>{profileData.last_record?.weight || 'N/A'} Kg</Text>
+            <View style={textStyles.infoRow}>
+              <Ionicons name="scale-outline" size={24} color={textStyles.infoLabel.color} />
+              <Text style={textStyles.infoLabel}> Peso: </Text>
+              <Text style={textStyles.infoValue}>{profileData.last_record?.weight || 'N/A'} Kg</Text>
             </View>
 
-            <View style={styles.infoRow}>
-              <Ionicons name="medical-outline" size={24} color={styles.infoLabel.color} />
-              <Text style={styles.infoLabel}> Últimos Síntomas: </Text>
-              <Text style={styles.infoValue}>{profileData.last_record?.symptoms || 'N/A'}</Text>
+            <View style={textStyles.infoRow}>
+              <Ionicons name="medical-outline" size={24} color={textStyles.infoLabel.color} />
+              <Text style={textStyles.infoLabel}> Últimos Síntomas: </Text>
+              <Text style={textStyles.infoValue}>{profileData.last_record?.symptoms || 'N/A'}</Text>
             </View>
 
-            <View style={styles.infoRow}>
-              <Ionicons name="clipboard-outline" size={24} color={styles.infoLabel.color} />
-              <Text style={styles.infoLabel}> Notas: </Text>
-              <Text style={styles.infoValue}>{profileData.last_record?.notes || 'N/A'}</Text>
+            <View style={textStyles.infoRow}>
+              <Ionicons name="clipboard-outline" size={24} color={textStyles.infoLabel.color} />
+              <Text style={textStyles.infoLabel}> Notas: </Text>
+              <Text style={textStyles.infoValue}>{profileData.last_record?.notes || 'N/A'}</Text>
             </View>
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={() => setEditing(true)}>
-            <Text style={styles.buttonText}>Editar Perfil</Text>
+          <TouchableOpacity style={buttonStyles.button} onPress={() => setEditing(true)}>
+            <Text style={buttonStyles.buttonText}>Editar Perfil</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.button}
+            style={buttonStyles.button}
             onPress={() => handleToggleBiometricAuth(true)}
           >
-            <Text style={styles.buttonText}>Habilitar Huella</Text>
+            <Text style={buttonStyles.buttonText}>Habilitar Huella</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.button}
+            style={buttonStyles.button}
             onPress={() => handleToggleBiometricAuth(false)}
           >
-            <Text style={styles.buttonText}>Deshabilitar Huella</Text>
+            <Text style={buttonStyles.buttonText}>Deshabilitar Huella</Text>
           </TouchableOpacity>
         </>
       )}

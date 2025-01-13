@@ -42,6 +42,10 @@ export const textStyles = StyleSheet.create({
     color: COLORS.text,
     textAlign: 'left',
   },
+  infoRow: {
+    flexDirection: 'row',
+    marginVertical: SIZES.margin / 2,
+  },
   label: {
     fontSize: SIZES.fontMedium,
     fontWeight: 'bold',

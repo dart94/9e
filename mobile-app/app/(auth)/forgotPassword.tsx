@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { styles } from '../theme/styles';
 import axios from 'axios';
 import { API_CONFIG } from '../config/config';
 import { useRouter } from 'expo-router';
+import { layoutStyles } from '../theme/styles/layoutStyles';
+import { textStyles } from '../theme/styles/textStyles';
+import { miscStyles } from '../theme/styles/miscStyles';
+import { buttonStyles } from '../theme/styles';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
@@ -45,10 +48,10 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <View style={[styles.container, styles.center]}>
-      <Text style={styles.title}>Recuperar Contraseña</Text>
+    <View style={[layoutStyles.container, layoutStyles.center]}>
+      <Text style={textStyles.title}>Recuperar Contraseña</Text>
       <TextInput
-        style={[styles.input, emailError && { borderColor: 'red', borderWidth: 2 }]}
+        style={[miscStyles.input, emailError && { borderColor: 'red', borderWidth: 2 }]}
         placeholder="Correo electrónico"
         value={email}
         onChangeText={(text) => {
@@ -62,16 +65,16 @@ export default function ForgotPasswordScreen() {
         autoCapitalize="none"
       />
       <TouchableOpacity
-        style={[styles.button, loading && styles.buttonDisabled]}
+        style={[buttonStyles.button, loading && buttonStyles.buttonDisabled]}
         onPress={handleForgotPassword}
         disabled={loading}
       >
-        <Text style={styles.buttonText}>
+        <Text style={buttonStyles.buttonText}>
           {loading ? 'Enviando...' : 'Enviar instrucciones'}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
-        <Text style={styles.link}>¿Ya tienes una cuenta? Inicia sesión</Text>
+        <Text style={textStyles.link}>¿Ya tienes una cuenta? Inicia sesión</Text>
       </TouchableOpacity>
     </View>
   );

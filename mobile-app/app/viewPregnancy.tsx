@@ -101,17 +101,17 @@ export default function ViewPregnancyRecordsScreen() {
   const renderRecord = ({ item }: { item: PregnancyRecord }) => (
     <View style={miscStylesStyles.card}>
       <Text style={textStyles.subtitle}>Semana: {item.week}</Text>
-      <View style={layoutStyles.infoRow}>
+      <View style={textStyles.infoRow}>
         <Text style={textStyles.infoLabel}>Peso: </Text>
         <Text style={textStyles.infoValue}>
           {item.weight ? `${item.weight} Kg` : 'N/A'}
         </Text>
       </View>
-      <View style={layoutStyles.infoRow}>
+      <View style={textStyles.infoRow}>
         <Text style={textStyles.infoLabel}>Síntomas: </Text>
         <Text style={textStyles.infoValue}>{item.symptoms || 'N/A'}</Text>
       </View>
-      <View style={layoutStyles.infoRow}>
+      <View style={textStyles.infoRow}>
         <Text style={textStyles.infoLabel}>Notas: </Text>
         <Text style={textStyles.infoValue}>{item.notes || 'N/A'}</Text>
       </View>

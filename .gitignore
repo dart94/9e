@@ -22,4 +22,7 @@ static/css/
 static/js/
 static/scss/
 
+credentials.json
+credentials
+
 app/__pycache__/

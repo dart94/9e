@@ -36,4 +36,11 @@ export const miscStyles = StyleSheet.create({
     elevation: 2,
     paddingBottom: SIZES.margin,
   },
+  cardTitle: {
+    fontSize: SIZES.fontLarge,
+    fontWeight: 'bold',
+    color: COLORS.primaryDark,
+    marginBottom: SIZES.margin,
+    textAlign: 'center',
+  },
 });

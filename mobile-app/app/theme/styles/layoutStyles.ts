@@ -12,10 +12,6 @@ export const layoutStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  infoRow: {
-    flexDirection: 'row',
-    marginVertical: SIZES.margin / 2,
-  },
   actionsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

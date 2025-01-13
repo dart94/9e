@@ -54,13 +54,7 @@ export default function Layout() {
           title: 'Ver Registros',
         }}
       />
-      <Stack.Screen
-        name="Logout"
-        options={{
-          title: 'Cerrar Sesión',
-          headerShown: true,
-        }}
-        />
+
     </Stack>
     
   );
