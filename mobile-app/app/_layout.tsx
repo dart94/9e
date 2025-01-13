@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { COLORS, SIZES } from '../app/theme/theme';
+
 
 export default function Layout() {
   return (

@@ -13,21 +13,22 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/pregnancy-logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.dart94.mobileapp"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/pregnancy-logo.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/pregnancy-logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -40,7 +41,13 @@
       "typedRoutes": true
     },
     "extra": {
-      "apiBaseUrl": "https://pregnancy-backend-0yag.onrender.com"
+      "apiBaseUrl": "https://pregnancy-backend-0yag.onrender.com",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2a971723-c6c0-468c-a406-d819cc28e2bf"
+      }
     }
   }
 }

@@ -2,7 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router'; // Cambiado para expo-router
-import { styles } from '../app/theme/styles';
+import { layoutStyles } from '../app/theme/styles/layoutStyles';
+import { textStyles } from '../app/theme/styles/textStyles';
+import { buttonStyles } from '../app/theme/styles/buttonStyles';
 
 export default function LogoutScreen() {
   const router = useRouter(); // Usar router para redirigir
@@ -35,14 +37,14 @@ export default function LogoutScreen() {
   };
 
   return (
-    <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-      <Text style={styles.title}>¿Quieres cerrar sesión?</Text>
+    <View style={[layoutStyles.container, layoutStyles.center]}>
+      <Text style={textStyles.title}>Cerrar Sesión</Text>
       <TouchableOpacity
-        style={styles.button}
+        style={buttonStyles.button}
         onPress={handleLogout}
         activeOpacity={0.7}
       >
-        <Text style={styles.buttonText}>Cerrar Sesión</Text>
+        <Text style={buttonStyles.buttonText}>Cerrar Sesión</Text>
       </TouchableOpacity>
     </View>
   );

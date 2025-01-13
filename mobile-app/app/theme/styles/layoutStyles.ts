@@ -6,6 +6,7 @@ export const layoutStyles = StyleSheet.create({
     flex: 1,
     padding: SIZES.padding,
     backgroundColor: COLORS.background,
+    paddingBottom: 80,
   },
   center: {
     justifyContent: 'center',
