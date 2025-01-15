@@ -176,6 +176,8 @@ export default function DashboardScreen() {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Settings') {
             iconName = focused ? 'settings' : 'settings-outline';
+          } else if (route.name === 'NewPregnancyRecord') {
+            iconName = focused ? 'add' : 'add-outline';
           } else if (route.name === 'ViewPregnancyRecords') {
             iconName = focused ? 'list' : 'list-outline';
           } else if (route.name === 'Logout') {
@@ -204,7 +206,7 @@ export default function DashboardScreen() {
       <Tab.Screen
         name="ViewPregnancyRecords"
         component={ViewPregnancyRecordsScreen}
-        options={{ title: 'Ver Registros', tabBarLabel: 'Registros' }}
+        options={{ title: 'Ver Registros', tabBarLabel: 'Ver Registros' }}
       />
       <Tab.Screen
         name="Logout"
