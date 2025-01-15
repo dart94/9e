@@ -3,9 +3,9 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 import { useRouter } from 'expo-router';
-import { layoutStyles } from '../app/theme/styles/layoutStyles';
-import { textStyles } from '../app/theme/styles/textStyles';
-import { buttonStyles } from '../app/theme/styles/buttonStyles';
+import { layoutStyles } from '../src/theme/styles/layoutStyles';
+import { textStyles } from '../src/theme/styles/textStyles';
+import { buttonStyles } from '../src/theme/styles/buttonStyles';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function BiometricLogin() {

@@ -12,10 +12,10 @@ import axios from 'axios';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_CONFIG } from '../app/config/config';
-import { layoutStyles } from '../app/theme/styles/layoutStyles';
-import { textStyles } from '../app/theme/styles/textStyles';
-import { miscStyles } from '../app/theme/styles/miscStyles';
+import { API_CONFIG } from '../src/config/config';
+import { layoutStyles } from '../src/theme/styles/layoutStyles';
+import { textStyles } from '../src/theme/styles/textStyles';
+import { miscStyles } from '../src/theme/styles/miscStyles';
 import { ProgressBar } from 'react-native-paper';
 import SettingsScreen from './(auth)/settings';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
@@ -175,7 +175,7 @@ export default function DashboardScreen() {
           if (route.name === 'Dashboard') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Settings') {
-            iconName = focused ? 'settings' : 'settings-outline';
+            iconName = focused ? 'settings' : 'person-outline';
           } else if (route.name === 'NewPregnancyRecord') {
             iconName = focused ? 'add' : 'add-outline';
           } else if (route.name === 'ViewPregnancyRecords') {
@@ -187,12 +187,12 @@ export default function DashboardScreen() {
           return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
         },
       })}
-    >
-      <Tab.Screen
-        name="Dashboard"
-        component={DashboardContent}
-        options={{ title: 'Inicio', tabBarLabel: 'Dashboard' }}
-      />
+      >
+        <Tab.Screen
+          name="Dashboard"
+          component={DashboardContent}
+          options={{ title: 'Inicio', tabBarLabel: 'Dashboard' }}
+        />
       <Tab.Screen
         name="Settings"
         component={SettingsScreen}

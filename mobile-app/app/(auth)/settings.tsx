@@ -8,14 +8,14 @@ import {
   Alert,
 } from 'react-native';
 import axios from 'axios';
-import { API_CONFIG } from '../config/config';
+import { API_CONFIG } from '../../src/config/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
-import { layoutStyles } from '../theme/styles/layoutStyles';
-import { textStyles } from '../theme/styles/textStyles';
-import { miscStyles } from '../theme/styles/miscStyles';
-import { buttonStyles } from '../theme/styles/buttonStyles';
+import { layoutStyles } from '../../src/theme/styles/layoutStyles';
+import { textStyles } from '../../src/theme/styles/textStyles';
+import { miscStyles } from '../../src/theme/styles/miscStyles';
+import { buttonStyles } from '../../src/theme/styles/buttonStyles';
 
 export default function SettingsScreen() {
   const [profileData, setProfileData] = useState<any>(null);

@@ -9,11 +9,11 @@ import {
 import { useRouter } from 'expo-router';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_CONFIG } from '../config/config';
-import { layoutStyles } from '../theme/styles/layoutStyles';
-import { textStyles } from '../theme/styles/textStyles';
-import { buttonStyles } from '../theme/styles/buttonStyles';
-import { miscStyles } from '../theme/styles/miscStyles';
+import { API_CONFIG } from '../../src/config/config';
+import { layoutStyles } from '../../src/theme/styles/layoutStyles';
+import { textStyles } from '../../src/theme/styles/textStyles';
+import { buttonStyles } from '../../src/theme/styles/buttonStyles';
+import { miscStyles } from '../../src/theme/styles/miscStyles';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Ionicons } from '@expo/vector-icons';
 import { storage } from '../../utils/storageHelper';

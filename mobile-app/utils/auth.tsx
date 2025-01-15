@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router'; // Cambiado para expo-router
-import { layoutStyles } from '../app/theme/styles/layoutStyles';
-import { textStyles } from '../app/theme/styles/textStyles';
-import { buttonStyles } from '../app/theme/styles/buttonStyles';
+import { layoutStyles } from '../src/theme/styles/layoutStyles';
+import { textStyles } from '../src/theme/styles/textStyles';
+import { buttonStyles } from '../src/theme/styles/buttonStyles';
 
 export default function LogoutScreen() {
   const router = useRouter(); // Usar router para redirigir

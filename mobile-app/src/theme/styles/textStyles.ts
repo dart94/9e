@@ -44,6 +44,7 @@ export const textStyles = StyleSheet.create({
   },
   infoRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     marginVertical: SIZES.margin / 2,
   },
   label: {

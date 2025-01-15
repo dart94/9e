@@ -28,7 +28,7 @@ export const miscStyles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: SIZES.borderRadius,
     padding: SIZES.padding,
-    marginBottom: SIZES.margin,
+    marginBottom: SIZES.margin * 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

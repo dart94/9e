@@ -13,12 +13,12 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { layoutStyles } from '../app/theme/styles/layoutStyles';
-import { textStyles } from '../app/theme/styles/textStyles';
-import { buttonStyles } from '../app/theme/styles/buttonStyles';
-import { modalStyles } from '../app/theme/styles/modalStyles';
-import { miscStyles as miscStylesStyles } from '../app/theme/styles/miscStyles';
-import { API_CONFIG } from '../app/config/config';
+import { layoutStyles } from '../src/theme/styles/layoutStyles';
+import { textStyles } from '../src/theme/styles/textStyles';
+import { buttonStyles } from '../src/theme/styles/buttonStyles';
+import { modalStyles } from '../src/theme/styles/modalStyles';
+import { miscStyles as miscStylesStyles } from '../src/theme/styles/miscStyles';
+import { API_CONFIG } from '../src/config/config';
 import { useRouter } from 'expo-router';
 import NewPregnancyRecordScreen from './newPregnancy';
 
