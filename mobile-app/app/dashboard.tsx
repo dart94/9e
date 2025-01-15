@@ -24,6 +24,8 @@ import { useRouter } from 'expo-router';
 
 const Tab = createBottomTabNavigator();
 
+const LogoutScreen = () => null;
+
 function DashboardContent() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -79,6 +81,18 @@ function DashboardContent() {
 
   const safeProgress = normalizedProgress / 100;
 
+  const renderList = (items: string[]) => {
+    return (
+      <View>
+        {items.map((item, index) => (
+          <Text key={index} style={textStyles.listItem}>
+            - {item}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <ScrollView style={layoutStyles.container}>
       <View style={miscStyles.card}>
@@ -109,31 +123,21 @@ function DashboardContent() {
           </View>
           <View style={miscStyles.card}>
             <Text style={textStyles.subtitle}>Síntomas Comunes</Text>
-            <FlatList
-              data={week_info.sintomas_comunes}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Text style={textStyles.listItem}>- {item}</Text>}
-            />
+            {renderList(week_info.sintomas_comunes)}
           </View>
           <View style={miscStyles.card}>
             <Text style={textStyles.subtitle}>Consejos</Text>
-            <FlatList
-              data={week_info.consejos}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Text style={textStyles.listItem}>- {item}</Text>}
-            />
+            {renderList(week_info.consejos)}
           </View>
           <View style={miscStyles.card}>
             <Text style={textStyles.subtitle}>Pruebas Médicas</Text>
-            <FlatList
-              data={week_info.pruebas_medicas}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <Text style={textStyles.listItem}>- {item}</Text>}
-            />
+            {renderList(week_info.pruebas_medicas)}
           </View>
         </>
       ) : (
-        <Text style={textStyles.errorText}>No hay información disponible para esta semana.</Text>
+        <Text style={textStyles.errorText}>
+          No hay información disponible para esta semana.
+        </Text>
       )}
     </ScrollView>
   );
@@ -210,7 +214,7 @@ export default function DashboardScreen() {
       />
       <Tab.Screen
         name="Logout"
-        component={() => null}
+        component={LogoutScreen}
         listeners={{
           tabPress: (e) => {
             e.preventDefault();

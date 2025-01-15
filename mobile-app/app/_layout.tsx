@@ -37,19 +37,19 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="settings"
+        name="(auth)/settings"
         options={{
           title: 'Configuración',
         }}
       />
       <Stack.Screen
-        name="newPregnancyRecord"
+        name="newPregnancy"
         options={{
           title: 'Nuevo Registro',
         }}
         />
       <Stack.Screen
-        name="viewPregnancyRecords"
+        name="viewPregnancy"
         options={{
           title: 'Ver Registros',
         }}
