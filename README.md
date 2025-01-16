@@ -144,6 +144,6 @@ Si deseas contribuir a este proyecto:
 
 ## Contacto
 Para preguntas o comentarios:
-- **Email:** tuemail@example.com
-- **LinkedIn:** [TuPerfilLinkedIn](https://linkedin.com/in/tuperfil)
+- **Email:** riveratorrero@gmail.com
+- **LinkedIn:** [TuPerfilLinkedIn](https://www.linkedin.com/in/diego-rivera-t/)
 
