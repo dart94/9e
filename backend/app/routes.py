@@ -3,10 +3,9 @@ from functools import wraps
 from datetime import datetime, timezone, timedelta  # Importación correcta
 from .forms import RegistrationForm, PregnancyDataForm, LoginForm, EditProfileForm, ResetPasswordRequestForm, ResetPasswordForm
 from .models import User, PregnancyData
-from . import db, bcrypt
-from app.api.fetal_development_api import FetalDevelopmentData
+from . import db, bcrypt, mail
+from .api.fetal_development_api import FetalDevelopmentData
 from flask_mail import Message
-from app import mail
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
 
