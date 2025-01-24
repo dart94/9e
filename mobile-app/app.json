@@ -2,7 +2,7 @@
   "expo": {
     "name": "Embrace",
     "slug": "mobile-app",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/pregnancy-logo.png",
     "scheme": "myapp",
@@ -41,7 +41,7 @@
       "typedRoutes": true
     },
     "extra": {
-      "apiBaseUrl": "https://pregnancy-backend-0yag.onrender.com",
+      "apiBaseUrl": "https://9e-production.up.railway.app/",
       "router": {
         "origin": false
       },
