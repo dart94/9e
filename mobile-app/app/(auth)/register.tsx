@@ -32,7 +32,7 @@ export default function RegisterScreen() {
       if (response.status === 201) {
         Alert.alert(
           '¡Registro exitoso!',
-          'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.',
+          'Revisa tu correo para confirmar tu cuenta.',
           [
             {
               text: 'OK',

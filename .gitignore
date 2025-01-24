@@ -17,10 +17,7 @@ __pycache__/
 # Ignorar bases de datos locales
 *.sqlite3
 
-# Ignorar archivos estáticos compilados
-static/css/
-static/js/
-static/scss/
+
 
 credentials.json
 credentials
