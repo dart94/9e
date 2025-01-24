@@ -296,6 +296,17 @@ def send_reset_email(to_email, reset_url):
     Este enlace es válido por 1 hora.
     '''
     mail.send(msg)
+
+#confirmar correo
+def send_confirmation_email(to_email, confirmation_url):
+    msg = Message('Confirmación de Correo Electrónico', recipients=[to_email])
+    msg.body = f'''
+    Para confirmar su correo electrónico, haga clic en el siguiente enlace:
+    {confirmation_url}
+
+    Este enlace es válido por 1 hora.
+    '''
+    mail.send(msg)
  
 
 #Endpoints para la API
@@ -333,15 +344,62 @@ def register_user():
         return jsonify({"error": "El correo ya está registrado"}), 400
 
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(username=data['username'], email=data['email'], password=hashed_password)
+    
+    # Importante: is_confirmed=False por defecto
+    new_user = User(
+        username=data['username'], 
+        email=data['email'], 
+        password=hashed_password,
+        is_verified=False
+    )
 
     try:
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({"message": "Usuario registrado exitosamente"}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Error al registrar usuario: {str(e)}"}), 500
+    
+   
+    try:
+        serializer = current_app.extensions['serializer']  
+        token = serializer.dumps(new_user.email, salt='email-confirm-salt')       
+        confirm_url = url_for('routes.confirm_email', token=token, _external=True)
+
+        # Enviar el correo de confirmación
+        send_confirmation_email(new_user.email, confirm_url)
+
+        return jsonify({"message": "Usuario registrado exitosamente. Revisa tu correo para confirmar la cuenta."}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al enviar correo de confirmación: {str(e)}"}), 500
+
+#Endpoint para confirmar
+
+@routes.route('/confirm_email/<token>', methods=['GET'])
+def confirm_email(token):
+    serializer = current_app.extensions['serializer']
+    try:
+        # Obtenemos el correo (o id) del token
+        email = serializer.loads(token, salt='email-confirm-salt', max_age=3600)  
+        # max_age=3600 => el token expira en 1 hora (puedes cambiarlo)
+    except:
+        return jsonify({"error": "Token inválido o expirado"}), 400
+    
+    # Buscamos al usuario por email
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+    
+    # Marcamos como confirmado
+    user.is_verified = True
+    try:
+        db.session.commit()
+        return jsonify({"message": "Cuenta confirmada con éxito"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al confirmar cuenta: {str(e)}"}), 500
+
+
     
 # API: Obtener datos del dashboard
 @routes.route('/api/dashboard', methods=['GET'])
@@ -447,6 +505,9 @@ def login2():
         user = User.query.filter_by(email=email).first()
         
         if user and bcrypt.check_password_hash(user.password, password):
+            #confirmar usuario:
+            if not user.is_confirmed:
+                return jsonify({"error": "Debes confirmar tu correo antes de iniciar sesión."}), 403
             # Crear token JWT
             expires = timedelta(days=1)  # Token válido por 1 día
             access_token = create_access_token(

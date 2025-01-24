@@ -1,38 +1,65 @@
-# Guía de Comandos para Proyectos
+# Tabla de Contenidos
 
-Este README contiene los comandos que suelo usar en mis proyectos relacionados con Expo, EAS y manejo de archivos .aab y .apk. Es una referencia personal para agilizar el desarrollo y despliegue.
+- [Actualización de Branch](#actualización-de-branch)
+- [Generación y Manejo de Archivos .aab y .apk](#generación-y-manejo-de-archivos-aab-y-apk)
+- [Activar entorno virtual y ejecutar run.py](#activar-entorno-virtual-y-ejecutar-runpy)
+- [Tareas Pendientes](#tareas-pendientes)
 
-## Actualizar Branch
-1. Actualizar la rama principal:
-   ```bash
-   eas update --branch main
-   ```
+## Actualización de Branch
 
-2. Publicar con un mensaje:
-   ```bash
-   eas update --branch staging --message "Prueba de cambios"
-   ```
+### Actualizar la rama principal:
+```bash
+eas update --branch main
+```
+
+### Publicar con un mensaje:
+```bash
+eas update --branch staging --message "Prueba de cambios"
+```
 
 ## Generación y Manejo de Archivos .aab y .apk
-1. Generar el archivo `.aab` con EAS Build:
-   ```bash
-   eas build --platform android --profile production
-   ```
 
-2. Convertir el archivo `.aab` en un `.apk`:
-   ```bash
-   java -jar bundletool-all.jar build-apks --bundle="C:\Users\Diego-lap\Desktop\Desarrollo completo\bundletool\9mm.aab" --output="C:\Users\Diego-lap\Desktop\Desarrollo completo\bundletool\9mm.apks" --mode=universal
-   ```
-
-3. Firmar el archivo `.apk`:
-   ```bash
-   java -jar bundletool-all.jar build-apks --bundle="C:\Users\Diego-lap\Desktop\Desarrollo completo\bundletool\9mm.aab" --output="C:\Users\Diego-lap\Desktop\Desarrollo completo\bundletool\9mm.apks" --mode=universal --ks="C:\Users\Diego-lap\Desktop\Desarrollo completo\9e\mobile-app\credentials\android\keystore.jks" --ks-pass=pass:bfac85484ec600ec52a8bcee50e57435 --ks-key-alias=5ecae2bf0f33ae2e2159ab0e87cbf4c3 --key-pass=pass:2e3f0d00bdf7506177b26c1950a66bf6
-   ```
-
+### Generar el archivo .aab con EAS Build:
+```bash
+eas build --platform android --profile production
 ```
-Ejecutar run.py
+
+### Convertir el archivo .aab en un .apk:
+```bash
+java -jar bundletool-all.jar build-apks \
+    --bundle="C:\Users\Diego-lap\Desktop\Desarrollo completo\bundletool\9mm.aab" \
+    --output="C:\Users\Diego-lap\Desktop\Desarrollo completo\bundletool\9mm.apks" \
+    --mode=universal
+```
+
+### Firmar el archivo .apk (añade tu keystore y contraseñas):
+```bash
+java -jar bundletool-all.jar build-apks \
+    --bundle="C:\Users\Diego-lap\Desktop\Desarrollo completo\bundletool\9mm.aab" \
+    --output="C:\Users\Diego-lap\Desktop\Desarrollo completo\bundletool\9mm.apks" \
+    --mode=universal \
+    --ks="C:\Users\Diego-lap\Desktop\Desarrollo completo\9e\mobile-app\credentials\android\keystore.jks" \
+    --ks-pass=pass:bfac85484ec600ec52a8bcee50e57435 \
+    --ks-key-alias=5ecae2bf0f33ae2e2159ab0e87cbf4c3 \
+    --key-pass=pass:2e3f0d00bdf7506177b26c1950a66bf6
+```
+
+## Activar entorno virtual y ejecutar run.py
+
+### Para tu entorno Flask / Python, puedes activar el virtualenv y lanzar la aplicación:
+
+#### Activar el entorno:
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+#### Ejecutar la aplicación:
+```bash
 python -m backend.run
 ```
+*(Asegúrate de estar en la carpeta adecuada al lanzar estos comandos.)*
 
----
-# Agregar validación al correo
+## Tareas Pendientes
+
+- Agregar validación de correo en el backend.
+- **
