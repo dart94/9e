@@ -506,7 +506,7 @@ def login2():
         
         if user and bcrypt.check_password_hash(user.password, password):
             #confirmar usuario:
-            if not user.is_confirmed:
+            if not user.is_verified:
                 return jsonify({"error": "Debes confirmar tu correo antes de iniciar sesión."}), 403
             # Crear token JWT
             expires = timedelta(days=1)  # Token válido por 1 día
