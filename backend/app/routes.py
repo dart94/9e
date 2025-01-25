@@ -322,7 +322,6 @@ def send_confirmation_email(to_email, confirm_url):
  
 
 #Endpoints para la API
-
 #API olvido de contraseña
 @routes.route('/forgot-password', methods=['POST'])
 def forgot_password():

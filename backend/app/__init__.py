@@ -45,8 +45,12 @@ def create_app():
     jwt = JWTManager(app)
 
     # Inicializar URLSafeTimedSerializer
-    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-    app.extensions['serializer'] = serializer
+    email_confirm_serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    password_reset_serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    
+    app.extensions['email_confirm_serializer'] = email_confirm_serializer
+    app.extensions['password_reset_serializer'] = password_reset_serializer
+
 
     # Registrar blueprints
     from .routes import routes
