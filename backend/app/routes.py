@@ -369,7 +369,7 @@ def register_user():
     try:
         serializer = current_app.extensions['serializer']  
         token = serializer.dumps(new_user.email, salt='email-confirm-salt')       
-        confirm_url = f"embrace://confirm?token={token}"
+        confirm_url = f"https://9e-production.up.railway.app/confirm_email/{token}"
         # Enviar el correo de confirmación
         send_confirmation_email(new_user.email, confirm_url)
 
@@ -383,39 +383,30 @@ def register_user():
 def confirm_email(token):
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
-        # Obtener el correo del token
         email = serializer.loads(token, salt='email-confirm-salt', max_age=3600)
     except SignatureExpired:
         # Token expirado
-        return redirect("embrace://confirm?status=invalid_or_expired")
+        return render_template('confirmation_error.html', message="El enlace de confirmación ha expirado.")
     except BadSignature:
         # Token inválido
-        return redirect("embrace://confirm?status=invalid_or_expired")
+        return render_template('confirmation_error.html', message="El enlace de confirmación es inválido.")
 
-    # Buscar al usuario por email
     user = User.query.filter_by(email=email).first()
     if not user:
-        return redirect("embrace://confirm?status=user_not_found")
+        return render_template('confirmation_error.html', message="Usuario no encontrado.")
 
-    # Verificar si ya está confirmado
     if user.is_verified:
-        return redirect("embrace://confirm?status=already_verified")
+        return render_template('confirmation_success.html', message="Tu cuenta ya ha sido confirmada.")
 
-    # Marcar como confirmado
     user.is_verified = True
     try:
         db.session.commit()
-        # Redirigir a la aplicación con éxito
-        return redirect("embrace://confirm?status=success")
+        # Redirigir a la aplicación móvil mediante Deep Linking
+        return redirect(f"embrace://confirm?status=success")
     except Exception as e:
         db.session.rollback()
-        # Redirigir a la aplicación con un estado de error
-        return redirect("embrace://confirm?status=error")
-    
-    
-
-
-    
+        return render_template('confirmation_error.html', message="Ocurrió un error al confirmar tu cuenta.")
+        
 # API: Obtener datos del dashboard
 @routes.route('/api/dashboard', methods=['GET'])
 def get_dashboard_data():

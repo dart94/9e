@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Embarazo - Bienvenida</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        // Intentar abrir la aplicación móvil después de 1 segundo
+        setTimeout(() => {
+            window.location.href = "embrace://confirm?status=success";
+        }, 1000);
+    </script>
+</head>
+<body class="no-scroll">
+  <!-- Contenedor de notificaciones -->
+  <div id="notification" class="notification"></div>
+
+  <div class="index-container">
+      <!-- Sección izquierda: Información -->
+      <section class="info-section">
+          <header>
+              <h1>Bienvenido a Mi Embarazo</h1>
+          </header>
+          <div class="welcome-content">
+              <h2>Tu Diario Personal</h2>
+              <p>
+                  Acompaña cada momento especial de esta hermosa etapa con nuestra aplicación
+                  diseñada para ayudarte a registrar y monitorear el progreso de tu embarazo.
+              </p>
+              <div class="features-grid">
+                  <div class="feature-item">
+                      <i class="fas fa-calendar-alt"></i>
+                      <h3>Seguimiento Semanal</h3>
+                      <p>Registra los cambios y momentos importantes semana a semana.</p>
+                  </div>
+                  <div class="feature-item">
+                      <i class="fa-solid fa-heart"></i>
+                      <h3>Hitos Importantes</h3>
+                      <p>No te pierdas ningún momento crucial del desarrollo de tu bebé.</p>
+                  </div>
+                  <div class="feature-item">
+                      <i class="fa-solid fa-star"></i>
+                      <h3>Consejos y Cuidados</h3>
+                      <p>Accede a información valiosa para cada etapa del embarazo.</p>
+                  </div>
+              </div>
+          </div>
+      </section>
+
+      <!-- Sección derecha: Login -->
+      <section class="login-section">
+        <h1>Error</h1>
+        <p>{{ message }}</p>
+        <p>Por favor, intenta registrarte de nuevo o contacta al soporte si el problema persiste.</p>
+      </section>
+  </div>
+
+
+
+  <!-- Archivo JavaScript -->
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
