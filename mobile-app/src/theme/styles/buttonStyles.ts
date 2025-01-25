@@ -9,6 +9,7 @@ export const buttonStyles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: SIZES.borderRadius,
     marginVertical: SIZES.margin,
+    minHeight: 48,
   },
   buttonDisabled: {
     backgroundColor: COLORS.primary + '88',

@@ -23,6 +23,7 @@ export const miscStyles = StyleSheet.create({
     borderColor: COLORS.primary,
     borderRadius: SIZES.borderRadius,
     backgroundColor: COLORS.white,
+    minHeight: 48,
   },
   card: {
     backgroundColor: COLORS.white,
