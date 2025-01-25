@@ -375,7 +375,7 @@ def register_user():
     try:
         serializer = current_app.extensions['email_confirm_serializer'] 
         token = serializer.dumps(new_user.email, salt='email-confirm-salt')       
-        confirm_url = url_for('routes.confirmation_success', token=token, _external=True)
+        confirm_url = url_for('routes.confirm_email', token=token, _external=True)
         # Enviar el correo de confirmación
         send_confirmation_email(new_user.email, confirm_url)
 
