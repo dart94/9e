@@ -8,6 +8,7 @@ from .api.fetal_development_api import FetalDevelopmentData
 from flask_mail import Message
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 
 
 # Blueprints
@@ -298,14 +299,18 @@ def send_reset_email(to_email, reset_url):
     mail.send(msg)
 
 #confirmar correo
-def send_confirmation_email(to_email, confirmation_url):
-    msg = Message('Confirmación de Correo Electrónico', recipients=[to_email])
-    msg.body = f'''
-    Para confirmar su correo electrónico, haga clic en el siguiente enlace:
-    {confirmation_url}
-
-    Este enlace es válido por 1 hora.
-    '''
+def send_confirmation_email(to_email, confirm_url):
+    msg = Message(
+        subject="Confirma tu cuenta en Embrace",
+        recipients=[to_email],
+        body=f"Hola,\n\nPor favor confirma tu cuenta haciendo clic en el siguiente enlace:\n\n{confirm_url}\n\nSi no solicitaste esto, ignora este correo.",
+        html=f"""
+            <p>Hola,</p>
+            <p>Por favor confirma tu cuenta haciendo clic en el siguiente enlace:</p>
+            <p><a href="{confirm_url}">Confirmar Cuenta</a></p>
+            <p>Si no solicitaste esto, ignora este correo.</p>
+        """
+    )
     mail.send(msg)
  
 
@@ -364,8 +369,7 @@ def register_user():
     try:
         serializer = current_app.extensions['serializer']  
         token = serializer.dumps(new_user.email, salt='email-confirm-salt')       
-        confirm_url = url_for('routes.confirm_email', token=token, _external=True)
-
+        confirm_url = f"embrace://confirm?token={token}"
         # Enviar el correo de confirmación
         send_confirmation_email(new_user.email, confirm_url)
 
@@ -377,27 +381,38 @@ def register_user():
 
 @routes.route('/confirm_email/<token>', methods=['GET'])
 def confirm_email(token):
-    serializer = current_app.extensions['serializer']
+    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
-        # Obtenemos el correo (o id) del token
-        email = serializer.loads(token, salt='email-confirm-salt', max_age=3600)  
-        # max_age=3600 => el token expira en 1 hora (puedes cambiarlo)
-    except:
-        return jsonify({"error": "Token inválido o expirado"}), 400
-    
-    # Buscamos al usuario por email
+        # Obtener el correo del token
+        email = serializer.loads(token, salt='email-confirm-salt', max_age=3600)
+    except SignatureExpired:
+        # Token expirado
+        return redirect("embrace://confirm?status=invalid_or_expired")
+    except BadSignature:
+        # Token inválido
+        return redirect("embrace://confirm?status=invalid_or_expired")
+
+    # Buscar al usuario por email
     user = User.query.filter_by(email=email).first()
     if not user:
-        return jsonify({"error": "Usuario no encontrado"}), 404
-    
-    # Marcamos como confirmado
+        return redirect("embrace://confirm?status=user_not_found")
+
+    # Verificar si ya está confirmado
+    if user.is_verified:
+        return redirect("embrace://confirm?status=already_verified")
+
+    # Marcar como confirmado
     user.is_verified = True
     try:
         db.session.commit()
-        return jsonify({"message": "Cuenta confirmada con éxito"}), 200
+        # Redirigir a la aplicación con éxito
+        return redirect("embrace://confirm?status=success")
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": f"Error al confirmar cuenta: {str(e)}"}), 500
+        # Redirigir a la aplicación con un estado de error
+        return redirect("embrace://confirm?status=error")
+    
+    
 
 
     

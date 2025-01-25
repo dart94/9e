@@ -25,6 +25,16 @@ export const textStyles = StyleSheet.create({
     fontSize: SIZES.fontMedium,
     color: COLORS.error || 'red',
   },
+  messageText: {
+    fontSize: SIZES.fontMedium,
+    color: COLORS.text,
+    textAlign: 'center',
+    marginBottom: SIZES.margin,
+  },
+  successText: {
+    fontSize: SIZES.fontMedium,
+    color: COLORS.success || 'green',
+  },
   link: {
     color: COLORS.primaryDark,
     fontSize: SIZES.fontSmall,
