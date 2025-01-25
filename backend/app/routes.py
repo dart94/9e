@@ -28,6 +28,9 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def create_serializers(app):
+    app.extensions['email_confirm_serializer'] = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    app.extensions['password_reset_serializer'] = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 # Index
 @routes.route('/')
 def index():
@@ -253,7 +256,7 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             # Generar token de recuperación
-            serializer = current_app.extensions['serializer']
+            serializer = current_app.extensions['password_reset_serializer']
             token = serializer.dumps(user.email, salt='password-reset-salt')
             reset_url = url_for('routes.reset_password', token=token, _external=True)
             send_reset_email(user.email, reset_url)
@@ -300,18 +303,22 @@ def send_reset_email(to_email, reset_url):
 
 #confirmar correo
 def send_confirmation_email(to_email, confirm_url):
-    msg = Message(
-        subject="Confirma tu cuenta en Embrace",
-        recipients=[to_email],
-        body=f"Hola,\n\nPor favor confirma tu cuenta haciendo clic en el siguiente enlace:\n\n{confirm_url}\n\nSi no solicitaste esto, ignora este correo.",
-        html=f"""
-            <p>Hola,</p>
-            <p>Por favor confirma tu cuenta haciendo clic en el siguiente enlace:</p>
-            <p><a href="{confirm_url}">Confirmar Cuenta</a></p>
-            <p>Si no solicitaste esto, ignora este correo.</p>
-        """
-    )
-    mail.send(msg)
+    try:
+        msg = Message(
+            subject="Confirma tu cuenta en Embrace",
+            recipients=[to_email],
+            body=f"Hola,\n\nPor favor confirma tu cuenta haciendo clic en el siguiente enlace:\n\n{confirm_url}\n\nSi no solicitaste esto, ignora este correo.",
+            html=f"""
+                <p>Hola,</p>
+                <p>Por favor confirma tu cuenta haciendo clic en el siguiente enlace:</p>
+                <p><a href="{confirm_url}">Confirmar Cuenta</a></p>
+                <p>Si no solicitaste esto, ignora este correo.</p>
+            """
+        )
+        mail.send(msg)
+    except Exception as e:
+        current_app.logger.error(f"Error enviando correo de confirmación: {str(e)}")
+        raise
  
 
 #Endpoints para la API
@@ -367,7 +374,7 @@ def register_user():
     
    
     try:
-        serializer = current_app.extensions['serializer']  
+        serializer = current_app.extensions['email_confirm_serializer'] 
         token = serializer.dumps(new_user.email, salt='email-confirm-salt')       
         confirm_url = f"https://9e-production.up.railway.app/confirm_email/{token}"
         # Enviar el correo de confirmación
