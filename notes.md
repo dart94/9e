@@ -39,9 +39,7 @@ java -jar bundletool-all.jar build-apks \
     --output="C:\Users\Diego-lap\Desktop\Desarrollo completo\bundletool\9mm.apks" \
     --mode=universal \
     --ks="C:\Users\Diego-lap\Desktop\Desarrollo completo\9e\mobile-app\credentials\android\keystore.jks" \
-    --ks-pass=pass:bfac85484ec600ec52a8bcee50e57435 \
-    --ks-key-alias=5ecae2bf0f33ae2e2159ab0e87cbf4c3 \
-    --key-pass=pass:2e3f0d00bdf7506177b26c1950a66bf6
+
 ```
 
 ## Activar entorno virtual y ejecutar run.py
