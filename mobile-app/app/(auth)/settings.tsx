@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ActivityIndicator,
   Alert,
@@ -16,6 +15,7 @@ import { layoutStyles } from '../../src/theme/styles/layoutStyles';
 import { textStyles } from '../../src/theme/styles/textStyles';
 import { miscStyles } from '../../src/theme/styles/miscStyles';
 import { buttonStyles } from '../../src/theme/styles/buttonStyles';
+import CustomInput from '@/src/components/CustomInput';
 
 export default function SettingsScreen() {
   const [profileData, setProfileData] = useState<any>(null);
@@ -106,7 +106,7 @@ export default function SettingsScreen() {
       {editing ? (
         <>
           <Text style={textStyles.subtitle}>Nombre de Usuario</Text>
-          <TextInput
+          <CustomInput
             style={miscStyles.input}
             value={form.username}
             onChangeText={(text) => setForm({ ...form, username: text })}

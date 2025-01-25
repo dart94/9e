@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Alert,
   ActivityIndicator,
@@ -15,6 +14,7 @@ import { buttonStyles } from '../src/theme/styles/buttonStyles';
 import { miscStyles } from '../src/theme/styles/miscStyles';
 import { API_CONFIG } from '../src/config/config';
 import { useRouter } from 'expo-router';
+import CustomInput from '@/src/components/CustomInput';
 
 export default function NewPregnancyRecordScreen() {
   const [form, setForm] = useState({
@@ -113,7 +113,7 @@ export default function NewPregnancyRecordScreen() {
       <Text style={textStyles.title}>Nuevo Registro de Embarazo</Text>
 
       <Text style={textStyles.label}>Última Fecha de Periodo</Text>
-      <TextInput
+      <CustomInput
         style={miscStyles.input}
         value={form.last_period_date}
         onChangeText={(value) => handleInputChange('last_period_date', value)}
@@ -121,7 +121,7 @@ export default function NewPregnancyRecordScreen() {
       />
 
       <Text style={textStyles.label}>Peso Inicial (Kg)</Text>
-      <TextInput
+      <CustomInput
         style={miscStyles.input}
         value={form.weight}
         onChangeText={(value) => handleInputChange('weight', value)}
@@ -130,7 +130,7 @@ export default function NewPregnancyRecordScreen() {
       />
 
       <Text style={textStyles.label}>Síntomas</Text>
-      <TextInput
+      <CustomInput
         style={miscStyles.input}
         value={form.symptoms}
         onChangeText={(value) => handleInputChange('symptoms', value)}
@@ -138,7 +138,7 @@ export default function NewPregnancyRecordScreen() {
       />
 
       <Text style={textStyles.label}>Notas</Text>
-      <TextInput
+      <CustomInput
         style={miscStyles.input}
         value={form.notes}
         onChangeText={(value) => handleInputChange('notes', value)}
