@@ -125,7 +125,7 @@ export default function NewPregnancyRecordScreen() {
         style={miscStyles.input}
         value={form.weight}
         onChangeText={(value) => handleInputChange('weight', value)}
-        placeholder="Peso"
+        placeholder="Peso de la madre"
         keyboardType="numeric"
       />
 
@@ -134,7 +134,7 @@ export default function NewPregnancyRecordScreen() {
         style={miscStyles.input}
         value={form.symptoms}
         onChangeText={(value) => handleInputChange('symptoms', value)}
-        placeholder="Síntomas"
+        placeholder="Síntomas de la madre"
       />
 
       <Text style={textStyles.label}>Notas</Text>
@@ -142,7 +142,7 @@ export default function NewPregnancyRecordScreen() {
         style={miscStyles.input}
         value={form.notes}
         onChangeText={(value) => handleInputChange('notes', value)}
-        placeholder="Notas"
+        placeholder="Recordatorios"
         multiline
       />
 
