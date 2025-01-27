@@ -4,7 +4,7 @@ export const COLORS = {
   secondary: '#E8F4F2',       // Fondo claro, complementario
   accent: '#FFB366',          // Naranja suave para detalles
   accentDark: '#FF8C1A',      // Naranja acento oscuro
-  text: '#2D3436',            // Gris oscuro para texto
+  text: '#00000',            // Gris oscuro para texto
   textLight: '#555',          // Gris claro para subtítulos
   background: '#FAFBFC',      // Fondo claro
   background2: '#6B7280',     // Fondo oscuro
@@ -14,6 +14,7 @@ export const COLORS = {
   success: '#4CAF50',         // Verde para éxito
   error: '#F44336',           // Rojo para errores
   boxshadow: 'rgba(95, 191, 175, 0.1)', // Sombra basada en el primary
+  
 };
 
 export const SIZES = {

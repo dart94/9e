@@ -142,7 +142,7 @@ export default function NewPregnancyRecordScreen() {
         style={miscStyles.input}
         value={form.notes}
         onChangeText={(value) => handleInputChange('notes', value)}
-        placeholder="Recordatorios"
+        placeholder="Recordatorios o notas adicionales"
         multiline
       />
 
