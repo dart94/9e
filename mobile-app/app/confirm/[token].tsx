@@ -53,3 +53,5 @@ const ConfirmEmail = () => {
     </View>
   );
 };
+
+export default ConfirmEmail;
