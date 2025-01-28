@@ -24,6 +24,7 @@ import NewPregnancyRecordScreen from './newPregnancy';
 
 
 interface PregnancyRecord {
+  id: number;
   week: number;
   weight: number | null;
   symptoms: string | null;
@@ -63,10 +64,10 @@ export default function ViewPregnancyRecordsScreen() {
     fetchRecords();
   }, []);
 
-  const handleDelete = async (week: number) => {
+  const handleDelete = async (id: number) => {
     Alert.alert(
       'Confirmación',
-      `¿Estás seguro de que deseas eliminar el registro de la semana ${week}?`,
+      '¿Estás seguro de que deseas eliminar este registro?',
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -74,19 +75,11 @@ export default function ViewPregnancyRecordsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              const userId = await AsyncStorage.getItem('userId');
-              if (!userId) {
-                Alert.alert('Error', 'Usuario no autenticado.');
-                return;
-              }
-
-              await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos`, {
-                params: { user_id: userId, week },
-              });
-
+              await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos/${id}`);
+  
               Alert.alert('Éxito', 'Registro eliminado correctamente.');
               setRecords((prevRecords) =>
-                prevRecords.filter((record) => record.week !== week)
+                prevRecords.filter((record) => record.id !== id)
               );
             } catch (error) {
               console.error('Error al eliminar registro:', error);

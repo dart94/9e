@@ -616,26 +616,23 @@ def manejar_registros_embarazo():
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": f"Error al guardar en la base de datos: {str(e)}"}), 500
-    elif request.method == 'DELETE':
-        # Obtener parámetros de la solicitud
-        user_id = request.args.get('user_id')
-        week = request.args.get('week')
 
-        if not user_id or not week:
-            return jsonify({"error": "Faltan los parámetros 'user_id' y 'week'"}), 400
+#Eliminar registro de embarazo
+@routes.route('/api/embarazos/<int:id>', methods=['DELETE'])
+def eliminar_registro_embarazo(id):
+    try:
+        # Buscar el registro por ID único
+        registro = PregnancyData.query.get(id)
 
-        try:
-            # Buscar el registro por `user_id` y `week`
-            registro = PregnancyData.query.filter_by(user_id=user_id, week=week).first()
+        if not registro:
+            return jsonify({"error": "Registro no encontrado"}), 404
 
-            if not registro:
-                return jsonify({"error": "Registro no encontrado"}), 404
+        # Eliminar el registro de la base de datos
+        db.session.delete(registro)
+        db.session.commit()
 
-            # Eliminar el registro de la base de datos
-            db.session.delete(registro)
-            db.session.commit()
-            return jsonify({"message": "Registro eliminado correctamente"}), 200
+        return jsonify({"message": "Registro eliminado correctamente"}), 200
 
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 50
