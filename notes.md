@@ -59,5 +59,11 @@ python -m backend.run
 
 ## Tareas Pendientes
 
-- Agregar validación de correo en el backend.
-- **
+- ~~Agregar validación de correo en el backend.~~
+- Mejoras de accesibilidad
+- Agregar login Google
+- Agregar datepicker
+- Cambiar avisos
+- Validar eliminar registros.
+- Registro de citas medicas(Nueva versión).
+- Información de la cita medica(Nueva Versión)

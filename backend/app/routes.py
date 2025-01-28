@@ -544,7 +544,7 @@ def login2():
     return render_template('index.html', form=form)
 
 
-@routes.route('/api/embarazos', methods=['GET', 'POST'])
+@routes.route('/api/embarazos', methods=['GET', 'POST', 'DELETE'])
 def manejar_registros_embarazo():
     if request.method == 'GET':
         # Obtener user_id de los parámetros de la URL
@@ -616,3 +616,26 @@ def manejar_registros_embarazo():
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": f"Error al guardar en la base de datos: {str(e)}"}), 500
+    elif request.method == 'DELETE':
+        # Obtener parámetros de la solicitud
+        user_id = request.args.get('user_id')
+        week = request.args.get('week')
+
+        if not user_id or not week:
+            return jsonify({"error": "Faltan los parámetros 'user_id' y 'week'"}), 400
+
+        try:
+            # Buscar el registro por `user_id` y `week`
+            registro = PregnancyData.query.filter_by(user_id=user_id, week=week).first()
+
+            if not registro:
+                return jsonify({"error": "Registro no encontrado"}), 404
+
+            # Eliminar el registro de la base de datos
+            db.session.delete(registro)
+            db.session.commit()
+            return jsonify({"message": "Registro eliminado correctamente"}), 200
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500
