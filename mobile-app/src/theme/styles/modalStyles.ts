@@ -4,7 +4,7 @@ import { SIZES, COLORS } from '../theme';
 export const modalStyles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     padding: 20,
@@ -20,6 +20,7 @@ export const modalStyles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 10,
+    justifyContent: 'space-between',
   },
   modalHeader: {
     flexDirection: 'row',

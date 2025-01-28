@@ -107,6 +107,8 @@ export default function NewPregnancyRecordScreen() {
     }
   };
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   return (
     <View style={layoutStyles.container}>
       {loading && <ActivityIndicator size="large" color={textStyles.title.color} />}
@@ -149,6 +151,7 @@ export default function NewPregnancyRecordScreen() {
       <TouchableOpacity style={buttonStyles.button} onPress={handleSubmit}>
         <Text style={buttonStyles.buttonText}>Guardar Registro</Text>
       </TouchableOpacity>
+      
     </View>
   );
 }

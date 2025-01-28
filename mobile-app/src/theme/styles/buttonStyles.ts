@@ -43,4 +43,10 @@ export const buttonStyles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
   },
+  closeButton: {
+    backgroundColor: COLORS.background2,
+    padding: SIZES.padding,
+    borderRadius: SIZES.borderRadius,
+    alignItems: 'center',
+  },
 });

@@ -84,6 +84,7 @@ export default function ViewPregnancyRecordsScreen() {
             } catch (error) {
               console.error('Error al eliminar registro:', error);
               Alert.alert('Error', 'No se pudo eliminar el registro.');
+              
             }
           },
         },
@@ -91,6 +92,7 @@ export default function ViewPregnancyRecordsScreen() {
     );
   };
 
+  
   const renderRecord = ({ item }: { item: PregnancyRecord }) => (
     <View style={miscStylesStyles.card}>
       <Text style={textStyles.subtitle}>Semana: {item.week}</Text>
@@ -148,28 +150,31 @@ export default function ViewPregnancyRecordsScreen() {
       </View>
 
       <Modal
-        visible={isModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setIsModalVisible(false)}
+      visible={isModalVisible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setIsModalVisible(false)}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={modalStyles.modalContainer}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={modalStyles.modalContainer}
-        >
-          <View style={modalStyles.modalContent}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-              <NewPregnancyRecordScreen />
-            </ScrollView>
-            <TouchableOpacity
-              style={[buttonStyles.button, { marginTop: 20 }]}
-              onPress={() => setIsModalVisible(false)}
-            >
-              <Text style={buttonStyles.buttonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+        <View style={modalStyles.modalContent}>
+          {/* Contenido principal del modal */}
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <NewPregnancyRecordScreen />
+          </ScrollView>
+          
+          {/* Botón cerrar */}
+          <TouchableOpacity
+            style={[buttonStyles.deleteButton, { marginTop: 5 }]}
+            onPress={() => setIsModalVisible(false)}
+          >
+            <Text style={buttonStyles.buttonText}>Cerrar</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
     </View>
   );
 }
