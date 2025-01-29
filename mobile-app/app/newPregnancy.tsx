@@ -5,7 +5,9 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { layoutStyles } from '../src/theme/styles/layoutStyles';
@@ -24,6 +26,8 @@ export default function NewPregnancyRecordScreen() {
     notes: '',
   });
   const [loading, setLoading] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [date, setDate] = useState(new Date());
   const router = useRouter();
 
   useEffect(() => {
@@ -32,7 +36,7 @@ export default function NewPregnancyRecordScreen() {
         const userId = await AsyncStorage.getItem('userId');
         if (!userId) {
           Alert.alert('Error', 'No se pudo obtener el usuario autenticado.');
-          router.replace('/(auth)/login'); // Redirigir si no está autenticado
+          router.replace('/(auth)/login');
           return;
         }
 
@@ -44,10 +48,13 @@ export default function NewPregnancyRecordScreen() {
 
         if (response.data && response.data.length > 0) {
           const latestRecord = response.data[0];
-          setForm((prevForm) => ({
-            ...prevForm,
-            last_period_date: latestRecord?.last_period_date || '',
-          }));
+          if (latestRecord?.last_period_date) {
+            setForm((prevForm) => ({
+              ...prevForm,
+              last_period_date: latestRecord.last_period_date,
+            }));
+            setDate(new Date(latestRecord.last_period_date));
+          }
         }
       } catch (error) {
         console.error('Error al cargar la última fecha de periodo:', error);
@@ -65,6 +72,22 @@ export default function NewPregnancyRecordScreen() {
       ...prevForm,
       [field]: value,
     }));
+  };
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setDate(selectedDate);
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      setForm((prevForm) => ({
+        ...prevForm,
+        last_period_date: formattedDate,
+      }));
+    }
+  };
+
+  const showDatepicker = () => {
+    setShowDatePicker(true);
   };
 
   const handleSubmit = async () => {
@@ -97,7 +120,7 @@ export default function NewPregnancyRecordScreen() {
       });
 
       Alert.alert('Éxito', 'Registro de embarazo añadido correctamente.');
-      router.replace('/dashboard'); // Redirigir al Dashboard
+      router.replace('/dashboard');
     } catch (error) {
       const axiosError = error as AxiosError;
       const errorData = axiosError.response?.data as { error?: string };
@@ -107,20 +130,29 @@ export default function NewPregnancyRecordScreen() {
     }
   };
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
   return (
     <View style={layoutStyles.container}>
       {loading && <ActivityIndicator size="large" color={textStyles.title.color} />}
-      <Text style={textStyles.title}>Nuevo Registro de Embarazo</Text>
+      <Text style={textStyles.title}>Registro de Embarazo</Text>
 
       <Text style={textStyles.label}>Última Fecha de Periodo</Text>
-      <CustomInput
-        style={miscStyles.input}
-        value={form.last_period_date}
-        onChangeText={(value) => handleInputChange('last_period_date', value)}
-        placeholder="YYYY-MM-DD"
-      />
+      <TouchableOpacity 
+        style={[miscStyles.input, { justifyContent: 'center' }]} 
+        onPress={showDatepicker}
+      >
+        <Text>{form.last_period_date || 'Seleccionar fecha'}</Text>
+      </TouchableOpacity>
+
+      {showDatePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode="date"
+          display="default"
+          onChange={onDateChange}
+          maximumDate={new Date()}
+        />
+      )}
 
       <Text style={textStyles.label}>Peso Inicial (Kg)</Text>
       <CustomInput
@@ -151,7 +183,6 @@ export default function NewPregnancyRecordScreen() {
       <TouchableOpacity style={buttonStyles.button} onPress={handleSubmit}>
         <Text style={buttonStyles.buttonText}>Guardar Registro</Text>
       </TouchableOpacity>
-      
     </View>
   );
 }

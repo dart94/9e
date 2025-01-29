@@ -51,7 +51,7 @@ export default function ViewPregnancyRecordsScreen() {
           params: { user_id: userId },
           withCredentials: true,
         });
-        console.log('Fetched records:', response.data);
+        
         setRecords(response.data);
       } catch (error) {
         console.error('Error al cargar registros:', error);
@@ -75,7 +75,6 @@ export default function ViewPregnancyRecordsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              console.log('Deleting record with URL:', `${API_CONFIG.BASE_URL}/api/embarazos/${id}`);
               console.log('ID to delete:', id);
               await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos/${id}`);
   
@@ -136,7 +135,7 @@ export default function ViewPregnancyRecordsScreen() {
   return (
     <View style={{ flex: 1 }}>
       <View style={layoutStyles.container}>
-        <Text style={textStyles.title}>Registros de Embarazo</Text>
+        <Text style={textStyles.title}>Registros de seguimiento</Text>
         {records.length > 0 ? (
           <FlatList
             data={records}

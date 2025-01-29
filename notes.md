@@ -62,8 +62,8 @@ python -m backend.run
 - ~~Agregar validación de correo en el backend.~~
 - ~~Mejoras de accesibilidad~~
 - Agregar login Google
-- Agregar datepicker
-- Cambiar avisos
-- Validar eliminar registros(En Progreso).
+- ~~Agregar datepicker~~
+- ~~Cambiar avisos~~
+- ~~Validar eliminar registros.~~
 - Registro de citas medicas **(Nueva versión).**
 - Información de la cita medica **(Nueva Versión).**

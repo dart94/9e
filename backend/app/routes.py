@@ -384,7 +384,6 @@ def register_user():
         return jsonify({"error": f"Error al enviar correo de confirmación: {str(e)}"}), 500
 
 #Endpoint para confirmar
-
 @routes.route('/confirm_email/<token>', methods=['GET'])
 def confirm_email(token):
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
