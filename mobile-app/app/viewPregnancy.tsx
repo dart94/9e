@@ -51,7 +51,7 @@ export default function ViewPregnancyRecordsScreen() {
           params: { user_id: userId },
           withCredentials: true,
         });
-
+        console.log('Fetched records:', response.data);
         setRecords(response.data);
       } catch (error) {
         console.error('Error al cargar registros:', error);
@@ -75,6 +75,8 @@ export default function ViewPregnancyRecordsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
+              console.log('Deleting record with URL:', `${API_CONFIG.BASE_URL}/api/embarazos/${id}`);
+              console.log('ID to delete:', id);
               await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos/${id}`);
   
               Alert.alert('Éxito', 'Registro eliminado correctamente.');
@@ -82,9 +84,13 @@ export default function ViewPregnancyRecordsScreen() {
                 prevRecords.filter((record) => record.id !== id)
               );
             } catch (error) {
-              console.error('Error al eliminar registro:', error);
+              if (axios.isAxiosError(error)) {
+                console.error('Response error data:', error.response?.data);
+                console.error('Response status:', error.response?.status);
+              } else {
+                console.error('Unknown error:', error);
+              }
               Alert.alert('Error', 'No se pudo eliminar el registro.');
-              
             }
           },
         },
@@ -111,7 +117,7 @@ export default function ViewPregnancyRecordsScreen() {
         <Text style={textStyles.infoValue}>{item.notes || 'N/A'}</Text>
       </View>
       <View style={layoutStyles.actionsRow}>
-        <TouchableOpacity style={buttonStyles.deleteButton} onPress={() => handleDelete(item.week)}>
+        <TouchableOpacity style={buttonStyles.deleteButton} onPress={() => handleDelete(item.id)}>
           <Text style={buttonStyles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
       </View>
