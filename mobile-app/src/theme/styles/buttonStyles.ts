@@ -42,6 +42,15 @@ export const buttonStyles = StyleSheet.create({
     marginLeft: 5,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 5,
+  },
+  cerrarButton: {
+    backgroundColor: '#F44336', // Rojo para eliminar
+    padding: 10,
+    marginLeft: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 5,
   },
   closeButton: {
     backgroundColor: COLORS.background2,

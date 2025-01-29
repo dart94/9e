@@ -634,5 +634,6 @@ def eliminar_registro_embarazo(id):
         return jsonify({"message": "Registro eliminado correctamente"}), 200
 
     except Exception as e:
+        # Manejo de excepciones y rollback
         db.session.rollback()
-        return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 50
+        return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500

@@ -150,31 +150,30 @@ export default function ViewPregnancyRecordsScreen() {
       </View>
 
       <Modal
-      visible={isModalVisible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setIsModalVisible(false)}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={modalStyles.modalContainer}
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
       >
-        <View style={modalStyles.modalContent}>
-          {/* Contenido principal del modal */}
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            <NewPregnancyRecordScreen />
-          </ScrollView>
-          
-          {/* Botón cerrar */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={modalStyles.modalContainer}
+        >
+          <View style={modalStyles.modalContent}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <NewPregnancyRecordScreen />
+            </ScrollView>
+          </View>
+
+          {/* Botón cerrar fuera del modalContent */}
           <TouchableOpacity
-            style={[buttonStyles.deleteButton, { marginTop: 5 }]}
+            style={[buttonStyles.cerrarButton, { marginTop: 10 }]}
             onPress={() => setIsModalVisible(false)}
           >
             <Text style={buttonStyles.buttonText}>Cerrar</Text>
           </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }
