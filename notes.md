@@ -51,6 +51,12 @@ java -jar bundletool-all.jar build-apks \
 .\venv\Scripts\Activate.ps1
 ```
 
+#### Migraciones:
+```
+set FLASK_APP=app:create_app
+flask db init
+```
+
 #### Ejecutar la aplicación:
 ```bash
 python -m backend.run

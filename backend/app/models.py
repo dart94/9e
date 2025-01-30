@@ -8,6 +8,8 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     is_verified = db.Column(db.Boolean, default=False, nullable=False)
+    google_id = db.Column(db.String(200), unique=True, nullable=True)
+    auth_provider = db.Column(db.String(50), default='email' ,nullable=False)
 
 
 class PregnancyData(db.Model):

@@ -23,7 +23,8 @@ def create_app():
 
     # Inicializar Flask
     app = Flask(__name__)
-    app.config.from_object('config.Config')
+    app.config.from_object('backend.config.Config')
+
 
     # Aplicar CORS después de inicializar `app`
     CORS(app, supports_credentials=True, origins=['http://localhost:8081'])
