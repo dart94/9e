@@ -9,7 +9,7 @@ import os
 from .api.fetal_development_api import fetal_api
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from ..config import Config
+from backend.config import Config
 
 # Inicializar extensiones
 db = SQLAlchemy()
