@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { layoutStyles } from '../../src/theme/styles/layoutStyles';
 import { textStyles } from '../../src/theme/styles/textStyles';
 import { buttonStyles } from '../../src/theme/styles/buttonStyles';
@@ -7,6 +7,7 @@ import { miscStyles } from '../../src/theme/styles/miscStyles';
 import axios from 'axios';
 import { API_CONFIG } from '../../src/config/config';
 import { useRouter } from 'expo-router';
+import CustomInput from '@/src/components/CustomInput';
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState('');
@@ -59,14 +60,14 @@ export default function RegisterScreen() {
   return (
     <View style={[layoutStyles.container, layoutStyles.center]}>
       <Text style={textStyles.title}>Crear Cuenta</Text>
-      <TextInput
+      <CustomInput
         style={miscStyles.input}
         placeholder="Nombre de usuario"
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
       />
-      <TextInput
+      <CustomInput
         style={miscStyles.input}
         placeholder="Correo electrónico"
         value={email}
@@ -74,7 +75,7 @@ export default function RegisterScreen() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
+      <CustomInput
         style={miscStyles.input}
         placeholder="Contraseña"
         value={password}
@@ -90,7 +91,9 @@ export default function RegisterScreen() {
           {loading ? 'Registrando...' : 'Registrar'}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
+      <TouchableOpacity
+       style={layoutStyles.touchableContainer}
+       onPress={() => router.push('/(auth)/login')}>
         <Text style={textStyles.link}>¿Ya tienes una cuenta? Inicia sesión</Text>
       </TouchableOpacity>
     </View>

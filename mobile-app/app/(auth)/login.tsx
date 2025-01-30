@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Alert,
 } from 'react-native';
@@ -13,10 +12,10 @@ import { API_CONFIG } from '../../src/config/config';
 import { layoutStyles } from '../../src/theme/styles/layoutStyles';
 import { textStyles } from '../../src/theme/styles/textStyles';
 import { buttonStyles } from '../../src/theme/styles/buttonStyles';
-import { miscStyles } from '../../src/theme/styles/miscStyles';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Ionicons } from '@expo/vector-icons';
 import { storage } from '../../utils/storageHelper';
+import CustomInput from '@/src/components/CustomInput';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -136,8 +135,7 @@ export default function LoginScreen() {
     <View style={[layoutStyles.container, layoutStyles.center]}>
       <Text style={textStyles.title}>Iniciar Sesión</Text>
 
-      <TextInput
-        style={[miscStyles.input, emailError && { borderColor: 'red' }]}
+      <CustomInput
         placeholder="Correo electrónico"
         value={email}
         onChangeText={(text) => {
@@ -151,8 +149,7 @@ export default function LoginScreen() {
         autoCapitalize="none"
       />
 
-      <TextInput
-        style={[miscStyles.input, passwordError && { borderColor: 'red' }]}
+      <CustomInput
         placeholder="Contraseña"
         value={password}
         onChangeText={(text) => {
@@ -185,11 +182,16 @@ export default function LoginScreen() {
         </TouchableOpacity>
       )}
 
-      <TouchableOpacity onPress={() => router.push('/(auth)/forgotPassword')}>
+      <TouchableOpacity 
+        style={layoutStyles.touchableContainer}
+        onPress={() => router.push('/(auth)/forgotPassword')}
+      >
         <Text style={textStyles.link}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
+      <TouchableOpacity
+       style={layoutStyles.touchableContainer}
+       onPress={() => router.push('/(auth)/register')}>
         <Text style={textStyles.link}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
     </View>

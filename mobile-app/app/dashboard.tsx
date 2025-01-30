@@ -170,7 +170,7 @@ export default function DashboardScreen() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { backgroundColor: '#A1CEDC' },
+        tabBarStyle: { backgroundColor: '#3A7669' },
         tabBarActiveTintColor: '#fff',
         tabBarInactiveTintColor: '#f0f0f0',
         tabBarIcon: ({ focused, color, size }) => {

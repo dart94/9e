@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import { API_CONFIG } from '../../src/config/config';
 import { useRouter } from 'expo-router';
@@ -7,6 +7,7 @@ import { layoutStyles } from '../../src/theme/styles/layoutStyles';
 import { textStyles } from '../../src/theme/styles/textStyles';
 import { miscStyles } from '../../src/theme/styles/miscStyles';
 import { buttonStyles } from '../../src/theme/styles';
+import CustomInput from '@/src/components/CustomInput';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
@@ -50,7 +51,7 @@ export default function ForgotPasswordScreen() {
   return (
     <View style={[layoutStyles.container, layoutStyles.center]}>
       <Text style={textStyles.title}>Recuperar Contraseña</Text>
-      <TextInput
+      <CustomInput
         style={[miscStyles.input, emailError && { borderColor: 'red', borderWidth: 2 }]}
         placeholder="Correo electrónico"
         value={email}
@@ -73,7 +74,9 @@ export default function ForgotPasswordScreen() {
           {loading ? 'Enviando...' : 'Enviar instrucciones'}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
+      <TouchableOpacity
+       style={layoutStyles.touchableContainer}
+       onPress={() => router.push('/(auth)/login')}>
         <Text style={textStyles.link}>¿Ya tienes una cuenta? Inicia sesión</Text>
       </TouchableOpacity>
     </View>

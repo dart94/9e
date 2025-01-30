@@ -5,7 +5,7 @@ export const buttonStyles = StyleSheet.create({
   button: {
     width: '100%',
     padding: SIZES.padding / 1.5,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryDark,
     alignItems: 'center',
     borderRadius: SIZES.borderRadius,
     marginVertical: SIZES.margin,
@@ -41,6 +41,21 @@ export const buttonStyles = StyleSheet.create({
     padding: 10,
     marginLeft: 5,
     borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  cerrarButton: {
+    backgroundColor: '#F44336', // Rojo para eliminar
+    padding: 10,
+    marginLeft: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  closeButton: {
+    backgroundColor: COLORS.background2,
+    padding: SIZES.padding,
+    borderRadius: SIZES.borderRadius,
     alignItems: 'center',
   },
 });

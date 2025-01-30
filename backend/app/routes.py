@@ -384,7 +384,6 @@ def register_user():
         return jsonify({"error": f"Error al enviar correo de confirmación: {str(e)}"}), 500
 
 #Endpoint para confirmar
-
 @routes.route('/confirm_email/<token>', methods=['GET'])
 def confirm_email(token):
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
@@ -544,7 +543,7 @@ def login2():
     return render_template('index.html', form=form)
 
 
-@routes.route('/api/embarazos', methods=['GET', 'POST'])
+@routes.route('/api/embarazos', methods=['GET', 'POST', 'DELETE'])
 def manejar_registros_embarazo():
     if request.method == 'GET':
         # Obtener user_id de los parámetros de la URL
@@ -559,6 +558,7 @@ def manejar_registros_embarazo():
 
         registros_serializados = [
             {
+                "id": r.id,
                 "week": r.week,
                 "weight": r.weight,
                 "symptoms": r.symptoms,
@@ -616,3 +616,24 @@ def manejar_registros_embarazo():
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": f"Error al guardar en la base de datos: {str(e)}"}), 500
+
+#Eliminar registro de embarazo
+@routes.route('/api/embarazos/<int:id>', methods=['DELETE'])
+def eliminar_registro_embarazo(id):
+    try:
+        # Buscar el registro por ID único
+        registro = PregnancyData.query.get(id)
+
+        if not registro:
+            return jsonify({"error": "Registro no encontrado"}), 404
+
+        # Eliminar el registro de la base de datos
+        db.session.delete(registro)
+        db.session.commit()
+
+        return jsonify({"message": "Registro eliminado correctamente"}), 200
+
+    except Exception as e:
+        # Manejo de excepciones y rollback
+        db.session.rollback()
+        return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500

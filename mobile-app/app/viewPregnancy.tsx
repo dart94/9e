@@ -24,6 +24,7 @@ import NewPregnancyRecordScreen from './newPregnancy';
 
 
 interface PregnancyRecord {
+  id: number;
   week: number;
   weight: number | null;
   symptoms: string | null;
@@ -50,7 +51,7 @@ export default function ViewPregnancyRecordsScreen() {
           params: { user_id: userId },
           withCredentials: true,
         });
-
+        
         setRecords(response.data);
       } catch (error) {
         console.error('Error al cargar registros:', error);
@@ -63,10 +64,10 @@ export default function ViewPregnancyRecordsScreen() {
     fetchRecords();
   }, []);
 
-  const handleDelete = async (week: number) => {
+  const handleDelete = async (id: number) => {
     Alert.alert(
       'Confirmación',
-      `¿Estás seguro de que deseas eliminar el registro de la semana ${week}?`,
+      '¿Estás seguro de que deseas eliminar este registro?',
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -74,22 +75,20 @@ export default function ViewPregnancyRecordsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              const userId = await AsyncStorage.getItem('userId');
-              if (!userId) {
-                Alert.alert('Error', 'Usuario no autenticado.');
-                return;
-              }
-
-              await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos`, {
-                params: { user_id: userId, week },
-              });
-
+              console.log('ID to delete:', id);
+              await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos/${id}`);
+  
               Alert.alert('Éxito', 'Registro eliminado correctamente.');
               setRecords((prevRecords) =>
-                prevRecords.filter((record) => record.week !== week)
+                prevRecords.filter((record) => record.id !== id)
               );
             } catch (error) {
-              console.error('Error al eliminar registro:', error);
+              if (axios.isAxiosError(error)) {
+                console.error('Response error data:', error.response?.data);
+                console.error('Response status:', error.response?.status);
+              } else {
+                console.error('Unknown error:', error);
+              }
               Alert.alert('Error', 'No se pudo eliminar el registro.');
             }
           },
@@ -98,6 +97,7 @@ export default function ViewPregnancyRecordsScreen() {
     );
   };
 
+  
   const renderRecord = ({ item }: { item: PregnancyRecord }) => (
     <View style={miscStylesStyles.card}>
       <Text style={textStyles.subtitle}>Semana: {item.week}</Text>
@@ -116,7 +116,7 @@ export default function ViewPregnancyRecordsScreen() {
         <Text style={textStyles.infoValue}>{item.notes || 'N/A'}</Text>
       </View>
       <View style={layoutStyles.actionsRow}>
-        <TouchableOpacity style={buttonStyles.deleteButton} onPress={() => handleDelete(item.week)}>
+        <TouchableOpacity style={buttonStyles.deleteButton} onPress={() => handleDelete(item.id)}>
           <Text style={buttonStyles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
       </View>
@@ -135,7 +135,7 @@ export default function ViewPregnancyRecordsScreen() {
   return (
     <View style={{ flex: 1 }}>
       <View style={layoutStyles.container}>
-        <Text style={textStyles.title}>Registros de Embarazo</Text>
+        <Text style={textStyles.title}>Registros de seguimiento</Text>
         {records.length > 0 ? (
           <FlatList
             data={records}
@@ -168,13 +168,15 @@ export default function ViewPregnancyRecordsScreen() {
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
               <NewPregnancyRecordScreen />
             </ScrollView>
-            <TouchableOpacity
-              style={[buttonStyles.button, { marginTop: 20 }]}
-              onPress={() => setIsModalVisible(false)}
-            >
-              <Text style={buttonStyles.buttonText}>Cerrar</Text>
-            </TouchableOpacity>
           </View>
+
+          {/* Botón cerrar fuera del modalContent */}
+          <TouchableOpacity
+            style={[buttonStyles.cerrarButton, { marginTop: 10 }]}
+            onPress={() => setIsModalVisible(false)}
+          >
+            <Text style={buttonStyles.buttonText}>Cerrar</Text>
+          </TouchableOpacity>
         </KeyboardAvoidingView>
       </Modal>
     </View>

@@ -17,5 +17,10 @@ export const layoutStyles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 10,
   },
+
+  touchableContainer: {
+    minHeight: 48,
+    justifyContent: 'center',
+  }
   
 });

@@ -11,7 +11,7 @@ export const textStyles = StyleSheet.create({
   subtitle: {
     fontSize: SIZES.fontMedium,
     fontWeight: '600',
-    color: COLORS.primary,
+    color: COLORS.primaryDark,
     marginTop: SIZES.margin,
     textAlign: 'center',
   },
