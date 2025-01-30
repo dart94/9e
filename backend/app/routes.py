@@ -9,6 +9,8 @@ from flask_mail import Message
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 
 # Blueprints
@@ -637,3 +639,57 @@ def eliminar_registro_embarazo(id):
         # Manejo de excepciones y rollback
         db.session.rollback()
         return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500
+
+
+@routes.route('/auth/google', methods=['POST'])
+def google_auth():
+    data = request.get_json()
+    google_token = data.get('token')
+    
+    try:
+        # Verifica el token con Google
+        idinfo = id_token.verify_oauth2_token(
+            google_token, 
+            requests.Request(), 
+            "TU_GOOGLE_CLIENT_ID"  # Reemplaza con tu Client ID
+        )
+
+        google_id = idinfo['sub']
+        email = idinfo['email']
+        username = idinfo.get('name', email.split('@')[0])
+        
+        # Busca usuario existente
+        user = User.query.filter(
+            (User.google_id == google_id) | (User.email == email)
+        ).first()
+        
+        if not user:
+            # Crea nuevo usuario
+            user = User(
+                username=username,
+                email=email,
+                google_id=google_id,
+                auth_provider='google',
+                is_verified=True  # Los usuarios de Google ya están verificados
+            )
+            db.session.add(user)
+            db.session.commit()
+        elif user.google_id != google_id:
+            # Actualiza usuario existente con Google ID
+            user.google_id = google_id
+            user.auth_provider = 'google'
+            db.session.commit()
+        
+        # Genera token JWT
+        token = create_access_token(identity=user.id)
+        
+        return jsonify({
+            'id': user.id,
+            'username': user.username,
+            'token': token
+        }), 200
+        
+    except ValueError as e:
+        return jsonify({'error': 'Token de Google inválido'}), 401
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

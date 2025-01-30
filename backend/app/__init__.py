@@ -9,6 +9,7 @@ import os
 from .api.fetal_development_api import fetal_api
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from ..config import Config
 
 # Inicializar extensiones
 db = SQLAlchemy()
@@ -23,7 +24,7 @@ def create_app():
 
     # Inicializar Flask
     app = Flask(__name__)
-    app.config.from_object('backend.config.Config')
+    app.config.from_object(Config)
 
 
     # Aplicar CORS después de inicializar `app`
