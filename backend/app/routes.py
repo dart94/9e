@@ -647,11 +647,11 @@ def eliminar_registro_embarazo(id):
         db.session.rollback()
         return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500
 
-#ruta para el login con google
 @routes.route("/auth/callback")
 def auth_callback():
     code = request.args.get("code")
-    
+    print(f"Authorization Code: {code}")  # Imprime el código recibido para verificar que es correcto
+
     if not code:
         return jsonify({"error": "No authorization code provided"}), 400
 
@@ -664,10 +664,14 @@ def auth_callback():
         "grant_type": "authorization_code",
         "redirect_uri": REDIRECT_URI
     }
-    
+
+    print(f"Data being sent to Google: {data}")  # Imprime los datos enviados a Google
+
     response = requests.post(token_url, data=data)
     token_info = response.json()
-    
+
+    print(f"Google response: {token_info}")  # Imprime la respuesta de Google
+
     if "access_token" not in token_info:
         return jsonify({"error": "Failed to retrieve access token"}), 400
 
@@ -675,6 +679,8 @@ def auth_callback():
     user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
     headers = {"Authorization": f"Bearer {token_info['access_token']}"}
     user_info = requests.get(user_info_url, headers=headers).json()
+
+    return jsonify({"user": user_info})
 
     return jsonify({"user": user_info})
 
