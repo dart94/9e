@@ -647,6 +647,10 @@ def eliminar_registro_embarazo(id):
         db.session.rollback()
         return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500
 
+from flask import jsonify, request, redirect
+import requests
+from urllib.parse import urlencode
+
 @routes.route("/auth/callback")
 def auth_callback():
     code = request.args.get("code")
@@ -662,35 +666,42 @@ def auth_callback():
         "client_secret": GOOGLE_CLIENT_SECRET,
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": REDIRECT_URI
+        "redirect_uri": REDIRECT_URI  # Asegúrate de que REDIRECT_URI sea el correcto
     }
 
     print(f"Data being sent to Google: {data}")  # Imprime los datos enviados a Google
 
-    response = requests.post(token_url, data=data)
-    token_info = response.json()
+    try:
+        response = requests.post(token_url, data=data)
+        response.raise_for_status()  # Si la respuesta no es 2xx, se lanza una excepción
+        token_info = response.json()
 
-    print(f"Google response: {token_info}")  # Imprime la respuesta de Google
+        print(f"Google response: {token_info}")  # Imprime la respuesta de Google
 
-    if "access_token" not in token_info:
-        return jsonify({"error": "Failed to retrieve access token"}), 400
+        if "access_token" not in token_info:
+            print(f"Error: {token_info}")  # Si no se recibe el token, imprime el error
+            return jsonify({"error": "Failed to retrieve access token", "details": token_info}), 400
 
-    # Obtener información del usuario
-    user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
-    headers = {"Authorization": f"Bearer {token_info['access_token']}"}
-    user_info = requests.get(user_info_url, headers=headers).json()
+        # Obtener información del usuario
+        user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
+        headers = {"Authorization": f"Bearer {token_info['access_token']}"}
+        user_info = requests.get(user_info_url, headers=headers).json()
 
-    return jsonify({"user": user_info})
+        return jsonify({"user": user_info})
 
-    return jsonify({"user": user_info})
+    except requests.exceptions.RequestException as e:
+        print(f"Error during the request: {e}")  # Imprime el error si la solicitud falla
+        return jsonify({"error": "Request to Google API failed", "details": str(e)}), 500
 
+
+# Autenticación con Google
 @routes.route("/auth/google")
 def auth_google():
     # Redirige a Google OAuth para obtener el código
     google_oauth_url = "https://accounts.google.com/o/oauth2/v2/auth"
     params = {
         'client_id': GOOGLE_CLIENT_ID,
-        'redirect_uri': 'https://9e-production.up.railway.app/auth/callback',
+        'redirect_uri': 'https://9e-production.up.railway.app/auth/callback',  
         'response_type': 'code',
         'scope': 'openid profile email',
         'access_type': 'offline'
