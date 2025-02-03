@@ -63,6 +63,9 @@
                       <p class="error-message">{{ error }}</p>
                   {% endfor %}
               </div>
+              <a href="{{ url_for('routes.auth_google') }}" class="btn google-login">
+                Iniciar sesión con Google
+            </a>
               <button type="submit" class="btn">{{ form.submit.label }}</button>
               <div class="register-link">
                   <p>¿No tienes una cuenta?</p>

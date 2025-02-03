@@ -12,6 +12,7 @@ from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from google.oauth2 import id_token
 import requests
 import os
+from urllib.parse import urlencode
 
 
 # Blueprints
@@ -731,3 +732,16 @@ def auth_callback():
     user_info = requests.get(user_info_url, headers=headers).json()
 
     return jsonify({"user": user_info})
+
+@routes.route("/auth/google")
+def auth_google():
+    # Redirige a Google OAuth para obtener el código
+    google_oauth_url = "https://accounts.google.com/o/oauth2/v2/auth"
+    params = {
+        'client_id': GOOGLE_CLIENT_ID,
+        'redirect_uri': REDIRECT_URI,
+        'response_type': 'code',
+        'scope': 'openid profile email',
+        'access_type': 'offline'
+    }
+    return redirect(f"{google_oauth_url}?{urlencode(params)}")

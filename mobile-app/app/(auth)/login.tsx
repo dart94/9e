@@ -110,8 +110,6 @@ export default function LoginScreen() {
     }
   };
 
-
-
   // Valida formato de email
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
