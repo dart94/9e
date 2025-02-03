@@ -10,7 +10,8 @@ from flask_jwt_extended import create_access_token
 from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from google.oauth2 import id_token
-from google.auth.transport import requests
+import requests
+import os
 
 
 # Blueprints
@@ -19,6 +20,11 @@ routes = Blueprint('routes', __name__)
 
 # Instancia de datos fetales
 fetal_data = FetalDevelopmentData()
+
+#variables de google
+GOOGLE_CLIENT_ID=os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET=os.getenv('GOOGLE_CLIENT_SECRET')
+REDIRECT_URI=os.getenv('REDIRET_URI')
 
 # Decorador para verificar sesión del usuario
 def login_required(f):
@@ -651,7 +657,7 @@ def google_auth():
         idinfo = id_token.verify_oauth2_token(
             google_token, 
             requests.Request(), 
-            "TU_GOOGLE_CLIENT_ID"  # Reemplaza con tu Client ID
+            "30060725584-nuohjfa7tk392bltpl1k0tvs1gebhs7d.apps.googleusercontent.com"  # Reemplaza con tu Client ID
         )
 
         google_id = idinfo['sub']
@@ -693,3 +699,35 @@ def google_auth():
         return jsonify({'error': 'Token de Google inválido'}), 401
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+#ruta para el login con google
+@routes.route("/auth/callback")
+def auth_callback():
+    code = request.args.get("code")
+    
+    if not code:
+        return jsonify({"error": "No authorization code provided"}), 400
+
+    # Intercambiar el código por un token de acceso
+    token_url = "https://oauth2.googleapis.com/token"
+    data = {
+        "client_id": GOOGLE_CLIENT_ID,
+        "client_secret": GOOGLE_CLIENT_SECRET,
+        "code": code,
+        "grant_type": "authorization_code",
+        "redirect_uri": REDIRECT_URI
+    }
+    
+    response = requests.post(token_url, data=data)
+    token_info = response.json()
+    
+    if "access_token" not in token_info:
+        return jsonify({"error": "Failed to retrieve access token"}), 400
+
+    # Obtener información del usuario
+    user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
+    headers = {"Authorization": f"Bearer {token_info['access_token']}"}
+    user_info = requests.get(user_info_url, headers=headers).json()
+
+    return jsonify({"user": user_info})

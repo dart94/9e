@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1000609438017",
+    "project_id": "embrace-dda4e",
+    "storage_bucket": "embrace-dda4e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000609438017:android:b43cb7c4241e94d9ea29c0",
+        "android_client_info": {
+          "package_name": "com.dart94.embrace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000609438017-lra4j152jp39n63l9q74tnn2dbj0iigm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACwgDkkjD5PPnWxBJkmaYlEVSGyU_MZEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000609438017-6dsloi4tm9n5frluass8qdivd0e0k5d3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

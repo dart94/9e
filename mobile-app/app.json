@@ -2,7 +2,7 @@
   "expo": {
     "name": "Embrace",
     "slug": "mobile-app",
-    "version": "1.0.9",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/pregnancy-logo.png",
     "scheme": "embrace",
@@ -16,7 +16,25 @@
         "foregroundImage": "./assets/images/pregnancy-logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.dart94.embrace"
+      "package": "com.dart94.embrace",
+      "googleServicesFile": "./google-services.json",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "embrace.page.link",
+              "pathPrefix": "/auth"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -35,7 +53,17 @@
         }
       ],
       "expo-secure-store",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
