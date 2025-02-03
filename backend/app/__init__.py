@@ -27,7 +27,7 @@ def create_app():
 
 
     # Aplicar CORS después de inicializar `app`
-    CORS(app, supports_credentials=True, origins=['http://localhost:8081'])
+    CORS(app, origins=["http://localhost:8081", "https://9e-production.up.railway.app"])
 
     # Configurar Flask-Mail desde variables de entorno
     app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
