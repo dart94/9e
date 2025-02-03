@@ -25,7 +25,7 @@ fetal_data = FetalDevelopmentData()
 #variables de google
 GOOGLE_CLIENT_ID=os.getenv('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET=os.getenv('GOOGLE_CLIENT_SECRET')
-REDIRECT_URI=os.getenv('REDIRET_URI')
+REDIRECT_URI = "https://9e-production.up.railway.app/auth/callback"
 
 # Decorador para verificar sesión del usuario
 def login_required(f):
@@ -668,6 +668,8 @@ def auth_callback():
         "grant_type": "authorization_code",
         "redirect_uri": REDIRECT_URI  # Asegúrate de que REDIRECT_URI sea el correcto
     }
+
+    print(f"Request data: {data}") 
 
     print(f"Data being sent to Google: {data}")  # Imprime los datos enviados a Google
 
