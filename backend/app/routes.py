@@ -10,9 +10,11 @@ from flask_jwt_extended import create_access_token
 from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from google.oauth2 import id_token
+from werkzeug.security import generate_password_hash
 import requests
 import os
 from urllib.parse import urlencode
+import uuid
 
 
 # Blueprints
@@ -739,16 +741,28 @@ def handle_google_login():
         headers = {"Authorization": f"Bearer {token_info['access_token']}"}
         user_info = requests.get(user_info_url, headers=headers).json()
         
-        # Buscar usuario por email de Google
-        user = User.query.filter_by(email=user_info['email']).first()
+        # Generar un username único basado en el nombre de Google
+        base_username = user_info.get('name', '').lower().replace(' ', '_')
+        username = base_username
+        counter = 1
+        while User.query.filter_by(username=username).first():
+            username = f"{base_username}_{counter}"
+            counter += 1
+        
+        # Buscar usuario por email o google_id
+        user = User.query.filter(
+            (User.email == user_info['email']) | (User.google_id == user_info.get('sub'))
+        ).first()
         
         if not user:
             # Crear nuevo usuario si no existe
             user = User(
-                username=user_info.get('name'),
+                username=username,
                 email=user_info['email'],
+                password=generate_password_hash(str(uuid.uuid4())),  # Genera contraseña aleatoria
+                is_verified=True,
                 google_id=user_info.get('sub'),
-                is_verified=True  # Los usuarios de Google se consideran verificados
+                auth_provider='google'
             )
             try:
                 db.session.add(user)
@@ -756,20 +770,24 @@ def handle_google_login():
             except Exception as e:
                 db.session.rollback()
                 return jsonify({"error": "Error creating user", "details": str(e)}), 500
+        else:
+            # Si el usuario existe pero no está verificado, verificarlo
+            if not user.is_verified:
+                user.is_verified = True
+                # Si no tiene google_id, agregarlo
+                if not user.google_id:
+                    user.google_id = user_info.get('sub')
+                    user.auth_provider = 'google'
+                db.session.commit()
         
-        # Generar token de sesión
-        serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
-        session_token = serializer.dumps(user.email, salt='google-auth-salt')
-        
-        # Crear token de acceso JWT
+        # Generar token de acceso JWT
         access_token = create_access_token(identity=user.id)
         
         return jsonify({
             "id": user.id,
             "username": user.username,
             "email": user.email,
-            "token": access_token,
-            "session_token": session_token
+            "token": access_token
         })
     
     except requests.exceptions.RequestException as e:
