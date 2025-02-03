@@ -709,3 +709,70 @@ def auth_google():
         'access_type': 'offline'
     }
     return redirect(f"{google_oauth_url}?{urlencode(params)}")
+
+@routes.route("/auth/google", methods=['POST'])
+def handle_google_login():
+    code = request.json.get('code')
+    if not code:
+        return jsonify({"error": "No authorization code provided"}), 400
+    
+    # Intercambiar el código por un token de acceso
+    token_url = "https://oauth2.googleapis.com/token"
+    data = {
+        "client_id": GOOGLE_CLIENT_ID,
+        "client_secret": GOOGLE_CLIENT_SECRET,
+        "code": code,
+        "grant_type": "authorization_code",
+        "redirect_uri": 'https://9e-production.up.railway.app/auth/callback'
+    }
+    
+    try:
+        response = requests.post(token_url, data=data)
+        response.raise_for_status()
+        token_info = response.json()
+        
+        if "access_token" not in token_info:
+            return jsonify({"error": "Failed to retrieve access token", "details": token_info}), 400
+        
+        # Obtener información del usuario
+        user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
+        headers = {"Authorization": f"Bearer {token_info['access_token']}"}
+        user_info = requests.get(user_info_url, headers=headers).json()
+        
+        # Buscar usuario por email de Google
+        user = User.query.filter_by(email=user_info['email']).first()
+        
+        if not user:
+            # Crear nuevo usuario si no existe
+            user = User(
+                username=user_info.get('name'),
+                email=user_info['email'],
+                google_id=user_info.get('sub'),
+                is_verified=True  # Los usuarios de Google se consideran verificados
+            )
+            try:
+                db.session.add(user)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                return jsonify({"error": "Error creating user", "details": str(e)}), 500
+        
+        # Generar token de sesión
+        serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+        session_token = serializer.dumps(user.email, salt='google-auth-salt')
+        
+        # Crear token de acceso JWT
+        access_token = create_access_token(identity=user.id)
+        
+        return jsonify({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "token": access_token,
+            "session_token": session_token
+        })
+    
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": "Request to Google API failed", "details": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Unexpected error", "details": str(e)}), 500

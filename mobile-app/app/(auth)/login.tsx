@@ -32,7 +32,7 @@ const IOS_CLIENT_ID = '30060725584-i56l4d5oab74g16mbensag5e21qk7rss.apps.googleu
 
 export default function LoginScreen() {
   const isRunningInExpoGo = Constants.appOwnership === 'expo';
-  const redirectUri = `${API_CONFIG.BASE_URL}/auth/callback`;;
+  const redirectUri = `https://9e-production.up.railway.app/auth/callback`;;
   console.log(redirectUri);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -41,7 +41,7 @@ export default function LoginScreen() {
     iosClientId: IOS_CLIENT_ID,
     webClientId: WEB_CLIENT_ID,
     scopes: ['profile', 'email'],
-    responseType: 'id_token',
+    responseType: 'code',
     redirectUri:redirectUri,
   });
 
@@ -56,9 +56,9 @@ export default function LoginScreen() {
 
   useEffect(() => {
     if (response?.type === 'success') {
-      const { id_token } = response.params;
-      if (id_token) {
-        handleGoogleLogin(id_token);
+      const { code } = response.params;
+      if (code) {
+        handleGoogleLogin(code);
       }
     } else if (response?.type === 'error') {
       console.error('Google Login Error:', response.error);
@@ -74,13 +74,13 @@ export default function LoginScreen() {
     checkBiometricSupport();
   }, []);
 
-  const handleGoogleLogin = async (idToken: string) => {
+  const handleGoogleLogin = async (code: string) => {
     try {
       setLoading(true);
   
       // Enviar el token de Google al backend Flask
       const response = await axios.post(`${API_CONFIG.BASE_URL}/auth/google`, {
-        token: idToken
+        code: code
       });
   
       if (response.status !== 200) {
