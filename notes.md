@@ -73,3 +73,4 @@ python -m backend.run
 - ~~Validar eliminar registros.~~
 - Registro de citas medicas **(Nueva versión).**
 - Información de la cita medica **(Nueva Versión).**
+- Migrar la base a Railway

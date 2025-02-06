@@ -8,21 +8,21 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "RUNTIME_VERSION": "2.0.2"
+        "RUNTIME_VERSION": "2.0.3"
       },
       "channel": "development"
     },
     "preview": {
       "distribution": "internal",
       "env": {
-        "RUNTIME_VERSION": "2.0.2"
+        "RUNTIME_VERSION": "2.0.3"
       },
       "channel": "preview"
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "RUNTIME_VERSION": "2.0.2"
+        "RUNTIME_VERSION": "2.0.3"
       },
       "channel": "production"
     }

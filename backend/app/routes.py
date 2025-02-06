@@ -649,14 +649,13 @@ def eliminar_registro_embarazo(id):
         db.session.rollback()
         return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500
 
-from flask import jsonify, request, redirect
-import requests
-from urllib.parse import urlencode
+
 
 @routes.route("/auth/callback")
 def auth_callback():
     code = request.args.get("code")
-    print(f"Authorization Code: {code}")  # Imprime el código recibido para verificar que es correcto
+    print(f"Authorization Code: {code}")
+    print(f"Received redirect_uri: {request.args.get('redirect_uri')}")  # Imprime el código recibido para verificar que es correcto
 
     if not code:
         return jsonify({"error": "No authorization code provided"}), 400
@@ -668,7 +667,7 @@ def auth_callback():
         "client_secret": GOOGLE_CLIENT_SECRET,
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": REDIRECT_URI  # Asegúrate de que REDIRECT_URI sea el correcto
+        "redirect_uri": REDIRECT_URI 
     }
 
     print(f"Request data: {data}") 

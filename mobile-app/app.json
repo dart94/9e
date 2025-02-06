@@ -2,86 +2,41 @@
   "expo": {
     "name": "Embrace",
     "slug": "mobile-app",
-    "version": "2.0.2",
+    "version": "2.0.3",
+    "runtimeVersion": "2.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/pregnancy-logo.png",
     "scheme": "embrace",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/pregnancy-logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.dart94.embrace",
-      "googleServicesFile": "./google-services.json",
-      "intentFilters": [
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "embrace.page.link",
-              "pathPrefix": "/auth"
-            }
-          ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        }
-      ]
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/pregnancy-logo.png"
+      "googleServicesFile": "./google-services.json"
     },
     "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/pregnancy-logo.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
-        }
-      ],
-      "expo-secure-store",
-      "expo-font",
       [
         "expo-build-properties",
         {
           "android": {
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0"
+            "buildToolsVersion": "35.0.0",
+            "kotlinVersion": "1.9.24"
           }
         }
       ]
     ],
-    "experiments": {
-      "typedRoutes": true
+    "updates": {
+      "url": "https://u.expo.dev/2a971723-c6c0-468c-a406-d819cc28e2bf"
     },
     "extra": {
-      "apiBaseUrl": "https://9e-production.up.railway.app/",
-      "router": {
-        "origin": false
-      },
       "eas": {
         "projectId": "2a971723-c6c0-468c-a406-d819cc28e2bf"
       }
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/2a971723-c6c0-468c-a406-d819cc28e2bf"
     }
   }
 }

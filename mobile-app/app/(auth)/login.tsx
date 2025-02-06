@@ -4,8 +4,8 @@ import {
   Text,
   TouchableOpacity,
   Alert,
-  
 } from 'react-native';
+import { Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,6 +22,7 @@ import { makeRedirectUri } from 'expo-auth-session';
 // Expo Auth imports:
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
+import * as Application from 'expo-application';
 
 
 WebBrowser.maybeCompleteAuthSession();
@@ -31,19 +32,28 @@ const ANDROID_CLIENT_ID = '30060725584-nuohjfa7tk392bltpl1k0tvs1gebhs7d.apps.goo
 const IOS_CLIENT_ID = '30060725584-i56l4d5oab74g16mbensag5e21qk7rss.apps.googleusercontent.com';
 
 export default function LoginScreen() {
-  const isRunningInExpoGo = Constants.appOwnership === 'expo';
-  const redirectUri = `https://9e-production.up.railway.app/auth/callback`;;
-  console.log(redirectUri);
+    const isRunningInExpoGo = Constants.appOwnership === 'expo';
+  
+    const redirectUri = makeRedirectUri({
+      // useProxy: isRunningInExpoGo, // Usar el proxy de Expo en Expo Go
+      scheme: 'embrace', // Solo necesario si no estás en Expo Go
+      path: 'auth/callback', // Solo necesario si no estás en Expo Go
+    }); 
+  
+    console.log('Redirect URI:', redirectUri); // Verifica el URI generado
+  
+    const [request, response, promptAsync] = Google.useAuthRequest({
+      clientId: Platform.select({
+        ios: IOS_CLIENT_ID,
+        android: ANDROID_CLIENT_ID,
+        default: WEB_CLIENT_ID,
+      }),
+      webClientId: WEB_CLIENT_ID,
+      redirectUri, // Usar el URI generado
+      scopes: ['profile', 'email'],
+      responseType: 'code',
+    });
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: isRunningInExpoGo ? WEB_CLIENT_ID : undefined,
-    androidClientId: ANDROID_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-    webClientId: WEB_CLIENT_ID,
-    scopes: ['profile', 'email'],
-    responseType: 'code',
-    redirectUri:redirectUri,
-  });
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -80,7 +90,8 @@ export default function LoginScreen() {
   
       // Enviar el token de Google al backend Flask
       const response = await axios.post(`${API_CONFIG.BASE_URL}/auth/google`, {
-        code: code
+        code: code,
+        redirectUri: redirectUri,
       });
   
       if (response.status !== 200) {
