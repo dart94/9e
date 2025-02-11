@@ -248,12 +248,12 @@ export default function LoginScreen() {
           onPress={handleBiometricAuth}
         >
           <Ionicons name="finger-print-outline" size={32} color={buttonStyles.buttonText.color} />
-          <Text style={buttonStyles.buttonText}>Ingresar con Huella</Text>
+          <Text style={buttonStyles.buttonText}> Ingresar con Huella</Text>
         </TouchableOpacity>
       )}
 
       <TouchableOpacity
-        style={[buttonStyles.button, { marginTop: 20 }]}
+        style={[buttonStyles.button, { marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
         onPress={() => promptAsync()}
         disabled={!request}
       >
@@ -263,7 +263,7 @@ export default function LoginScreen() {
           color={buttonStyles.buttonText.color}
           style={{ marginRight: 8 }}
         />
-        <Text style={buttonStyles.buttonText}>Ingresar con Google</Text>
+        <Text style={buttonStyles.buttonText}>Iniciar con Google</Text>
       </TouchableOpacity>
 
       <TouchableOpacity 
