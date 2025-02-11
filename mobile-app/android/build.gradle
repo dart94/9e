@@ -26,12 +26,12 @@ apply plugin: "com.facebook.react.rootproject"
 allprojects {
     repositories {
         maven {
-            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            // Todos los binarios de React Native se instalan desde npm
             url(new File(['node', '--print', "require.resolve('react-native/package.json')"]
                 .execute(null, rootDir).text.trim(), '../android'))
         }
         maven {
-            // Android JSC is installed from npm
+            // Android JSC se instala desde npm
             url(new File(['node', '--print', "require.resolve('jsc-android/package.json', { paths: [require.resolve('react-native/package.json')] })"]
                 .execute(null, rootDir).text.trim(), '../dist'))
         }
@@ -42,18 +42,40 @@ allprojects {
     
     configurations.all {
         resolutionStrategy {
+            // Para todas las dependencias cuyo grupo sea 'org.jetbrains.kotlin'
             eachDependency { details ->
                 if (details.requested.group == 'org.jetbrains.kotlin') {
-                    // Si la versión no está definida (null o vacía), la forzamos a kotlinVersion
+                    // Si no se especifica versión o está vacía, se forzará a kotlinVersion
                     if (!details.requested.version || details.requested.version.trim().isEmpty()) {
                         details.useVersion "$kotlinVersion"
                     } else {
-                        // Incluso si tiene versión, la forzamos a la que queremos usar
+                        // Incluso si se declaró una versión, la forzamos a la que queremos usar
                         details.useVersion "$kotlinVersion"
                     }
                 }
             }
-            // Forzamos explícitamente algunos módulos de Kotlin clave
+            // Forzamos explícitamente las dependencias clave de Kotlin
+            force "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
+                  "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion",
+                  "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
+                  "org.jetbrains.kotlin:kotlin-annotations-jvm:$kotlinVersion"
+        }
+    }
+}
+
+// También aseguramos que en todos los subproyectos se aplique la misma estrategia
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            eachDependency { details ->
+                if (details.requested.group == 'org.jetbrains.kotlin') {
+                    if (!details.requested.version || details.requested.version.trim().isEmpty()) {
+                        details.useVersion "$kotlinVersion"
+                    } else {
+                        details.useVersion "$kotlinVersion"
+                    }
+                }
+            }
             force "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
                   "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion",
                   "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
