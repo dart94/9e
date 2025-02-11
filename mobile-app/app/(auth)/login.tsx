@@ -257,6 +257,12 @@ export default function LoginScreen() {
         onPress={() => promptAsync()}
         disabled={!request}
       >
+        <Ionicons
+          name="logo-google"
+          size={24}
+          color={buttonStyles.buttonText.color}
+          style={{ marginRight: 8 }}
+        />
         <Text style={buttonStyles.buttonText}>Ingresar con Google</Text>
       </TouchableOpacity>
 
