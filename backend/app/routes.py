@@ -713,31 +713,14 @@ def auth_google():
 
 @routes.route("/auth/google", methods=['POST'])
 def handle_google_login():
-    code = request.json.get('code')
-    if not code:
-        return jsonify({"error": "No authorization code provided"}), 400
-    
-    # Intercambiar el código por un token de acceso
-    token_url = "https://oauth2.googleapis.com/token"
-    data = {
-        "client_id": GOOGLE_CLIENT_ID,
-        "client_secret": GOOGLE_CLIENT_SECRET,
-        "code": code,
-        "grant_type": "authorization_code",
-        "redirect_uri": 'https://9e-production.up.railway.app/auth/callback'
-    }
+    token = request.json.get('token')
+    if not token:
+        return jsonify({"error": "No token provided"}), 400
     
     try:
-        response = requests.post(token_url, data=data)
-        response.raise_for_status()
-        token_info = response.json()
-        
-        if "access_token" not in token_info:
-            return jsonify({"error": "Failed to retrieve access token", "details": token_info}), 400
-        
         # Obtener información del usuario
         user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
-        headers = {"Authorization": f"Bearer {token_info['access_token']}"}
+        headers = {"Authorization": f"Bearer {token}"}
         user_info = requests.get(user_info_url, headers=headers).json()
         
         # Generar un username único basado en el nombre de Google
