@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()  # Mueve la inicialización de db aquí
+from . import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +11,7 @@ class User(db.Model):
     google_id = db.Column(db.String(200), unique=True, nullable=True)
     auth_provider = db.Column(db.String(50), default='email' ,nullable=False)
 
+
 class PregnancyData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -22,15 +21,18 @@ class PregnancyData(db.Model):
     notes = db.Column(db.String(500), nullable=True)
     last_period_date = db.Column(db.Date, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    
     @property
     def calculate_week(self):
+        """
+        Calcula la semana actual del embarazo basado en la última fecha del período.
+        """
         if self.last_period_date:
             today = datetime.utcnow().date()
             delta = today - self.last_period_date
             return max(1, delta.days // 7)  # Semanas completas desde la última menstruación
         return None
-
+    
+# Fetal Development
 class FetalDevelopment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     week = db.Column(db.Integer, unique=True, nullable=False)

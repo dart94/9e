@@ -20,19 +20,10 @@ mail = Mail()
 def create_app():
     load_dotenv()
     app = Flask(__name__)
-    app.config.from_object('config.Config')
+    app.config.from_object('config.Config')  # Cargar configuración desde config.py
     
     # Aplicar CORS
     CORS(app, origins=["http://localhost:8081", "https://9e-production.up.railway.app"])
-
-    # Configurar Flask-Mail
-    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
-    app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
-    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
-    app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
-    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
     # Inicializar extensiones con `app`
     db.init_app(app)
@@ -73,3 +64,4 @@ def create_app():
         return {"error": "Internal server error"}, 500
 
     return app
+
