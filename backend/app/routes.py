@@ -9,6 +9,12 @@ from flask_mail import Message
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from google.oauth2 import id_token
+from werkzeug.security import generate_password_hash
+import requests
+import os
+from urllib.parse import urlencode
+import uuid
 
 
 # Blueprints
@@ -17,6 +23,11 @@ routes = Blueprint('routes', __name__)
 
 # Instancia de datos fetales
 fetal_data = FetalDevelopmentData()
+
+#variables de google
+GOOGLE_CLIENT_ID=os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET=os.getenv('GOOGLE_CLIENT_SECRET')
+REDIRECT_URI = "https://9e-production.up.railway.app/auth/callback"
 
 # Decorador para verificar sesión del usuario
 def login_required(f):
@@ -637,3 +648,148 @@ def eliminar_registro_embarazo(id):
         # Manejo de excepciones y rollback
         db.session.rollback()
         return jsonify({"error": f"Error al eliminar el registro: {str(e)}"}), 500
+
+
+
+@routes.route("/auth/callback")
+def auth_callback():
+    code = request.args.get("code")
+    print(f"Authorization Code: {code}")
+    print(f"Received redirect_uri: {request.args.get('redirect_uri')}")  # Imprime el código recibido para verificar que es correcto
+
+    if not code:
+        return jsonify({"error": "No authorization code provided"}), 400
+
+    # Intercambiar el código por un token de acceso
+    token_url = "https://oauth2.googleapis.com/token"
+    data = {
+        "client_id": GOOGLE_CLIENT_ID,
+        "client_secret": GOOGLE_CLIENT_SECRET,
+        "code": code,
+        "grant_type": "authorization_code",
+        "redirect_uri": REDIRECT_URI 
+    }
+
+    print(f"Request data: {data}") 
+
+    print(f"Data being sent to Google: {data}")  # Imprime los datos enviados a Google
+
+    try:
+        response = requests.post(token_url, data=data)
+        response.raise_for_status()  # Si la respuesta no es 2xx, se lanza una excepción
+        token_info = response.json()
+
+        print(f"Google response: {token_info}")  # Imprime la respuesta de Google
+
+        if "access_token" not in token_info:
+            print(f"Error: {token_info}")  # Si no se recibe el token, imprime el error
+            return jsonify({"error": "Failed to retrieve access token", "details": token_info}), 400
+
+        # Obtener información del usuario
+        user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
+        headers = {"Authorization": f"Bearer {token_info['access_token']}"}
+        user_info = requests.get(user_info_url, headers=headers).json()
+
+        return jsonify({"user": user_info})
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error during the request: {e}")  # Imprime el error si la solicitud falla
+        return jsonify({"error": "Request to Google API failed", "details": str(e)}), 500
+
+
+# Autenticación con Google
+@routes.route("/auth/google")
+def auth_google():
+    # Redirige a Google OAuth para obtener el código
+    google_oauth_url = "https://accounts.google.com/o/oauth2/v2/auth"
+    params = {
+        'client_id': GOOGLE_CLIENT_ID,
+        'redirect_uri': 'https://9e-production.up.railway.app/auth/callback',  
+        'response_type': 'code',
+        'scope': 'openid profile email',
+        'access_type': 'offline'
+    }
+    return redirect(f"{google_oauth_url}?{urlencode(params)}")
+
+@routes.route("/auth/google", methods=['POST'])
+def handle_google_login():
+    code = request.json.get('code')
+    if not code:
+        return jsonify({"error": "No authorization code provided"}), 400
+    
+    # Intercambiar el código por un token de acceso
+    token_url = "https://oauth2.googleapis.com/token"
+    data = {
+        "client_id": GOOGLE_CLIENT_ID,
+        "client_secret": GOOGLE_CLIENT_SECRET,
+        "code": code,
+        "grant_type": "authorization_code",
+        "redirect_uri": 'https://9e-production.up.railway.app/auth/callback'
+    }
+    
+    try:
+        response = requests.post(token_url, data=data)
+        response.raise_for_status()
+        token_info = response.json()
+        
+        if "access_token" not in token_info:
+            return jsonify({"error": "Failed to retrieve access token", "details": token_info}), 400
+        
+        # Obtener información del usuario
+        user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
+        headers = {"Authorization": f"Bearer {token_info['access_token']}"}
+        user_info = requests.get(user_info_url, headers=headers).json()
+        
+        # Generar un username único basado en el nombre de Google
+        base_username = user_info.get('name', '').lower().replace(' ', '_')
+        username = base_username
+        counter = 1
+        while User.query.filter_by(username=username).first():
+            username = f"{base_username}_{counter}"
+            counter += 1
+        
+        # Buscar usuario por email o google_id
+        user = User.query.filter(
+            (User.email == user_info['email']) | (User.google_id == user_info.get('sub'))
+        ).first()
+        
+        if not user:
+            # Crear nuevo usuario si no existe
+            user = User(
+                username=username,
+                email=user_info['email'],
+                password=generate_password_hash(str(uuid.uuid4())),  # Genera contraseña aleatoria
+                is_verified=True,
+                google_id=user_info.get('sub'),
+                auth_provider='google'
+            )
+            try:
+                db.session.add(user)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                return jsonify({"error": "Error creating user", "details": str(e)}), 500
+        else:
+            # Si el usuario existe pero no está verificado, verificarlo
+            if not user.is_verified:
+                user.is_verified = True
+                # Si no tiene google_id, agregarlo
+                if not user.google_id:
+                    user.google_id = user_info.get('sub')
+                    user.auth_provider = 'google'
+                db.session.commit()
+        
+        # Generar token de acceso JWT
+        access_token = create_access_token(identity=user.id)
+        
+        return jsonify({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "token": access_token
+        })
+    
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": "Request to Google API failed", "details": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Unexpected error", "details": str(e)}), 500
