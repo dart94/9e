@@ -716,70 +716,80 @@ def handle_google_login():
     token = request.json.get('token')
     if not token:
         return jsonify({"error": "No token provided"}), 400
-    
+   
     try:
         print(f"token recibido: {token}")
-        # Obtener información del usuario
         user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
         headers = {"Authorization": f"Bearer {token}"}
         user_info = requests.get(user_info_url, headers=headers).json()
-
-        # Imprimir la respuesta de Google
         print(f"Google response: {user_info}")
         
-        # Generar un username único basado en el nombre de Google
-        base_username = user_info.get('name', '').lower().replace(' ', '')
-        username = base_username
-        counter = 1
-        while User.query.filter_by(username=username).first():
-            username = f"{base_username}_{counter}"
-            counter += 1
+        # Primero buscar por google_id que es único
+        user = User.query.filter_by(google_id=user_info.get('id')).first()
+        print(f"Búsqueda por google_id: {user}")
         
-        # Buscar usuario por email o google_id
-        user = User.query.filter(
-            (User.email == user_info['email']) | (User.google_id == user_info.get('sub'))
-        ).first()
-
-        #Verificar si el usuario existe
-        print(f"Usuario encontrado: {user}")
+        if not user:
+            # Si no se encuentra por google_id, buscar por email
+            user = User.query.filter_by(email=user_info['email']).first()
+            print(f"Búsqueda por email: {user}")
         
         if not user:
             # Crear nuevo usuario si no existe
+            base_username = user_info.get('name', '').lower().replace(' ', '')
+            username = base_username
+            counter = 1
+            
+            while User.query.filter_by(username=username).first():
+                username = f"{base_username}_{counter}"
+                counter += 1
+            
             user = User(
                 username=username,
                 email=user_info['email'],
-                password=generate_password_hash(str(uuid.uuid4())),  # Genera contraseña aleatoria
+                password=generate_password_hash(str(uuid.uuid4())),
                 is_verified=True,
-                google_id=user_info.get('sub'),
+                google_id=user_info.get('id'),  # Cambiado de 'sub' a 'id'
                 auth_provider='google'
             )
             try:
                 db.session.add(user)
                 db.session.commit()
+                print(f"Nuevo usuario creado: {user.id} - {user.email}")
             except Exception as e:
                 db.session.rollback()
+                print(f"Error al crear usuario: {str(e)}")
                 return jsonify({"error": "Error creating user", "details": str(e)}), 500
         else:
-            # Si el usuario existe pero no está verificado, verificarlo
-            if not user.is_verified:
-                user.is_verified = True
-                # Si no tiene google_id, agregarlo
-                if not user.google_id:
-                    user.google_id = user_info.get('sub')
-                    user.auth_provider = 'google'
+            # Actualizar información del usuario existente
+            if not user.google_id:
+                user.google_id = user_info.get('id')
+                user.auth_provider = 'google'
+            user.is_verified = True
+            try:
                 db.session.commit()
+                print(f"Usuario actualizado: {user.id} - {user.email}")
+            except Exception as e:
+                db.session.rollback()
+                print(f"Error al actualizar usuario: {str(e)}")
+                return jsonify({"error": "Error updating user", "details": str(e)}), 500
         
         # Generar token de acceso JWT
         access_token = create_access_token(identity=user.id)
         
-        return jsonify({
+        response_data = {
             "id": user.id,
             "username": user.username,
             "email": user.email,
             "token": access_token
-        })
-    
+        }
+        print(f"Respuesta final: {response_data}")
+        return jsonify(response_data)
+   
     except requests.exceptions.RequestException as e:
+        print(f"Error en request a Google: {str(e)}")
         return jsonify({"error": "Request to Google API failed", "details": str(e)}), 500
     except Exception as e:
+        print(f"Error inesperado: {str(e)}")
         return jsonify({"error": "Unexpected error", "details": str(e)}), 500
+    finally:
+        db.session.close()
