@@ -54,6 +54,8 @@ export default function LoginScreen() {
   const handleGoogleLogin = async (accessToken: string) => {
     setLoading(true);
     try {
+      // Limpiar datos de usuario
+      await AsyncStorage.clear();
       const response = await axios.post(`${API_CONFIG.BASE_URL}/auth/google`, {
         token: accessToken,
       });
@@ -85,7 +87,7 @@ export default function LoginScreen() {
         );
 
         // Navegar al Dashboard
-        router.replace('/dashboard');
+        router.push('/dashboard');
       }
     } catch (error) {
       console.error('Error detallado:', error);
@@ -182,7 +184,7 @@ export default function LoginScreen() {
         );
 
         // Navegar al Dashboard
-        router.replace('/dashboard');
+        router.push('/dashboard');
       }
     } catch (error) {
       console.error('Error detallado:', error);

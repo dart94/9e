@@ -718,13 +718,17 @@ def handle_google_login():
         return jsonify({"error": "No token provided"}), 400
     
     try:
+        print(f"token recibido: {token}")
         # Obtener información del usuario
         user_info_url = "https://www.googleapis.com/oauth2/v2/userinfo"
         headers = {"Authorization": f"Bearer {token}"}
         user_info = requests.get(user_info_url, headers=headers).json()
+
+        # Imprimir la respuesta de Google
+        print(f"Google response: {user_info}")
         
         # Generar un username único basado en el nombre de Google
-        base_username = user_info.get('name', '').lower().replace(' ', '_')
+        base_username = user_info.get('name', '').lower().replace(' ', '')
         username = base_username
         counter = 1
         while User.query.filter_by(username=username).first():
@@ -735,6 +739,9 @@ def handle_google_login():
         user = User.query.filter(
             (User.email == user_info['email']) | (User.google_id == user_info.get('sub'))
         ).first()
+
+        #Verificar si el usuario existe
+        print(f"Usuario encontrado: {user}")
         
         if not user:
             # Crear nuevo usuario si no existe
