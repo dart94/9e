@@ -792,4 +792,4 @@ def handle_google_login():
         print(f"Error inesperado: {str(e)}")
         return jsonify({"error": "Unexpected error", "details": str(e)}), 500
     finally:
-        db.session.close()
+        db.session.remove()
