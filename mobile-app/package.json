@@ -55,7 +55,8 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "expo-auth-session": "~6.0.3",
-    "undefined": "expo-auth-session/providers/google"
+    "undefined": "expo-auth-session/providers/google",
+    "expo-notifications": "~0.29.13"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
