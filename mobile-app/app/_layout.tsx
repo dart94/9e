@@ -1,7 +1,46 @@
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
+import { NotificationService } from '../services/notifications/NotificationService';
+import * as Notifications from 'expo-notifications';
 
+// Configuración global de notificaciones
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 export default function Layout() {
+  useEffect(() => {
+    let subscription: { remove: () => void } | null = null;
+
+    const setupNotifications = async () => {
+      try {
+        const isInitialized = await NotificationService.initialize();
+        
+        if (isInitialized) {
+          subscription = await NotificationService.setupNotificationListeners(
+            (notification) => {
+              console.log('Notificación recibida:', notification);
+            }
+          );
+        }
+      } catch (error) {
+        console.error('Error al configurar las notificaciones:', error);
+      }
+    };
+
+    setupNotifications();
+
+    return () => {
+      if (subscription) {
+        subscription.remove();
+      }
+    };
+  }, []);
+
   return (
     <Stack
       screenOptions={{
@@ -28,7 +67,6 @@ export default function Layout() {
           title: 'Recuperar Contraseña',
         }}
       />
-
       {/* Pantallas principales */}
       <Stack.Screen
         name="dashboard"
@@ -47,15 +85,13 @@ export default function Layout() {
         options={{
           title: 'Nuevo Registro',
         }}
-        />
+      />
       <Stack.Screen
         name="viewPregnancy"
         options={{
           title: 'Ver Registros',
         }}
       />
-
     </Stack>
-    
   );
 }
