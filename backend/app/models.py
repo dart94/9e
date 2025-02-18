@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
+from flask_login import UserMixin
 from . import db
 
-class User(db.Model):
+class User(UserMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -10,6 +11,7 @@ class User(db.Model):
     is_verified = db.Column(db.Boolean, default=False, nullable=False)
     google_id = db.Column(db.String(200), unique=True, nullable=True)
     auth_provider = db.Column(db.String(50), default='email' ,nullable=False)
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
 
 class PregnancyData(db.Model):

@@ -15,6 +15,8 @@ import requests
 import os
 from urllib.parse import urlencode
 import uuid
+from flask_login import login_user
+from urllib.parse import urlparse
 
 
 # Blueprints
@@ -95,6 +97,16 @@ def login():
             session['user_id'] = user.id
             session['username'] = user.username
             flash('Inicio de sesión exitoso.', 'success')
+
+            # Obtener la URL previa de `next`
+            next_page = request.args.get('next')
+
+            # Validar que `next_page` sea una ruta interna y no una URL absoluta
+            if next_page:
+                parsed_url = urlparse(next_page)
+                if parsed_url.netloc == "":  # Asegura que no sea una URL absoluta
+                    return redirect(next_page)
+
             return redirect(url_for('routes.dashboard'))
         else:
             flash('Correo o contraseña incorrectos.', 'danger')
