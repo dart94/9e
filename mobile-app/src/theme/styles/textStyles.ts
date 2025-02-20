@@ -20,6 +20,7 @@ export const textStyles = StyleSheet.create({
     color: COLORS.text,
     marginBottom: SIZES.margin,
     lineHeight: SIZES.lineHeight,
+    textAlign: 'center',
   },
   errorText: {
     fontSize: SIZES.fontMedium,

@@ -93,21 +93,7 @@ function DashboardContent() {
     );
   };
 
-  const groupedData = [
-    [
-      { title: 'Desarrollo del Bebé', content: week_info.desarrollo_bebe },
-      { title: 'Comparación', content: week_info.comparacion },
-    ],
-    [
-      { title: 'Cambios en la Madre', content: week_info.cambios_madre },
-      { title: 'Síntomas Comunes', content: renderList(week_info.sintomas_comunes) },
-    ],
-    [
-      { title: 'Consejos', content: renderList(week_info.consejos) },
-      { title: 'Pruebas Médicas', content: renderList(week_info.pruebas_medicas) },
-    ],
-  ];
-  
+
 
   return (
     <ScrollView style={layoutStyles.container}>
@@ -129,13 +115,16 @@ function DashboardContent() {
 
       {week_info ? (
         <>
+            <View style={miscStyles.card}>
+            <Text style={textStyles.subtitle}>Tamaño</Text>
+            <Text style={textStyles.paragraph}>{week_info.tamano}, peso aproximado:{week_info.peso}</Text>
+
+            <Text style={textStyles.subtitle}>Comparación</Text>
+            <Text style={textStyles.paragraph}>{week_info.comparacion}</Text>
+          </View>
           <View style={miscStyles.card}>
             <Text style={textStyles.subtitle}>Desarrollo del Bebé</Text>
             <Text style={textStyles.paragraph}>{week_info.desarrollo_bebe}</Text>
-          </View>
-          <View style={miscStyles.card}>
-            <Text style={textStyles.subtitle}>Comparación</Text>
-            <Text style={textStyles.paragraph}>{week_info.comparacion}</Text>
           </View>
           <View style={miscStyles.card}>
             <Text style={textStyles.subtitle}>Cambios en la Madre</Text>

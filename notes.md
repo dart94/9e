@@ -45,10 +45,14 @@ java -jar bundletool-all.jar build-apks \
 ## Activar entorno virtual y ejecutar run.py
 
 ### Para tu entorno Flask / Python, puedes activar el virtualenv y lanzar la aplicación:
-
 #### Activar el entorno:
 ```powershell
 .\venv\Scripts\Activate.ps1
+```
+
+### Set PYTHONPATH
+```
+$env:PYTHONPATH = "$env:PYTHONPATH;."
 ```
 
 #### Ejecutar la aplicación:
