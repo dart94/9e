@@ -84,9 +84,9 @@ python -m backend.run
 ## ✅ Tareas Pendientes
 
 ✅ **Sprint 1 - 🔔 Notificaciones push remotas**
-- [ ] 📡 Configurar Firebase Cloud Messaging / Expo Notifications.
-- [ ] 🔗 Integrar backend Flask para el envío de notificaciones.
-- [ ] 📱 Probar y validar en dispositivos reales.
+- [x] 📡 Configurar Firebase Cloud Messaging / Expo Notifications.
+- [x] 🔗 Integrar backend Flask para el envío de notificaciones.
+- [x] 📱 Probar y validar en dispositivos reales.
 
 ✅ **Sprint 2 - 📖 Diario postparto**
 - [ ] 🗄️ Diseñar la base de datos para entradas del diario.

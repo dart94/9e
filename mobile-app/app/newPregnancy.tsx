@@ -18,6 +18,8 @@ import { API_CONFIG } from '../src/config/config';
 import { useRouter } from 'expo-router';
 import CustomInput from '@/src/components/CustomInput';
 
+
+
 export default function NewPregnancyRecordScreen() {
   const [form, setForm] = useState({
     last_period_date: '',
@@ -29,6 +31,7 @@ export default function NewPregnancyRecordScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const router = useRouter();
+
 
   useEffect(() => {
     const fetchLastPeriodDate = async () => {
