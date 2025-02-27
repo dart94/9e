@@ -250,6 +250,9 @@ main {
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(95, 191, 175, 0.1);
   flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Navegación */
@@ -576,6 +579,8 @@ nav a:hover {
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #E8F4F2;
+  margin: 0 auto;
+  margin-top: 3rem;
 }
 
 .styled-form .form-group {
@@ -1274,7 +1279,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #FAFBFC;
+  background-color: #E8F4F2;
 }
 .index-container .login-section h1 {
   margin: 0;
@@ -1328,7 +1333,7 @@ body {
   transition: background-color 0.3s ease;
 }
 .index-container .login-section .styled-form .btn:hover {
-  background-color: #4A9B8F;
+  background-color: #ffffff;
 }
 .index-container .login-section .register-link {
   margin-top: 1rem;

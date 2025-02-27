@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session, jsonify, request, current_app
+from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from datetime import datetime, timezone, timedelta  # Importación correcta
 from .forms import RegistrationForm, PregnancyDataForm, LoginForm, EditProfileForm, ResetPasswordRequestForm, ResetPasswordForm
@@ -19,9 +20,17 @@ from flask_login import login_user
 from urllib.parse import urlparse
 
 
+
 # Blueprints
 fetal_api = Blueprint('fetal_development_api', __name__)
 routes = Blueprint('routes', __name__)
+delete_account = Blueprint('delete_account', __name__)
+
+def get_serializer():
+    return current_app.extensions.get('delete_account_serializer')
+
+# Configurar el serializador para generar tokens seguros
+
 
 # Instancia de datos fetales
 fetal_data = FetalDevelopmentData()
@@ -343,6 +352,67 @@ def send_confirmation_email(to_email, confirm_url):
         current_app.logger.error(f"Error enviando correo de confirmación: {str(e)}")
         raise
  
+
+# Solicitar eliminación de cuenta
+@delete_account.route('/solicitar-eliminacion', methods=['GET', 'POST'])
+def solicitar_eliminacion():
+    if request.method == 'GET':
+        # Mostrar formulario para solicitar eliminación
+        return render_template('solicitar_eliminacion.html')
+    
+    # Para solicitudes POST desde el formulario
+    email = request.form.get('email')
+    
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        flash("Usuario no encontrado.", "error")
+        return redirect(url_for('delete_account.solicitar_eliminacion'))
+    
+    serializer = get_serializer()
+    if not serializer:
+        flash("Error interno del servidor", "error")
+        return redirect(url_for('delete_account.solicitar_eliminacion'))
+            
+    # Generar token de verificación
+    token = serializer.dumps(email, salt='delete-account')
+    confirm_url = url_for('delete_account.confirmar_eliminacion', token=token, _external=True)
+   
+    # Enviar correo de confirmación
+    msg = Message("Confirmar eliminación de cuenta", sender=os.getenv("MAIL_DEFAULT_SENDER"), recipients=[email])
+    msg.body = f"Hola {user.username},\n\nHaz clic en el siguiente enlace para confirmar la eliminación de tu cuenta:\n{confirm_url}\n\nSi no solicitaste esto, ignora este mensaje."
+    mail.send(msg)
+   
+    flash("Se ha enviado un correo de confirmación a tu dirección de email.", "success")
+    return redirect(url_for('routes.index'))
+
+# Confirmar eliminación de cuenta
+@delete_account.route('/confirmar-eliminacion/<token>', methods=['GET'])
+def confirmar_eliminacion(token):
+    serializer = get_serializer()
+    if not serializer:
+        return render_template('error.html', error="Error interno del servidor"), 500
+    
+    try:
+        email = serializer.loads(token, salt='delete-account', max_age=3600)
+    except SignatureExpired:
+        return render_template('error.html', error="El enlace ha expirado."), 400
+    except BadSignature:
+        return render_template('error.html', error="El enlace es inválido."), 400
+    
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return render_template('error.html', error="Usuario no encontrado."), 404
+    
+    db.session.delete(user)
+    db.session.commit()
+   
+    return render_template('cuenta_eliminada.html', message="Cuenta eliminada con éxito.")
+
+# Ruta para la página sin token
+@delete_account.route('/confirmar-eliminacion', methods=['GET'])
+def confirmar_eliminacion_sin_token():
+    return render_template('error.html', error="Se requiere un token válido para eliminar la cuenta."), 400
+
 
 #Endpoints para la API
 #API olvido de contraseña

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuenta Eliminada</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Cuenta Eliminada</h1>
+    </header>
+    <main>
+        <div class="alert alert-success">{{ message }}</div>
+        <p>Tu cuenta ha sido eliminada con éxito. Esperamos verte de nuevo pronto.</p>
+        <a href="{{ url_for('routes.index') }}" class="btn">Regresar al inicio</a>
+    </main>
+</body>
+</html>

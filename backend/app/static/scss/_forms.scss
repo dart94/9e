@@ -9,7 +9,9 @@
     padding: v.$spacing-unit * 2;
     border-radius: v.$border-radius;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid v.$color-secondary; 
+    border: 1px solid v.$color-secondary;
+    margin: 0 auto;
+    margin-top: 3rem;
 }
 
 .styled-form .form-group {

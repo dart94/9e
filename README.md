@@ -65,6 +65,8 @@ mobile-app/
 
 ## Instalación y Configuración
 
+## Instalación y Configuración ✨🚀✨
+
 ### **Backend:**
 1. Clonar el repositorio.
 2. Navegar al directorio `backend`.
@@ -88,16 +90,47 @@ mobile-app/
    flask run
    ```
 
-### **Aplicación Móvil:**
-1. Navegar al directorio `mobile-app`.
-2. Instalar dependencias:
+### **Compilar archivos SCSS a CSS** 🎨🖌️🎨
+1. Navegar a la carpeta `backend/app/static/css/` (o donde tengas los archivos `.scss`).
+2. Instalar `sass` si no lo tienes:
+   ```bash
+   npm install -g sass
+   ```
+3. Compilar manualmente el archivo `.scss` a `.css`:
+   ```bash
+   sass styles.scss styles.css
+   ```
+4. Para compilar automáticamente en cada cambio:
+   ```bash
+   sass --watch styles.scss:styles.css
+   ```
+
+### **Compilar SCSS con Node.js** 🛠️📦💡
+Si usas `Node.js`, puedes agregar estos scripts en tu `package.json`:
+
+```json
+"scripts": {
+  "build:css": "sass backend/app/static/css/styles.scss backend/app/static/css/styles.css --no-source-map",
+  "watch:css": "sass --watch backend/app/static/css/styles.scss:backend/app/static/css/styles.css"
+}
+```
+
+Luego, usa los siguientes comandos:
+
+1. Instalar dependencias (si aún no lo has hecho):
    ```bash
    npm install
    ```
-3. Iniciar la aplicación:
+2. Compilar una vez:
    ```bash
-   expo start
+   npm run build:css
    ```
+3. Compilar automáticamente en cada cambio:
+   ```bash
+   npm run watch:css
+   ```
+
+
 
 ---
 

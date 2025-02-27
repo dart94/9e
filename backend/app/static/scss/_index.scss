@@ -101,7 +101,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: v.$color-bg;
+    background-color: v.$color-white;
 
     h1 {
       margin: 0;
@@ -161,7 +161,7 @@ body {
         transition: background-color 0.3s ease;
 
         &:hover {
-          background-color: v.$color-primary-dark;
+          background-color: v.$color-white;
         }
       }
     }

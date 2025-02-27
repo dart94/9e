@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
 from . import db
 
 class User(UserMixin,db.Model):
