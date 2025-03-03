@@ -1,0 +1,164 @@
+{
+    "posparto": [
+      {
+        "semana": 1,
+        "cambios_madre": "El útero comienza a contraerse y expulsar los loquios. Puede haber cambios emocionales debido a las hormonas.",
+        "desarrollo_bebe": "El bebé duerme la mayor parte del tiempo y tiene reflejos primitivos como el de succión.",
+        "sintomas_comunes": "Fatiga extrema, sangrado leve a moderado, dolor en el perineo si hubo parto vaginal.",
+        "consejos": "Descansa lo más posible, bebe mucha agua y pide apoyo para evitar el agotamiento.",
+        "pruebas_medicas": "Revisión neonatal, prueba de audición y revisión de peso y alimentación."
+      },
+      {
+        "semana": 2,
+        "cambios_madre": "El sangrado comienza a disminuir, pero los niveles hormonales aún están ajustándose.",
+        "desarrollo_bebe": "Empieza a reconocer voces y rostros familiares.",
+        "sintomas_comunes": "Dolores postparto, fatiga, cambios en la piel como sequedad o acné.",
+        "consejos": "Intenta establecer una rutina de alimentación y sueño para el bebé.",
+        "pruebas_medicas": "Seguimiento de la lactancia y revisión del peso del bebé."
+      },
+      {
+        "semana": 3,
+        "cambios_madre": "Aumento de la producción de leche si se está amamantando. Posibles cambios en el estado de ánimo.",
+        "desarrollo_bebe": "Mayor tiempo de vigilia y más movimientos.",
+        "sintomas_comunes": "Insomnio, ansiedad leve, sensibilidad en los senos.",
+        "consejos": "Busca momentos de descanso y apoyo emocional si lo necesitas.",
+        "pruebas_medicas": "Consulta con el pediatra sobre el desarrollo y alimentación del bebé."
+      },
+      {
+        "semana": 4,
+        "cambios_madre": "El cuerpo comienza a estabilizarse hormonalmente.",
+        "desarrollo_bebe": "Empieza a hacer contacto visual prolongado y responder a sonidos.",
+        "sintomas_comunes": "Estreñimiento, fatiga, cambios de humor.",
+        "consejos": "Mantén una dieta rica en fibra y prioriza tu descanso.",
+        "pruebas_medicas": "Control postnatal para evaluar la recuperación de la madre."
+      },
+      {
+        "semana": 5,
+        "cambios_madre": "Los loquios comienzan a volverse más claros y escasos. Puede empezar a sentirse más energética.",
+        "desarrollo_bebe": "Comienza a mostrar más interés por su entorno y a seguir objetos con la mirada.",
+        "sintomas_comunes": "Posible dolor de espalda, molestias en los senos, dificultad para dormir.",
+        "consejos": "Realiza ejercicios de suelo pélvico suaves si el médico lo autoriza.",
+        "pruebas_medicas": "Seguimiento del peso y alimentación del bebé."
+      },
+      {
+        "semana": 6,
+        "cambios_madre": "El útero casi ha vuelto a su tamaño pre-embarazo. Posible autorización médica para actividad física y relaciones sexuales.",
+        "desarrollo_bebe": "Mayor control cefálico y capacidad para girar la cabeza hacia los sonidos.",
+        "sintomas_comunes": "Disminución del sangrado, ajustes en la producción de leche, posible debilidad muscular.",
+        "consejos": "Consulta con tu médico antes de retomar la actividad física y las relaciones sexuales.",
+        "pruebas_medicas": "Revisión postparto de la madre (examen físico y evaluación emocional)."
+      },
+      {
+        "semana": 7,
+        "cambios_madre": "Mayor estabilidad hormonal, aunque los cambios en el estado de ánimo pueden persistir.",
+        "desarrollo_bebe": "Mejora en la coordinación de movimientos y mayor interacción social.",
+        "sintomas_comunes": "Fatiga por privación de sueño, posibles dolores musculares.",
+        "consejos": "Establece rutinas de sueño y busca apoyo para compartir el cuidado del bebé.",
+        "pruebas_medicas": "Seguimiento del desarrollo neurológico del bebé."
+      },
+      {
+        "semana": 8,
+        "cambios_madre": "Mayor recuperación física, aunque la fatiga aún puede persistir.",
+        "desarrollo_bebe": "Comienza a responder a estímulos con sonrisas y sonidos.",
+        "sintomas_comunes": "Posible caída del cabello postparto, cambios en el peso corporal.",
+        "consejos": "Incorpora actividad física suave y una alimentación balanceada.",
+        "pruebas_medicas": "Consulta con el pediatra sobre vacunas y desarrollo."
+      },
+      {
+        "semana": 9,
+        "cambios_madre": "El cuerpo continúa adaptándose a los cambios hormonales post-embarazo.",
+        "desarrollo_bebe": "Mayor capacidad para levantar la cabeza cuando está boca abajo y mayor fuerza en el cuello.",
+        "sintomas_comunes": "Posible cansancio crónico, cambios en el metabolismo.",
+        "consejos": "Mantén una hidratación adecuada y considera suplementos si estás amamantando.",
+        "pruebas_medicas": "Control del peso y desarrollo del bebé."
+      },
+      {
+        "semana": 10,
+        "cambios_madre": "Posible mejora en la calidad del sueño si el bebé comienza a establecer patrones más regulares.",
+        "desarrollo_bebe": "Aumento de la coordinación mano-ojo y mayor interés en juguetes y objetos.",
+        "sintomas_comunes": "Cambios en el apetito, posible retención de líquidos.",
+        "consejos": "Intenta establecer pequeñas rutinas para ti misma que ayuden a tu bienestar.",
+        "pruebas_medicas": "Seguimiento del desarrollo motor del bebé."
+      },
+      {
+        "semana": 11,
+        "cambios_madre": "Posible recuperación del libido, aunque puede variar según cada mujer y si está amamantando.",
+        "desarrollo_bebe": "Mayor control de movimientos y posible inicio de balbuceos más complejos.",
+        "sintomas_comunes": "Sequedad vaginal, especialmente si hay lactancia, posible ansiedad por la vuelta al trabajo.",
+        "consejos": "Utiliza lubricantes si hay sequedad y planifica con tiempo la posible reincorporación laboral.",
+        "pruebas_medicas": "Evaluación del desarrollo cognitivo y motor del bebé."
+      },
+      {
+        "semana": 12,
+        "cambios_madre": "El cuerpo sigue recuperándose, posible reaparición del ciclo menstrual.",
+        "desarrollo_bebe": "Mayor control de la cabeza y exploración con las manos.",
+        "sintomas_comunes": "Cambios en el estado de ánimo, fatiga ocasional.",
+        "consejos": "Busca momentos de autocuidado y descanso.",
+        "pruebas_medicas": "Control de crecimiento del bebé."
+      },
+      {
+        "semana": 13,
+        "cambios_madre": "Continúa la recuperación física. Si no hay lactancia, la producción de leche podría cesar completamente.",
+        "desarrollo_bebe": "Mayor estabilidad al sentarse con apoyo y mejor control de movimientos.",
+        "sintomas_comunes": "Posible inicio de pérdida de peso si había retención, cambios en la piel.",
+        "consejos": "Incorpora actividades que fortalezcan el vínculo con tu bebé como masajes o juegos sensoriales.",
+        "pruebas_medicas": "Revisión del desarrollo visual y auditivo del bebé."
+      },
+      {
+        "semana": 14,
+        "cambios_madre": "Mayor recuperación de la tonificación muscular, aunque el abdomen puede seguir distendido.",
+        "desarrollo_bebe": "Intenta alcanzar objetos con las manos y muestra preferencia por ciertos juguetes.",
+        "sintomas_comunes": "Posible estrés por la adaptación a la maternidad, cambios en la elasticidad de la piel.",
+        "consejos": "Realiza ejercicios de respiración y relajación para manejar el estrés.",
+        "pruebas_medicas": "Control de peso y crecimiento del bebé."
+      },
+      {
+        "semana": 15,
+        "cambios_madre": "Mayor estabilidad emocional aunque pueden persistir momentos de sensibilidad.",
+        "desarrollo_bebe": "Mayor coordinación y posible inicio de movimientos para darse vuelta intencionalmente.",
+        "sintomas_comunes": "Posible sensación de cansancio crónico, especialmente con interrupciones del sueño.",
+        "consejos": "Busca apoyo para poder descansar y considera técnicas de sueño seguro para el bebé.",
+        "pruebas_medicas": "Evaluación del desarrollo psicomotor del bebé."
+      },
+      {
+        "semana": 16,
+        "cambios_madre": "Posible recuperación de la energía, aunque la fatiga aún puede estar presente. Si hubo cesárea, la cicatrización ya está casi completa.",
+        "desarrollo_bebe": "El bebé puede sostener mejor la cabeza y hacer sonidos más variados.",
+        "sintomas_comunes": "Cambios en el peso corporal, posible caída de cabello postparto.",
+        "consejos": "Mantén una dieta equilibrada y comienza ejercicios suaves si te sientes preparada.",
+        "pruebas_medicas": "Seguimiento del desarrollo del bebé con el pediatra."
+      },
+      {
+        "semana": 17,
+        "cambios_madre": "Mayor adaptación a la rutina de cuidados, posible mejora en la calidad del sueño.",
+        "desarrollo_bebe": "Mayor control del tronco y posible inicio de sentarse con menor apoyo.",
+        "sintomas_comunes": "Posible dolor en las articulaciones, especialmente en muñecas y espalda.",
+        "consejos": "Utiliza técnicas ergonómicas para cargar al bebé y reducir la tensión en el cuerpo.",
+        "pruebas_medicas": "Control de crecimiento y desarrollo del bebé."
+      },
+      {
+        "semana": 18,
+        "cambios_madre": "Continúa la adaptación física y emocional a la maternidad.",
+        "desarrollo_bebe": "Mayor interacción social y reconocimiento de personas cercanas.",
+        "sintomas_comunes": "Posible sensación de aislamiento social, especialmente en madres primerizas.",
+        "consejos": "Busca grupos de apoyo de madres o actividades para bebés para socializar.",
+        "pruebas_medicas": "Evaluación del desarrollo social y comunicativo del bebé."
+      },
+      {
+        "semana": 19,
+        "cambios_madre": "Posible sensación de mayor normalidad en la vida cotidiana y adaptación a la nueva realidad.",
+        "desarrollo_bebe": "Intentos más definidos de sentarse sin apoyo y mayor exploración del entorno.",
+        "sintomas_comunes": "Posible ansiedad por separación si hay regreso al trabajo, cambios en el patrón de sueño.",
+        "consejos": "Planifica la transición si hay regreso al trabajo y practica separaciones cortas.",
+        "pruebas_medicas": "Control del peso y evaluación del desarrollo motor fino."
+      },
+      {
+        "semana": 20,
+        "cambios_madre": "Posible regularización del ciclo menstrual si no hay lactancia exclusiva. Mayor estabilidad emocional.",
+        "desarrollo_bebe": "El bebé puede comenzar a rodar de un lado a otro y mostrar más control en sus movimientos.",
+        "sintomas_comunes": "Posible dolor en las articulaciones debido a cambios hormonales.",
+        "consejos": "Realiza estiramientos y ejercicios de bajo impacto para mejorar la movilidad.",
+        "pruebas_medicas": "Control de crecimiento del bebé y seguimiento de su alimentación."
+      }
+    ]
+  }

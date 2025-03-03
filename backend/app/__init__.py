@@ -60,10 +60,13 @@ def create_app():
     # Registrar blueprints
     from .routes import routes, delete_account
     from .api.fetal_development_api import fetal_api
+    from .api.posparto_api import posparto_api  # 🔹 Asegurar la importación
+
     app.register_blueprint(delete_account)
     app.register_blueprint(routes)
     app.register_blueprint(fetal_api, url_prefix='/api')
-   
+    app.register_blueprint(posparto_api, url_prefix='/api')  
+
     # Manejo de errores
     @app.errorhandler(404)
     def not_found_error(error):

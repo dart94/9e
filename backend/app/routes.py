@@ -6,6 +6,7 @@ from .forms import RegistrationForm, PregnancyDataForm, LoginForm, EditProfileFo
 from .models import User, PregnancyData
 from . import db, bcrypt, mail
 from .api.fetal_development_api import FetalDevelopmentData
+from .api.posparto_api import PospartoData
 from flask_mail import Message
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
@@ -23,17 +24,18 @@ from urllib.parse import urlparse
 
 # Blueprints
 fetal_api = Blueprint('fetal_development_api', __name__)
+posparto_api = Blueprint('posparto_api', __name__)
 routes = Blueprint('routes', __name__)
 delete_account = Blueprint('delete_account', __name__)
 
+# Configurar el serializador para generar tokens seguro
 def get_serializer():
     return current_app.extensions.get('delete_account_serializer')
-
-# Configurar el serializador para generar tokens seguros
 
 
 # Instancia de datos fetales
 fetal_data = FetalDevelopmentData()
+posparto_data = PospartoData()
 
 #variables de google
 GOOGLE_CLIENT_ID=os.getenv('GOOGLE_CLIENT_ID')
@@ -272,6 +274,7 @@ def week_to_month(week):
         return 8
     else:
         return 9
+
 
 # Logout
 @routes.route('/logout')
