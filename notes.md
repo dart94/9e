@@ -88,9 +88,9 @@ python -m backend.run
 - [x] 🔗 Integrar backend Flask para el envío de notificaciones.
 - [x] 📱 Probar y validar en dispositivos reales.
 
-✅ **Sprint 2 - 📖 Diario postparto**
-- [ ] 🗄️ Diseñar la base de datos para entradas del diario.
-- [ ] 🎨 Crear UI para agregar, editar y visualizar notas.
+✅ **Sprint 2 - 📖 Postparto**
+- [x] 🗄️ Diseñar la base de datos para entradas del diario.
+- [ ] 🎨 Crear UI para agregar, editar y visualizar Posparto.
 - [ ] 🔄 Sincronizar con backend.
 
 ✅ **Sprint 3 - 🛠️ Pruebas e iteraciones**
