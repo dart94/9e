@@ -576,6 +576,7 @@ def api_mi_perfil():
             "notes": last_record.notes if last_record else None,
         }
     }), 200
+
 # API: Editar perfil    
 @routes.route('/api/editar-perfil', methods=['POST'])
 @login_required

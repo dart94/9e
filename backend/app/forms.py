@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, FloatField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange, Optional
-from wtforms import DateField
+from wtforms import DateField, SelectField
 
 
 
@@ -35,9 +35,9 @@ class EditProfileForm(FlaskForm):
 
 # Formulario para registrar datos de embarazo
 class PregnancyDataForm(FlaskForm):
-    last_period_date = DateField('Fecha del Último Período (FUM)', format='%Y-%m-%d', validators=[
-        DataRequired(message="Este campo es obligatorio")
-    ])
+    status = SelectField('Estado', choices=[('embarazo', 'Embarazo'), ('posparto', 'Posparto')], validators=[DataRequired()])
+    last_period_date = DateField('Fecha del Último Período (FUM)', format='%Y-%m-%d', validators=[Optional()])
+    due_date = DateField('Fecha de Parto', format='%Y-%m-%d', validators=[Optional()])
     weight = FloatField('Peso (kg)', validators=[Optional()])
     symptoms = StringField('Síntomas', validators=[Optional()])
     notes = StringField('Notas', validators=[Optional()])
