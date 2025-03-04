@@ -1,164 +1,244 @@
 {
-    "posparto": [
-      {
-        "semana": 1,
-        "cambios_madre": "El útero comienza a contraerse y expulsar los loquios. Puede haber cambios emocionales debido a las hormonas.",
-        "desarrollo_bebe": "El bebé duerme la mayor parte del tiempo y tiene reflejos primitivos como el de succión.",
-        "sintomas_comunes": "Fatiga extrema, sangrado leve a moderado, dolor en el perineo si hubo parto vaginal.",
-        "consejos": "Descansa lo más posible, bebe mucha agua y pide apoyo para evitar el agotamiento.",
-        "pruebas_medicas": "Revisión neonatal, prueba de audición y revisión de peso y alimentación."
-      },
-      {
-        "semana": 2,
-        "cambios_madre": "El sangrado comienza a disminuir, pero los niveles hormonales aún están ajustándose.",
-        "desarrollo_bebe": "Empieza a reconocer voces y rostros familiares.",
-        "sintomas_comunes": "Dolores postparto, fatiga, cambios en la piel como sequedad o acné.",
-        "consejos": "Intenta establecer una rutina de alimentación y sueño para el bebé.",
-        "pruebas_medicas": "Seguimiento de la lactancia y revisión del peso del bebé."
-      },
-      {
-        "semana": 3,
-        "cambios_madre": "Aumento de la producción de leche si se está amamantando. Posibles cambios en el estado de ánimo.",
-        "desarrollo_bebe": "Mayor tiempo de vigilia y más movimientos.",
-        "sintomas_comunes": "Insomnio, ansiedad leve, sensibilidad en los senos.",
-        "consejos": "Busca momentos de descanso y apoyo emocional si lo necesitas.",
-        "pruebas_medicas": "Consulta con el pediatra sobre el desarrollo y alimentación del bebé."
-      },
-      {
-        "semana": 4,
-        "cambios_madre": "El cuerpo comienza a estabilizarse hormonalmente.",
-        "desarrollo_bebe": "Empieza a hacer contacto visual prolongado y responder a sonidos.",
-        "sintomas_comunes": "Estreñimiento, fatiga, cambios de humor.",
-        "consejos": "Mantén una dieta rica en fibra y prioriza tu descanso.",
-        "pruebas_medicas": "Control postnatal para evaluar la recuperación de la madre."
-      },
-      {
-        "semana": 5,
-        "cambios_madre": "Los loquios comienzan a volverse más claros y escasos. Puede empezar a sentirse más energética.",
-        "desarrollo_bebe": "Comienza a mostrar más interés por su entorno y a seguir objetos con la mirada.",
-        "sintomas_comunes": "Posible dolor de espalda, molestias en los senos, dificultad para dormir.",
-        "consejos": "Realiza ejercicios de suelo pélvico suaves si el médico lo autoriza.",
-        "pruebas_medicas": "Seguimiento del peso y alimentación del bebé."
-      },
-      {
-        "semana": 6,
-        "cambios_madre": "El útero casi ha vuelto a su tamaño pre-embarazo. Posible autorización médica para actividad física y relaciones sexuales.",
-        "desarrollo_bebe": "Mayor control cefálico y capacidad para girar la cabeza hacia los sonidos.",
-        "sintomas_comunes": "Disminución del sangrado, ajustes en la producción de leche, posible debilidad muscular.",
-        "consejos": "Consulta con tu médico antes de retomar la actividad física y las relaciones sexuales.",
-        "pruebas_medicas": "Revisión postparto de la madre (examen físico y evaluación emocional)."
-      },
-      {
-        "semana": 7,
-        "cambios_madre": "Mayor estabilidad hormonal, aunque los cambios en el estado de ánimo pueden persistir.",
-        "desarrollo_bebe": "Mejora en la coordinación de movimientos y mayor interacción social.",
-        "sintomas_comunes": "Fatiga por privación de sueño, posibles dolores musculares.",
-        "consejos": "Establece rutinas de sueño y busca apoyo para compartir el cuidado del bebé.",
-        "pruebas_medicas": "Seguimiento del desarrollo neurológico del bebé."
-      },
-      {
-        "semana": 8,
-        "cambios_madre": "Mayor recuperación física, aunque la fatiga aún puede persistir.",
-        "desarrollo_bebe": "Comienza a responder a estímulos con sonrisas y sonidos.",
-        "sintomas_comunes": "Posible caída del cabello postparto, cambios en el peso corporal.",
-        "consejos": "Incorpora actividad física suave y una alimentación balanceada.",
-        "pruebas_medicas": "Consulta con el pediatra sobre vacunas y desarrollo."
-      },
-      {
-        "semana": 9,
-        "cambios_madre": "El cuerpo continúa adaptándose a los cambios hormonales post-embarazo.",
-        "desarrollo_bebe": "Mayor capacidad para levantar la cabeza cuando está boca abajo y mayor fuerza en el cuello.",
-        "sintomas_comunes": "Posible cansancio crónico, cambios en el metabolismo.",
-        "consejos": "Mantén una hidratación adecuada y considera suplementos si estás amamantando.",
-        "pruebas_medicas": "Control del peso y desarrollo del bebé."
-      },
-      {
-        "semana": 10,
-        "cambios_madre": "Posible mejora en la calidad del sueño si el bebé comienza a establecer patrones más regulares.",
-        "desarrollo_bebe": "Aumento de la coordinación mano-ojo y mayor interés en juguetes y objetos.",
-        "sintomas_comunes": "Cambios en el apetito, posible retención de líquidos.",
-        "consejos": "Intenta establecer pequeñas rutinas para ti misma que ayuden a tu bienestar.",
-        "pruebas_medicas": "Seguimiento del desarrollo motor del bebé."
-      },
-      {
-        "semana": 11,
-        "cambios_madre": "Posible recuperación del libido, aunque puede variar según cada mujer y si está amamantando.",
-        "desarrollo_bebe": "Mayor control de movimientos y posible inicio de balbuceos más complejos.",
-        "sintomas_comunes": "Sequedad vaginal, especialmente si hay lactancia, posible ansiedad por la vuelta al trabajo.",
-        "consejos": "Utiliza lubricantes si hay sequedad y planifica con tiempo la posible reincorporación laboral.",
-        "pruebas_medicas": "Evaluación del desarrollo cognitivo y motor del bebé."
-      },
-      {
-        "semana": 12,
-        "cambios_madre": "El cuerpo sigue recuperándose, posible reaparición del ciclo menstrual.",
-        "desarrollo_bebe": "Mayor control de la cabeza y exploración con las manos.",
-        "sintomas_comunes": "Cambios en el estado de ánimo, fatiga ocasional.",
-        "consejos": "Busca momentos de autocuidado y descanso.",
-        "pruebas_medicas": "Control de crecimiento del bebé."
-      },
-      {
-        "semana": 13,
-        "cambios_madre": "Continúa la recuperación física. Si no hay lactancia, la producción de leche podría cesar completamente.",
-        "desarrollo_bebe": "Mayor estabilidad al sentarse con apoyo y mejor control de movimientos.",
-        "sintomas_comunes": "Posible inicio de pérdida de peso si había retención, cambios en la piel.",
-        "consejos": "Incorpora actividades que fortalezcan el vínculo con tu bebé como masajes o juegos sensoriales.",
-        "pruebas_medicas": "Revisión del desarrollo visual y auditivo del bebé."
-      },
-      {
-        "semana": 14,
-        "cambios_madre": "Mayor recuperación de la tonificación muscular, aunque el abdomen puede seguir distendido.",
-        "desarrollo_bebe": "Intenta alcanzar objetos con las manos y muestra preferencia por ciertos juguetes.",
-        "sintomas_comunes": "Posible estrés por la adaptación a la maternidad, cambios en la elasticidad de la piel.",
-        "consejos": "Realiza ejercicios de respiración y relajación para manejar el estrés.",
-        "pruebas_medicas": "Control de peso y crecimiento del bebé."
-      },
-      {
-        "semana": 15,
-        "cambios_madre": "Mayor estabilidad emocional aunque pueden persistir momentos de sensibilidad.",
-        "desarrollo_bebe": "Mayor coordinación y posible inicio de movimientos para darse vuelta intencionalmente.",
-        "sintomas_comunes": "Posible sensación de cansancio crónico, especialmente con interrupciones del sueño.",
-        "consejos": "Busca apoyo para poder descansar y considera técnicas de sueño seguro para el bebé.",
-        "pruebas_medicas": "Evaluación del desarrollo psicomotor del bebé."
-      },
-      {
-        "semana": 16,
-        "cambios_madre": "Posible recuperación de la energía, aunque la fatiga aún puede estar presente. Si hubo cesárea, la cicatrización ya está casi completa.",
-        "desarrollo_bebe": "El bebé puede sostener mejor la cabeza y hacer sonidos más variados.",
-        "sintomas_comunes": "Cambios en el peso corporal, posible caída de cabello postparto.",
-        "consejos": "Mantén una dieta equilibrada y comienza ejercicios suaves si te sientes preparada.",
-        "pruebas_medicas": "Seguimiento del desarrollo del bebé con el pediatra."
-      },
-      {
-        "semana": 17,
-        "cambios_madre": "Mayor adaptación a la rutina de cuidados, posible mejora en la calidad del sueño.",
-        "desarrollo_bebe": "Mayor control del tronco y posible inicio de sentarse con menor apoyo.",
-        "sintomas_comunes": "Posible dolor en las articulaciones, especialmente en muñecas y espalda.",
-        "consejos": "Utiliza técnicas ergonómicas para cargar al bebé y reducir la tensión en el cuerpo.",
-        "pruebas_medicas": "Control de crecimiento y desarrollo del bebé."
-      },
-      {
-        "semana": 18,
-        "cambios_madre": "Continúa la adaptación física y emocional a la maternidad.",
-        "desarrollo_bebe": "Mayor interacción social y reconocimiento de personas cercanas.",
-        "sintomas_comunes": "Posible sensación de aislamiento social, especialmente en madres primerizas.",
-        "consejos": "Busca grupos de apoyo de madres o actividades para bebés para socializar.",
-        "pruebas_medicas": "Evaluación del desarrollo social y comunicativo del bebé."
-      },
-      {
-        "semana": 19,
-        "cambios_madre": "Posible sensación de mayor normalidad en la vida cotidiana y adaptación a la nueva realidad.",
-        "desarrollo_bebe": "Intentos más definidos de sentarse sin apoyo y mayor exploración del entorno.",
-        "sintomas_comunes": "Posible ansiedad por separación si hay regreso al trabajo, cambios en el patrón de sueño.",
-        "consejos": "Planifica la transición si hay regreso al trabajo y practica separaciones cortas.",
-        "pruebas_medicas": "Control del peso y evaluación del desarrollo motor fino."
-      },
-      {
-        "semana": 20,
-        "cambios_madre": "Posible regularización del ciclo menstrual si no hay lactancia exclusiva. Mayor estabilidad emocional.",
-        "desarrollo_bebe": "El bebé puede comenzar a rodar de un lado a otro y mostrar más control en sus movimientos.",
-        "sintomas_comunes": "Posible dolor en las articulaciones debido a cambios hormonales.",
-        "consejos": "Realiza estiramientos y ejercicios de bajo impacto para mejorar la movilidad.",
-        "pruebas_medicas": "Control de crecimiento del bebé y seguimiento de su alimentación."
-      }
-    ]
-  }
+  "posparto": [
+    {
+      "semana": 1,
+      "cambios_madre": "El útero comienza a contraerse y expulsar los loquios. Puede haber cambios emocionales debido a las hormonas.",
+      "desarrollo_bebe": "El bebé duerme la mayor parte del tiempo y tiene reflejos primitivos como el de succión.",
+      "actividades_bebe": "Hablarle suavemente, contacto piel con piel, mecerlo gentilmente, permitir periodos de descanso sin estimulación.",
+      "sueño_bebe": "Duerme entre 16-18 horas al día en ciclos cortos de 2-3 horas sin distinción entre día y noche. Necesita ser despertado para alimentarse.",
+      "consejos_papa": "Ayudar con los cambios de pañal, participar en el baño del bebé y turnarse para mecerlo cuando está inquieto. Apoyar emocionalmente a la madre.",
+      "vinculo_familiar": "Establecer rutinas tranquilas de presentación para hermanos y abuelos, limitando el tiempo y respetando el espacio de descanso de madre y bebé.",
+      "sintomas_comunes": "Fatiga extrema, sangrado leve a moderado, dolor en el perineo si hubo parto vaginal.",
+      "consejos": "Descansa lo más posible, bebe mucha agua y pide apoyo para evitar el agotamiento.",
+      "pruebas_medicas": "Revisión neonatal, prueba de audición y revisión de peso y alimentación."
+    },
+    {
+      "semana": 2,
+      "cambios_madre": "El sangrado comienza a disminuir, pero los niveles hormonales aún están ajustándose.",
+      "desarrollo_bebe": "Empieza a reconocer voces y rostros familiares.",
+      "actividades_bebe": "Mostrar contrastes en blanco y negro, cantar nanas, seguir con rutinas de cuidado predecibles, masaje infantil suave.",
+      "sueño_bebe": "Mantiene ciclos de 2-4 horas, con periodos de sueño profundo más distinguibles. Puede comenzar a observarse un patrón, aunque aún no hay diferencia entre día y noche.",
+      "consejos_papa": "Encargarse de una toma nocturna si es posible (con leche extraída), proporcionar un ambiente calmado para el bebé, y asumir tareas domésticas para que la madre descanse.",
+      "vinculo_familiar": "Establecer videollamadas cortas con familiares lejanos, permitir que hermanos mayores ayuden en tareas simples como traer pañales o elegir ropa.",
+      "sintomas_comunes": "Dolores postparto, fatiga, cambios en la piel como sequedad o acné.",
+      "consejos": "Intenta establecer una rutina de alimentación y sueño para el bebé.",
+      "pruebas_medicas": "Seguimiento de la lactancia y revisión del peso del bebé."
+    },
+    {
+      "semana": 3,
+      "cambios_madre": "Aumento de la producción de leche si se está amamantando. Posibles cambios en el estado de ánimo.",
+      "desarrollo_bebe": "Mayor tiempo de vigilia y más movimientos.",
+      "actividades_bebe": "Mostrar imágenes de alto contraste, lectura en voz alta, tiempos breves boca abajo cuando está despierto, introducir sonidos variados.",
+      "sueño_bebe": "Comienza a tener periodos de vigilia más largos. Puede dormir una sesión más prolongada de 3-4 horas durante la noche, aunque la mayoría mantiene ciclos irregulares.",
+      "consejos_papa": "Compartir las tareas de calmar al bebé, aprender a identificar señales de cansancio y sueño, crear un espacio para que la madre pueda tener momentos a solas.",
+      "vinculo_familiar": "Iniciar pequeños paseos en familia si el clima lo permite, establecer un momento del día para que hermanos interactúen bajo supervisión.",
+      "sintomas_comunes": "Insomnio, ansiedad leve, sensibilidad en los senos.",
+      "consejos": "Busca momentos de descanso y apoyo emocional si lo necesitas.",
+      "pruebas_medicas": "Consulta con el pediatra sobre el desarrollo y alimentación del bebé."
+    },
+    {
+      "semana": 4,
+      "cambios_madre": "El cuerpo comienza a estabilizarse hormonalmente.",
+      "desarrollo_bebe": "Empieza a hacer contacto visual prolongado y responder a sonidos.",
+      "actividades_bebe": "Juegos de seguimiento visual con objetos brillantes, estimulación auditiva con canciones infantiles, practicar más tiempo boca abajo supervisado.",
+      "sueño_bebe": "Puede comenzar a establecerse un patrón donde duerme más durante la noche (4-5 horas seguidas). Totales de 15-16 horas en 24 horas, con 3-4 siestas durante el día.",
+      "consejos_papa": "Establecer su propia rutina de juegos con el bebé, aprender técnicas de porteo seguro, hacerse cargo del baño nocturno como momento especial de vínculo.",
+      "vinculo_familiar": "Comenzar tradiciones familiares sencillas como leer un cuento cada noche, tomar fotos semanales del bebé con distintos miembros de la familia.",
+      "sintomas_comunes": "Estreñimiento, fatiga, cambios de humor.",
+      "consejos": "Mantén una dieta rica en fibra y prioriza tu descanso.",
+      "pruebas_medicas": "Control postnatal para evaluar la recuperación de la madre."
+    },
+    {
+      "semana": 5,
+      "cambios_madre": "Los loquios comienzan a volverse más claros y escasos. Puede empezar a sentirse más energética.",
+      "desarrollo_bebe": "Comienza a mostrar más interés por su entorno y a seguir objetos con la mirada.",
+      "actividades_bebe": "Usar móviles sobre la cuna, espejos de bebé seguros, paseos al aire libre para nueva estimulación sensorial, narrar actividades cotidianas.",
+      "sueño_bebe": "Las siestas comienzan a ser más predecibles, con 3-4 siestas diarias. Puede dormir un tramo nocturno de 5 horas. Empieza a responder a rutinas de sueño establecidas.",
+      "consejos_papa": "Aprender a reconocer señales de sobreestimulación, practicar diferentes posiciones para calmar al bebé, compartir momentos de cuidado diario como cambio de ropa.",
+      "vinculo_familiar": "Permitir que abuelos tengan pequeños momentos a solas con el bebé si la madre se siente cómoda, involucrar a hermanos en cantar canciones o mostrar juguetes.",
+      "sintomas_comunes": "Posible dolor de espalda, molestias en los senos, dificultad para dormir.",
+      "consejos": "Realiza ejercicios de suelo pélvico suaves si el médico lo autoriza.",
+      "pruebas_medicas": "Seguimiento del peso y alimentación del bebé."
+    },
+    {
+      "semana": 6,
+      "cambios_madre": "El útero casi ha vuelto a su tamaño pre-embarazo. Posible autorización médica para actividad física y relaciones sexuales.",
+      "desarrollo_bebe": "Mayor control cefálico y capacidad para girar la cabeza hacia los sonidos.",
+      "actividades_bebe": "Juegos de imitación de expresiones faciales, uso de sonajeros suaves, gimnasio para bebés con juguetes colgantes, música variada.",
+      "sueño_bebe": "Puede comenzar a consolidar el sueño nocturno con tramos de 5-6 horas seguidas. Las siestas diurnas se vuelven más regulares, típicamente 3 siestas de 30 min a 2 horas.",
+      "consejos_papa": "Ofrecer un momento de 'relevo nocturno' para que la madre duerma varias horas seguidas, iniciar juegos de estimulación más activos, documentar momentos especiales del desarrollo.",
+      "vinculo_familiar": "Organizar comidas familiares donde el bebé esté presente aunque no participe, iniciar video-llamadas regulares con familiares lejanos, crear un álbum familiar participativo.",
+      "sintomas_comunes": "Disminución del sangrado, ajustes en la producción de leche, posible debilidad muscular.",
+      "consejos": "Consulta con tu médico antes de retomar la actividad física y las relaciones sexuales.",
+      "pruebas_medicas": "Revisión postparto de la madre (examen físico y evaluación emocional)."
+    },
+    {
+      "semana": 7,
+      "cambios_madre": "Mayor estabilidad hormonal, aunque los cambios en el estado de ánimo pueden persistir.",
+      "desarrollo_bebe": "Mejora en la coordinación de movimientos y mayor interacción social.",
+      "actividades_bebe": "Juegos de escondite simple con pañuelos, canciones con movimientos de manos, estimulación táctil con diferentes texturas, alfombra de actividades.",
+      "sueño_bebe": "La mayoría de bebés pueden dormir 6 horas seguidas por la noche. Se establecen mejor las 3 siestas diarias. Comienza a ser importante la rutina previa al sueño.",
+      "consejos_papa": "Hacerse cargo de la rutina de baño y pre-sueño algunos días, ofrecer masajes suaves al bebé, probar diferentes técnicas de consuelo para ampliar opciones.",
+      "vinculo_familiar": "Comenzar pequeñas tradiciones semanales como 'día de foto familiar', involucrar a hermanos en la selección de ropa o juguetes del día.",
+      "sintomas_comunes": "Fatiga por privación de sueño, posibles dolores musculares.",
+      "consejos": "Establece rutinas de sueño y busca apoyo para compartir el cuidado del bebé.",
+      "pruebas_medicas": "Seguimiento del desarrollo neurológico del bebé."
+    },
+    {
+      "semana": 8,
+      "cambios_madre": "Mayor recuperación física, aunque la fatiga aún puede persistir.",
+      "desarrollo_bebe": "Comienza a responder a estímulos con sonrisas y sonidos.",
+      "actividades_bebe": "Hablarle y esperar su respuesta iniciando 'conversaciones', juegos de cosquillas suaves, lectura de libros con texturas, baños enriquecidos con juguetes flotantes.",
+      "sueño_bebe": "Puede dormirse solo si se le coloca somnoliento pero despierto. Algunos logran dormir hasta 8 horas seguidas por la noche. Mantiene 3 siestas diarias más organizadas.",
+      "consejos_papa": "Establecer un día o momento especial semanal solo con el bebé para fortalecer el vínculo, aprender a reconocer los diferentes tipos de llanto, participar en decisiones de crianza.",
+      "vinculo_familiar": "Iniciar paseos más largos como familia, establecer una rutina donde hermanos 'ayuden' con tareas simples como elegir un libro para leer juntos.",
+      "sintomas_comunes": "Posible caída del cabello postparto, cambios en el peso corporal.",
+      "consejos": "Incorpora actividad física suave y una alimentación balanceada.",
+      "pruebas_medicas": "Consulta con el pediatra sobre vacunas y desarrollo."
+    },
+    {
+      "semana": 9,
+      "cambios_madre": "El cuerpo continúa adaptándose a los cambios hormonales post-embarazo.",
+      "desarrollo_bebe": "Mayor capacidad para levantar la cabeza cuando está boca abajo y mayor fuerza en el cuello.",
+      "actividades_bebe": "Más tiempo de juego boca abajo con juguetes llamativos, ejercicios suaves de giro dirigido, introducción de libros con ilustraciones grandes y coloridas.",
+      "sueño_bebe": "Las siestas empiezan a seguir un patrón más predecible. El sueño nocturno puede extenderse a 9-10 horas con 1-2 despertares. Comienza a establecer asociaciones de sueño.",
+      "consejos_papa": "Participar en la rutina de acostarse para fortalecer el vínculo, crear juegos específicos padre-bebé, ofrecer apoyo práctico y emocional a la madre en momentos de frustración.",
+      "vinculo_familiar": "Permitir que abuelos o tíos tengan momentos especiales de juego, asignar a hermanos mayores tareas 'importantes' como elegir el juguete del día.",
+      "sintomas_comunes": "Posible cansancio crónico, cambios en el metabolismo.",
+      "consejos": "Mantén una hidratación adecuada y considera suplementos si estás amamantando.",
+      "pruebas_medicas": "Control del peso y desarrollo del bebé."
+    },
+    {
+      "semana": 10,
+      "cambios_madre": "Posible mejora en la calidad del sueño si el bebé comienza a establecer patrones más regulares.",
+      "desarrollo_bebe": "Aumento de la coordinación mano-ojo y mayor interés en juguetes y objetos.",
+      "actividades_bebe": "Ofrecer objetos para que intente agarrarlos, juegos de seguimiento visual con objetos en movimiento, canciones con gestos, exploración de sonidos con instrumentos sencillos.",
+      "sueño_bebe": "Las siestas se consolidan más, generalmente 3 al día con duraciones de 30 min a 2 horas. El sueño nocturno puede alargarse con menos despertares si se establecen buenas rutinas.",
+      "consejos_papa": "Convertirse en 'experto' en algún aspecto del cuidado (como el baño o el juego), dar paseos a solas con el bebé, aprender sobre la etapa de desarrollo actual.",
+      "vinculo_familiar": "Organizar pequeñas reuniones familiares donde el bebé pueda observar interacciones, crear una canción o rima familiar que todos canten al bebé.",
+      "sintomas_comunes": "Cambios en el apetito, posible retención de líquidos.",
+      "consejos": "Intenta establecer pequeñas rutinas para ti misma que ayuden a tu bienestar.",
+      "pruebas_medicas": "Seguimiento del desarrollo motor del bebé."
+    },
+    {
+      "semana": 11,
+      "cambios_madre": "Posible recuperación del libido, aunque puede variar según cada mujer y si está amamantando.",
+      "desarrollo_bebe": "Mayor control de movimientos y posible inicio de balbuceos más complejos.",
+      "actividades_bebe": "Juegos de imitación de sonidos, mostrar objetos cotidianos nombrándolos, estimulación con juguetes que emitan sonidos diferentes, juegos frente al espejo.",
+      "sueño_bebe": "Las siestas empiezan a tener horarios más consistentes. Muchos bebés duermen tramos de 6-8 horas seguidas por la noche. Es importante mantener rutinas de sueño consistentes.",
+      "consejos_papa": "Ofrecer apoyo con tareas domésticas para facilitar tiempo de pareja, investigar sobre desarrollo infantil para compartir conocimientos, proponer ideas de estimulación nuevas.",
+      "vinculo_familiar": "Introducir pequeñas tradiciones como 'día de foto en la misma silla' semanalmente, permitir que hermanos 'lean' cuentos al bebé a su manera.",
+      "sintomas_comunes": "Sequedad vaginal, especialmente si hay lactancia, posible ansiedad por la vuelta al trabajo.",
+      "consejos": "Utiliza lubricantes si hay sequedad y planifica con tiempo la posible reincorporación laboral.",
+      "pruebas_medicas": "Evaluación del desarrollo cognitivo y motor del bebé."
+    },
+    {
+      "semana": 12,
+      "cambios_madre": "El cuerpo sigue recuperándose, posible reaparición del ciclo menstrual.",
+      "desarrollo_bebe": "Mayor control de la cabeza y exploración con las manos.",
+      "actividades_bebe": "Juegos con títeres de dedo, actividades con canciones y ritmos variados, introducción de juguetes que rueden para estimular el seguimiento, juegos de equilibrio sentado con apoyo.",
+      "sueño_bebe": "Puede establecerse un patrón de 3 siestas más regulares. El sueño nocturno puede extenderse a 8-10 horas con menos interrupciones. Responde mejor a rutinas consistentes antes de dormir.",
+      "consejos_papa": "Planificar tiempo a solas con la madre para reconectar como pareja, hacerse cargo de algunas noches completas si es posible, compartir la investigación de recursos de crianza.",
+      "vinculo_familiar": "Iniciar pequeñas 'reuniones familiares' donde todos participen, incluso si el bebé solo observa, asignar 'roles especiales' a hermanos como 'encargado de sonrisas'.",
+      "sintomas_comunes": "Cambios en el estado de ánimo, fatiga ocasional.",
+      "consejos": "Busca momentos de autocuidado y descanso.",
+      "pruebas_medicas": "Control de crecimiento del bebé."
+    },
+    {
+      "semana": 13,
+      "cambios_madre": "Continúa la recuperación física. Si no hay lactancia, la producción de leche podría cesar completamente.",
+      "desarrollo_bebe": "Mayor estabilidad al sentarse con apoyo y mejor control de movimientos.",
+      "actividades_bebe": "Ejercicios para sentarse con menos apoyo, juegos de apilar objetos grandes y blandos, lectura interactiva con libros de imágenes, masajes para bebés con narrativa.",
+      "sueño_bebe": "Las siestas comienzan a organizarse mejor, generalmente 2-3 al día. El sueño nocturno puede consolidarse en 10-12 horas con 1-2 despertares. Las rutinas se vuelven muy importantes.",
+      "consejos_papa": "Desarrollar sus propias técnicas para consolar al bebé, ayudar a mantener consistencia en las rutinas, buscar grupos de apoyo para padres si está disponible.",
+      "vinculo_familiar": "Crear un 'ritual familiar' semanal como un paseo especial o momento de juego donde todos participen, hacer video-llamadas regulares con familiares lejanos.",
+      "sintomas_comunes": "Posible inicio de pérdida de peso si había retención, cambios en la piel.",
+      "consejos": "Incorpora actividades que fortalezcan el vínculo con tu bebé como masajes o juegos sensoriales.",
+      "pruebas_medicas": "Revisión del desarrollo visual y auditivo del bebé."
+    },
+    {
+      "semana": 14,
+      "cambios_madre": "Mayor recuperación de la tonificación muscular, aunque el abdomen puede seguir distendido.",
+      "desarrollo_bebe": "Intenta alcanzar objetos con las manos y muestra preferencia por ciertos juguetes.",
+      "actividades_bebe": "Colocar juguetes a diferentes distancias para fomentar el alcance, juegos con elementos que produzcan diferentes sonidos al tocarlos, actividades en diferentes posiciones (sentado, boca abajo, espalda).",
+      "sueño_bebe": "Puede comenzar la transición hacia 2-3 siestas más estructuradas. El sueño nocturno se consolida más. Comienza a establecer asociaciones más fuertes con su rutina previa a dormir.",
+      "consejos_papa": "Involucrarse en actividades de estimulación temprana, tomarse un día o tarde a la semana a cargo por completo para fortalecer la independencia como cuidador.",
+      "vinculo_familiar": "Iniciar tradiciones como 'domingo de fotos familiares', involucrar a abuelos en alguna rutina semanal específica si están disponibles.",
+      "sintomas_comunes": "Posible estrés por la adaptación a la maternidad, cambios en la elasticidad de la piel.",
+      "consejos": "Realiza ejercicios de respiración y relajación para manejar el estrés.",
+      "pruebas_medicas": "Control de peso y crecimiento del bebé."
+    },
+    {
+      "semana": 15,
+      "cambios_madre": "Mayor estabilidad emocional aunque pueden persistir momentos de sensibilidad.",
+      "desarrollo_bebe": "Mayor coordinación y posible inicio de movimientos para darse vuelta intencionalmente.",
+      "actividades_bebe": "Ayudar a practicar el giro de espalda a lado y viceversa, juegos con objetos escondidos parcialmente, experimentación con texturas diferentes, introducción a juguetes que fomenten el gateo.",
+      "sueño_bebe": "Muchos bebés mantienen 3 siestas diarias. El sueño nocturno puede volverse más predecible, con tramos de 10-12 horas con 1-2 despertares. Responde bien a ambientes de sueño consistentes.",
+      "consejos_papa": "Aprender a reconocer señales de cansancio únicas del bebé, participar en decidir ajustes a rutinas, investigar sobre próximas etapas de desarrollo.",
+      "vinculo_familiar": "Permitir a hermanos participar en momentos de juego interactivo supervisados, establecer una 'hora familiar' diaria donde todos interactúen juntos.",
+      "sintomas_comunes": "Posible sensación de cansancio crónico, especialmente con interrupciones del sueño.",
+      "consejos": "Busca apoyo para poder descansar y considera técnicas de sueño seguro para el bebé.",
+      "pruebas_medicas": "Evaluación del desarrollo psicomotor del bebé."
+    },
+    {
+      "semana": 16,
+      "cambios_madre": "Posible recuperación de la energía, aunque la fatiga aún puede estar presente. Si hubo cesárea, la cicatrización ya está casi completa.",
+      "desarrollo_bebe": "El bebé puede sostener mejor la cabeza y hacer sonidos más variados.",
+      "actividades_bebe": "Juegos con canciones que nombren partes del cuerpo, actividades con objetos flotantes durante el baño, imitación de sonidos para fomentar la comunicación, juegos con pelotas de texturas diferentes.",
+      "sueño_bebe": "Comienza la posible transición hacia un patrón de 2-3 siestas más estructuradas. El sueño nocturno se estabiliza mejor, con tramos de hasta 10 horas con menos interrupciones.",
+      "consejos_papa": "Compartir la investigación sobre métodos de sueño y estrategias de consuelo, establecer su propia rutina especial con el bebé, validar y apoyar las decisiones de crianza.",
+      "vinculo_familiar": "Implementar juegos suaves donde participen hermanos como canciones con movimientos o mostrar juguetes, crear un 'rincón familiar' con fotos donde el bebé pueda verlas.",
+      "sintomas_comunes": "Cambios en el peso corporal, posible caída de cabello postparto.",
+      "consejos": "Mantén una dieta equilibrada y comienza ejercicios suaves si te sientes preparada.",
+      "pruebas_medicas": "Seguimiento del desarrollo del bebé con el pediatra."
+    },
+    {
+      "semana": 17,
+      "cambios_madre": "Mayor adaptación a la rutina de cuidados, posible mejora en la calidad del sueño.",
+      "desarrollo_bebe": "Mayor control del tronco y posible inicio de sentarse con menor apoyo.",
+      "actividades_bebe": "Practicar posición sentada con apoyo mínimo, juegos de transferencia de objetos de una mano a otra, exploración guiada de objetos cotidianos seguros, cantos con movimientos coordinados.",
+      "sueño_bebe": "La mayoría de bebés tienen 2-3 siestas más predecibles. El sueño nocturno puede extenderse a 11-12 horas con menos despertares si hay buenas rutinas establecidas.",
+      "consejos_papa": "Observar e identificar cambios en el desarrollo para compartir estos momentos con la madre, asumir responsabilidad en establecer y mantener rutinas de sueño.",
+      "vinculo_familiar": "Organizar pequeñas salidas familiares adaptadas al bebé, establecer un 'ritual de buenas noches' donde participen todos los miembros de la familia.",
+      "sintomas_comunes": "Posible dolor en las articulaciones, especialmente en muñecas y espalda.",
+      "consejos": "Utiliza técnicas ergonómicas para cargar al bebé y reducir la tensión en el cuerpo.",
+      "pruebas_medicas": "Control de crecimiento y desarrollo del bebé."
+    },
+    {
+      "semana": 18,
+      "cambios_madre": "Continúa la adaptación física y emocional a la maternidad.",
+      "desarrollo_bebe": "Mayor interacción social y reconocimiento de personas cercanas.",
+      "actividades_bebe": "Juegos de interacción social como 'cucú-tras', introducción de cuentos con personajes simples, actividades con música y ritmo, estimulación del lenguaje con palabras cortas repetidas.",
+      "sueño_bebe": "Se consolida el patrón de 2-3 siestas diarias. El sueño nocturno puede establecerse mejor, con sesiones de 11-12 horas y posiblemente algunos bebés durmiendo toda la noche.",
+      "consejos_papa": "Establecer una rutina especial semanal (como 'tarde de papá'), investigar actividades de estimulación apropiadas, darle espacio a la madre para autocuidado.",
+      "vinculo_familiar": "Permitir que el bebé observe interacciones familiares durante comidas, implementar canciones o juegos específicos para cada miembro de la familia.",
+      "sintomas_comunes": "Posible sensación de aislamiento social, especialmente en madres primerizas.",
+      "consejos": "Busca grupos de apoyo de madres o actividades para bebés para socializar.",
+      "pruebas_medicas": "Evaluación del desarrollo social y comunicativo del bebé."
+    },
+    {
+      "semana": 19,
+      "cambios_madre": "Posible sensación de mayor normalidad en la vida cotidiana y adaptación a la nueva realidad.",
+      "desarrollo_bebe": "Intentos más definidos de sentarse sin apoyo y mayor exploración del entorno.",
+      "actividades_bebe": "Proporcionar juguetes que estimulen la posición de sentado, juegos con contenedores y objetos para meter y sacar, exploración de diferentes sonidos vocales, actividades al aire libre con nuevos estímulos sensoriales.",
+      "sueño_bebe": "Muchos bebés establecen un patrón de 2-3 siestas regulares. El sueño nocturno puede consolidarse con menos despertares. Las asociaciones de sueño están bien establecidas.",
+      "consejos_papa": "Participar activamente en decisiones sobre próximas etapas como introducción de alimentos, aprender sobre desarrollo social para fomentar interacciones saludables.",
+      "vinculo_familiar": "Crear un 'rincón de juegos familiar' donde todos interactúen, establecer pequeñas responsabilidades para hermanos como 'encargado de sonrisas del día'.",
+      "sintomas_comunes": "Posible ansiedad por separación si hay regreso al trabajo, cambios en el patrón de sueño.",
+      "consejos": "Planifica la transición si hay regreso al trabajo y practica separaciones cortas.",
+      "pruebas_medicas": "Control del peso y evaluación del desarrollo motor fino."
+    },
+    {
+      "semana": 20,
+      "cambios_madre": "Posible regularización del ciclo menstrual si no hay lactancia exclusiva. Mayor estabilidad emocional.",
+      "desarrollo_bebe": "El bebé puede comenzar a rodar de un lado a otro y mostrar más control en sus movimientos.",
+      "actividades_bebe": "Crear circuitos simples para estimular el giro y movimiento, juegos con texturas contrastantes, actividades con libros de ilustraciones grandes, juegos con sonidos que vengan de diferentes direcciones para estimular la orientación espacial.",
+      "sueño_bebe": "Se consolida el patrón de 2-3 siestas. Algunos bebés pueden dormir toda la noche sin despertares para alimentarse. La rutina de sueño es fundamental para mantener buenos hábitos.",
+      "consejos_papa": "Conversar con la madre sobre visión compartida de crianza, planificar tiempo especial regular con el bebé, colaborar en investigar próximos hitos de desarrollo.",
+      "vinculo_familiar": "Establecer una 'reunión familiar' semanal adaptada al bebé, crear un álbum o registro de desarrollo donde todos los miembros puedan contribuir, iniciar tradiciones mensuales como fotos familiares temáticas.",
+      "sintomas_comunes": "Posible dolor en las articulaciones debido a cambios hormonales.",
+      "consejos": "Realiza estiramientos y ejercicios de bajo impacto para mejorar la movilidad.",
+      "pruebas_medicas": "Control de crecimiento del bebé y seguimiento de su alimentación."
+    }
+  ]
+}
