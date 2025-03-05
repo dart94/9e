@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session, jsonify, request, current_app
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from datetime import datetime, timezone, timedelta  # Importación correcta
@@ -546,10 +547,10 @@ def get_dashboard_data():
         },
     }), 200
 
-# API: Obtener registros del perfil
 @routes.route('/api/mi-perfil', methods=['GET'])
+@jwt_required()
 def api_mi_perfil():
-    user_id = request.args.get('user_id')
+    user_id = get_jwt_identity()
     user = User.query.get(user_id)
 
     if not user:
@@ -559,23 +560,23 @@ def api_mi_perfil():
     current_week = None
     progress_percentage = 0
 
-    if last_record and last_record.last_period_date:
+    if last_record and last_record.start_date:
         today = datetime.now().date()
-        days_since_period = (today - last_record.last_period_date).days
-        current_week = max(1, days_since_period // 7)
+        days_since_start = (today - last_record.start_date).days
+        current_week = max(1, min(days_since_start // 7, 40))  # Asegura rango entre 1 y 40
         progress_percentage = (current_week / 40) * 100
 
     return jsonify({
-        "username": user.username,
-        "email": user.email,
+        "id": user.id,
+        "name": user.name,
         "current_week": current_week,
         "progress_percentage": progress_percentage,
         "last_record": {
-            "weight": last_record.weight if last_record else None,
-            "symptoms": last_record.symptoms if last_record else None,
-            "notes": last_record.notes if last_record else None,
+            "start_date": last_record.start_date.strftime("%Y-%m-%d") if last_record else None,
+            "week": last_record.week if last_record else None
         }
     }), 200
+
 
 # API: Editar perfil    
 @routes.route('/api/editar-perfil', methods=['POST'])
@@ -639,74 +640,97 @@ def login2():
     # Para solicitudes GET, renderizar el formulario de inicio de sesión
     return render_template('index.html', form=form)
 
-
-@routes.route('/api/embarazos', methods=['GET', 'POST', 'DELETE'])
+# API para manejar datos de embarazo
+@routes.route('/api/embarazos', methods=['GET', 'POST'])
 def manejar_registros_embarazo():
     if request.method == 'GET':
         # Obtener user_id de los parámetros de la URL
-        user_id = session.get('user_id') or request.args.get('user_id')  # Cambiar a `request.args`
+        user_id = session.get('user_id') or request.args.get('user_id')  
         if not user_id:
             return jsonify({"error": "Usuario no autenticado"}), 401
 
-        # Lógica para manejar el GET
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            return jsonify({"error": "'user_id' debe ser un número entero"}), 400
+
+        # Obtener registros del usuario
         registros = PregnancyData.query.filter_by(user_id=user_id).all()
         if not registros:
-            return jsonify([])  # Devuelve una lista vacía si no hay registros
+            return jsonify([])  # Lista vacía si no hay registros
 
         registros_serializados = [
             {
                 "id": r.id,
-                "week": r.week,
+                "week": r.calculate_week,  # Calcula la semana en tiempo real
                 "weight": r.weight,
                 "symptoms": r.symptoms,
                 "notes": r.notes,
-                "last_period_date": r.last_period_date.strftime('%Y-%m-%d') if r.last_period_date else None
+                "is_postpartum": r.is_postpartum,  # Indica si es posparto
+                "last_period_date": r.last_period_date.strftime('%Y-%m-%d') if r.last_period_date else None,
+                "due_date": r.due_date.strftime('%Y-%m-%d') if r.due_date else None,
             }
             for r in registros
         ]
         return jsonify(registros_serializados), 200
 
     elif request.method == 'POST':
-    # Obtén los datos del cuerpo de la solicitud
+        # Obtener datos del cuerpo de la solicitud
         data = request.get_json()
 
         # Validación de campos obligatorios
-        if not data or not data.get('last_period_date') or not data.get('weight') or not data.get('user_id'):
-            return jsonify({"error": "Faltan campos obligatorios: 'user_id', 'last_period_date', y 'weight'"}), 400
+        required_fields = ['user_id', 'last_period_date', 'weight']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify({"error": f"Faltan campos obligatorios: {', '.join(missing_fields)}"}), 400
 
         try:
             last_period_date = datetime.strptime(data.get('last_period_date'), '%Y-%m-%d').date()
         except ValueError:
             return jsonify({"error": "El formato de la fecha debe ser YYYY-MM-DD"}), 400
 
-        # Extraer user_id
-        user_id = data.get('user_id')
-        # Convertir a número entero si es necesario
+        # Validar user_id
         try:
-            user_id = int(user_id)
+            user_id = int(data.get('user_id'))
         except (ValueError, TypeError):
             return jsonify({"error": "'user_id' debe ser un número entero"}), 400
 
-        # Calcula la semana si no se proporciona
+        # Validar weight
+        try:
+            weight = float(data.get('weight'))
+        except (ValueError, TypeError):
+            return jsonify({"error": "'weight' debe ser un número válido"}), 400
+
+        # Determinar fecha de parto (solo si no está en el JSON)
+        due_date = data.get('due_date')
+        if due_date:
+            try:
+                due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
+            except ValueError:
+                return jsonify({"error": "El formato de la fecha de parto debe ser YYYY-MM-DD"}), 400
+        else:
+            due_date = last_period_date + timedelta(days=280)
+
+        # Calcular semana actual si no se envía
         week = data.get('week')
         if not week:
-            # Utiliza la lógica para calcular la semana basada en last_period_date
             today = datetime.utcnow().date()
             delta = today - last_period_date
             week = max(1, delta.days // 7)  # Al menos 1 semana
 
-        # Crea un nuevo registro de embarazo
+        # Crear nuevo registro
         nuevo_registro = PregnancyData(
             user_id=user_id,
             last_period_date=last_period_date,
-            weight=float(data.get('weight')),
+            due_date=due_date,
+            weight=weight,
             symptoms=data.get('symptoms'),
             notes=data.get('notes'),
             week=week,
         )
 
         try:
-            # Guarda el nuevo registro en la base de datos
+            # Guardar en la base de datos
             db.session.add(nuevo_registro)
             db.session.commit()
             return jsonify({"message": "Registro de embarazo añadido correctamente"}), 201

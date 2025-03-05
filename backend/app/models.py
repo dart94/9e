@@ -33,11 +33,16 @@ class PregnancyData(db.Model):
     def calculate_week(self):
         """
         Calcula la semana actual del embarazo basado en la última fecha del período.
+        Si el estado es 'Posparto', la semana debe ser 0.
         """
+        if self.is_postpartum:
+            return 0  # El embarazo terminó
+
         if self.last_period_date:
             today = datetime.utcnow().date()
             delta = today - self.last_period_date
             return max(1, delta.days // 7)  # Semanas completas desde la última menstruación
+        
         return None
 
     @property
