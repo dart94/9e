@@ -548,7 +548,6 @@ def get_dashboard_data():
     }), 200
 
 @routes.route('/api/mi-perfil', methods=['GET'])
-@jwt_required()
 def api_mi_perfil():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)

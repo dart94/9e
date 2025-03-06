@@ -49,7 +49,7 @@ function DashboardContent() {
         setData(response.data);
       } catch (err) {
         console.error('Error al cargar datos del dashboard:', err);
-        setError('Error al cargar los datos del dashboard.');
+        setError('Registra tu embarazo desde el Menu "Nuevo".');
       } finally {
         setLoading(false);
       }
