@@ -551,20 +551,29 @@ def get_dashboard_data():
 @jwt_required()
 def api_mi_perfil():
     user_id = get_jwt_identity()
-    print("ID del usuario (desde el token JWT):", user_id)  # Verifica el ID del usuario
-    print("Tipo de user_id:", type(user_id), "Valor:", user_id)
+
+    print("🔹 ID del usuario desde JWT:", user_id)
+    print("🔹 Tipo de user_id:", type(user_id))
+
+    if not user_id:
+        return jsonify({"error": "Token inválido o expirado"}), 401
+
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404
+
     last_record = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.id.desc()).first()
-    print("Último registro:", last_record)  # Verifica el último registro
+    print("🔹 Último registro encontrado:", last_record)
+
     current_week = None
     progress_percentage = 0
+
     if last_record and last_record.start_date:
         today = datetime.now().date()
         days_since_start = (today - last_record.start_date).days
         current_week = max(1, min(days_since_start // 7, 40))
         progress_percentage = (current_week / 40) * 100
+
     return jsonify({
         "id": user.id,
         "name": user.name,
@@ -575,7 +584,6 @@ def api_mi_perfil():
             "week": last_record.week if last_record else None
         }
     }), 200
-
 # API: Editar perfil    
 @routes.route('/api/editar-perfil', methods=['POST'])
 @login_required

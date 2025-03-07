@@ -18,7 +18,7 @@ import { buttonStyles } from '../../src/theme/styles/buttonStyles';
 import CustomInput from '@/src/components/CustomInput';
 
 // Configuramos el interceptor una sola vez fuera del componente para evitar
-// que se añada múltiples veces en re-renders
+
 axios.interceptors.request.use(
   async (config) => {
     const token = await SecureStore.getItemAsync('userToken');
@@ -51,44 +51,51 @@ export default function SettingsScreen() {
   const fetchProfile = async () => {
     try {
       setLoading(true);
+  
       const token = await SecureStore.getItemAsync('userToken');
-      console.log('Token JWT:', token); // Verifica el token
-    
+      console.log('Token JWT obtenido:', token); // Verifica que el token exista
+  
       if (!token) {
         Alert.alert('Error', 'No se encontró el token de autenticación.');
         return;
       }
   
-      // Prueba 1: Enviando el token directamente (sin interceptor)
-      console.log('Intentando obtener perfil...');
-      const response = await axios({
-        method: 'GET',
-        url: `${API_CONFIG.BASE_URL}/api/mi-perfil`,
+      // Hacer la solicitud con axios
+      console.log('Intentando obtener perfil con el token...');
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-        }
+        },
       });
   
       console.log('Datos del perfil recibidos:', response.data);
+  
+      // Guardar los datos en el estado
       setProfileData(response.data);
       setForm({
         username: response.data.name,
         email: response.data.email || '',
       });
     } catch (error) {
-      console.error('Error al cargar el perfil:', error);
+      console.error('Error al obtener el perfil:', error);
+  
       if (axios.isAxiosError(error)) {
         console.log('Status:', error.response?.status);
         console.log('Response data:', JSON.stringify(error.response?.data));
-        console.log('Request headers:', JSON.stringify(error.config?.headers));
-        
-        const errorMessage = 
-          error.response?.data?.message || 
-          error.response?.data?.error || 
-          'No se pudo cargar la información del perfil.';
-        
-        Alert.alert('Error', `${errorMessage} (${error.response?.status || 'desconocido'})`);
+        console.log('Request headers enviados:', JSON.stringify(error.config?.headers));
+  
+        // Si el error es 401, posiblemente el token sea inválido o haya expirado
+        if (error.response?.status === 401) {
+          Alert.alert('Error', 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+          // Aquí podrías limpiar el token y redirigir al usuario al login
+        } else {
+          const errorMessage =
+            error.response?.data?.message ||
+            error.response?.data?.error ||
+            'No se pudo cargar la información del perfil.';
+          Alert.alert('Error', `${errorMessage} (${error.response?.status || 'desconocido'})`);
+        }
       } else {
         Alert.alert('Error', 'Ocurrió un error inesperado.');
       }
