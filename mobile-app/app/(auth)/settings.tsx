@@ -50,59 +50,65 @@ export default function SettingsScreen() {
 
   const fetchProfile = async () => {
     try {
-      setLoading(true);
-  
-      const token = await SecureStore.getItemAsync('userToken');
-      console.log('Token JWT obtenido:', token); // Verifica que el token exista
-  
-      if (!token) {
-        Alert.alert('Error', 'No se encontró el token de autenticación.');
-        return;
-      }
-  
-      // Hacer la solicitud con axios
-      console.log('Intentando obtener perfil con el token...');
-      const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-  
-      console.log('Datos del perfil recibidos:', response.data);
-  
-      // Guardar los datos en el estado
-      setProfileData(response.data);
-      setForm({
-        username: response.data.name,
-        email: response.data.email || '',
-      });
-    } catch (error) {
-      console.error('Error al obtener el perfil:', error);
-  
-      if (axios.isAxiosError(error)) {
-        console.log('Status:', error.response?.status);
-        console.log('Response data:', JSON.stringify(error.response?.data));
-        console.log('Request headers enviados:', JSON.stringify(error.config?.headers));
-  
-        // Si el error es 401, posiblemente el token sea inválido o haya expirado
-        if (error.response?.status === 401) {
-          Alert.alert('Error', 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-          // Aquí podrías limpiar el token y redirigir al usuario al login
-        } else {
-          const errorMessage =
-            error.response?.data?.message ||
-            error.response?.data?.error ||
-            'No se pudo cargar la información del perfil.';
-          Alert.alert('Error', `${errorMessage} (${error.response?.status || 'desconocido'})`);
+        setLoading(true);
+
+        const token = await SecureStore.getItemAsync('userToken');
+        console.log('Token JWT obtenido:', token); // Verifica que el token exista
+
+        if (!token) {
+            Alert.alert('Error', 'No se encontró el token de autenticación.');
+            return;
         }
-      } else {
-        Alert.alert('Error', 'Ocurrió un error inesperado.');
-      }
+
+        // Hacer la solicitud con axios
+        console.log('Intentando obtener perfil con el token...');
+        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            withCredentials: true, // Asegúrate de incluir esto si es necesario
+        });
+
+        console.log('Datos del perfil recibidos:', response.data);
+
+        // Guardar los datos en el estado
+        setProfileData(response.data);
+        setForm({
+            username: response.data.name,
+            email: response.data.email || '',
+        });
+    } catch (error) {
+        console.error('Error al obtener el perfil:', error);
+
+        if (axios.isAxiosError(error)) {
+            console.log('Status:', error.response?.status);
+            console.log('Response data:', JSON.stringify(error.response?.data));
+            console.log('Request headers enviados:', JSON.stringify(error.config?.headers));
+
+            // Si el error es 401, posiblemente el token sea inválido o haya expirado
+            if (error.response?.status === 401) {
+                Alert.alert('Error', 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+                // Aquí podrías limpiar el token y redirigir al usuario al login
+            } else {
+                const errorMessage =
+                    error.response?.data?.message ||
+                    error.response?.data?.error ||
+                    'No se pudo cargar la información del perfil.';
+                Alert.alert('Error', `${errorMessage} (${error.response?.status || 'desconocido'})`);
+            }
+        } else {
+            Alert.alert('Error', 'Ocurrió un error inesperado.');
+        }
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
   
   // Habilitar/deshabilitar autenticación biométrica
   const handleToggleBiometricAuth = async (enable: boolean) => {
