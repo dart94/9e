@@ -4,6 +4,8 @@ import {
   Text,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
@@ -14,10 +16,11 @@ import { textStyles } from '../../src/theme/styles/textStyles';
 import { buttonStyles } from '../../src/theme/styles/buttonStyles';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Ionicons } from '@expo/vector-icons';
-import { storage } from '../../utils/storageHelper';
 import CustomInput from '@/src/components/CustomInput';
 import * as WebBrowser from 'expo-web-browser';
+import * as SecureStore from 'expo-secure-store';
 import * as Google from 'expo-auth-session/providers/google';
+import {biometricStyles} from '../../src/theme/styles/biometricStyles';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -28,16 +31,21 @@ export default function LoginScreen() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+  const [hasStoredCredentials, setHasStoredCredentials] = useState(false);
   const router = useRouter();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-        androidClientId: '30060725584-geltsl9088hehgclt642pv6t5t60ngo5.apps.googleusercontent.com',
+    androidClientId: '30060725584-geltsl9088hehgclt642pv6t5t60ngo5.apps.googleusercontent.com',
   });
 
   useEffect(() => {
     const checkBiometricSupport = async () => {
       const compatible = await LocalAuthentication.hasHardwareAsync();
       setIsBiometricSupported(compatible);
+      
+      // Verificar si hay credenciales almacenadas
+      const savedEmail = await SecureStore.getItemAsync('userEmail');
+      setHasStoredCredentials(!!savedEmail);
     };
     checkBiometricSupport();
   }, []);
@@ -51,66 +59,45 @@ export default function LoginScreen() {
     }
   }, [response]);
 
+  interface GoogleLoginResponse {
+    id: number;
+    username: string;
+    token: string;
+    email: string;
+  }
+
   const handleGoogleLogin = async (accessToken: string) => {
     setLoading(true);
     try {
-      // Limpiar datos de usuario
       await AsyncStorage.clear();
-      const response = await axios.post(`${API_CONFIG.BASE_URL}/auth/google`, {
+      const response = await axios.post<GoogleLoginResponse>(`${API_CONFIG.BASE_URL}/auth/google`, {
         token: accessToken,
       });
 
       if (response.status === 200) {
-        const { id, username, token } = response.data;
+        const { id, username, token, email } = response.data;
 
-        // Guardar datos de usuario
         await AsyncStorage.setItem('userId', id.toString());
-        await AsyncStorage.setItem(
-          'user',
-          JSON.stringify({ id, name: username })
-        );
+        await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
 
-        // Guardar token y credenciales
-        await storage.setItem('userToken', token);
-        await storage.setItem('userEmail', response.data.email);
+        await SecureStore.setItemAsync('userToken', token);
+        await SecureStore.setItemAsync('userEmail', email);
 
-        // Configurar interceptor de Axios
-        axios.interceptors.request.use(
-          async (config) => {
-            const token = await storage.getItem('userToken');
-            if (token) {
-              config.headers.Authorization = `Bearer ${token}`;
-            }
-            return config;
-          },
-          (error) => Promise.reject(error)
-        );
-
-        // Navegar al Dashboard
         router.push('/dashboard');
       }
     } catch (error) {
       console.error('Error detallado:', error);
-      if (axios.isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.message ||
-          (error.response?.status === 401
-            ? 'Credenciales inválidas.'
-            : 'Ocurrió un error. Inténtalo de nuevo más tarde.');
-        Alert.alert('Error', errorMessage);
-      } else {
-        Alert.alert('Error', 'Ocurrió un error inesperado.');
-      }
+      Alert.alert('Error', 'No se pudo iniciar sesión con Google.');
     } finally {
       setLoading(false);
     }
   };
 
-  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateEmail = (email: string): boolean => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
 
   const handleBiometricAuth = async () => {
     try {
-      const savedEmail = await storage.getItem('userEmail');
+      const savedEmail = await SecureStore.getItemAsync('userEmail');
       if (!savedEmail) {
         Alert.alert(
           'No hay datos guardados',
@@ -121,14 +108,12 @@ export default function LoginScreen() {
 
       const result = await LocalAuthentication.authenticateAsync({
         promptMessage: 'Autenticación biométrica',
-        disableDeviceFallback: false,
         cancelLabel: 'Cancelar',
       });
 
       if (result.success) {
-        const savedPassword = await storage.getItem('userPassword');
+        const savedPassword = await SecureStore.getItemAsync('userPassword');
         setEmail(savedEmail);
-        setPassword(savedPassword || '');
         await handleLogin(savedEmail, savedPassword || '');
       }
     } catch (error) {
@@ -159,64 +144,76 @@ export default function LoginScreen() {
       if (response.status === 200) {
         const { id, username, token } = response.data;
 
-        // Guardar datos de usuario
         await AsyncStorage.setItem('userId', id.toString());
-        await AsyncStorage.setItem(
-          'user',
-          JSON.stringify({ id, name: username })
-        );
+        await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
 
-        // Guardar token y credenciales
-        await storage.setItem('userToken', token);
-        await storage.setItem('userEmail', loginEmail);
-        await storage.setItem('userPassword', loginPassword);
+        await SecureStore.setItemAsync('userToken', token);
+        await SecureStore.setItemAsync('userEmail', loginEmail);
 
-        // Configurar interceptor de Axios
-        axios.interceptors.request.use(
-          async (config) => {
-            const token = await storage.getItem('userToken'); 
-            if (token) {
-              config.headers.Authorization = `Bearer ${token}`; 
-            }
-            return config;
-          },
-          (error) => Promise.reject(error)
-        );
-
-        // Navegar al Dashboard
         router.push('/dashboard');
       }
     } catch (error) {
       console.error('Error detallado:', error);
-      if (axios.isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.message ||
-          (error.response?.status === 401
-            ? 'Credenciales inválidas.'
-            : 'Ocurrió un error. Inténtalo de nuevo más tarde.');
-        Alert.alert('Error', errorMessage);
-      } else {
-        Alert.alert('Error', 'Ocurrió un error inesperado.');
-      }
+      Alert.alert('Error', 'Credenciales incorrectas o problema de conexión.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Renderizar un componente diferente si hay credenciales almacenadas y soporte biométrico
+  if (hasStoredCredentials && isBiometricSupported) {
+    return (
+      <View style={[layoutStyles.container, layoutStyles.center]}>
+        <Image 
+          source={require('../../assets/images/pregnancy-logo.png')} 
+          style={biometricStyles.logo} 
+          resizeMode="contain"
+        />
+        <Text style={textStyles.title}>Bienvenido de nuevo</Text>
+        
+        <TouchableOpacity
+          style={[biometricStyles.biometricButton, { marginBottom: 20 }]}
+          onPress={handleBiometricAuth}
+        >
+          <Ionicons name="finger-print-outline" size={40} color="white" />
+          <Text style={biometricStyles.biometricText}>Ingresar con huella</Text>
+        </TouchableOpacity>
+        
+        <Text style={biometricStyles.orText}>o</Text>
+        
+        <TouchableOpacity 
+          style={[buttonStyles.button, biometricStyles.secondaryButton]}
+          onPress={() => promptAsync()}
+          disabled={!request}
+        >
+          <Ionicons name="logo-google" size={20} color="#333" style={{ marginRight: 8 }} />
+          <Text style={biometricStyles.secondaryButtonText}>Continuar con Google</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[biometricStyles.textLink, { marginTop: 15 }]}
+          onPress={() => setHasStoredCredentials(false)}
+        >
+          <Text style={textStyles.link}>Usar otro método de inicio de sesión</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={[layoutStyles.container, layoutStyles.center]}>
+       <Image 
+          source={require('../../assets/images/pregnancy-logo.png')} 
+          style={biometricStyles.logo} 
+          resizeMode="contain"
+        />
       <Text style={textStyles.title}>Iniciar Sesión</Text>
 
       <CustomInput
         placeholder="Correo electrónico"
         value={email}
-        onChangeText={(text) => {
-          setEmailError(false);
-          setEmail(text);
-        }}
-        onBlur={() => {
-          if (!validateEmail(email)) setEmailError(true);
-        }}
+        onChangeText={(text) => setEmail(text)}
+        onBlur={() => setEmailError(!validateEmail(email))}
         keyboardType="email-address"
         autoCapitalize="none"
       />
@@ -224,10 +221,7 @@ export default function LoginScreen() {
       <CustomInput
         placeholder="Contraseña"
         value={password}
-        onChangeText={(text) => {
-          setPasswordError(false);
-          setPassword(text);
-        }}
+        onChangeText={(text) => setPassword(text)}
         secureTextEntry
       />
 
@@ -236,50 +230,48 @@ export default function LoginScreen() {
         onPress={() => handleLogin()}
         disabled={loading}
       >
-        <Text style={buttonStyles.buttonText}>
-          {loading ? 'Cargando...' : 'Ingresar'}
-        </Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="white" />
+        ) : (
+          <Text style={buttonStyles.buttonText}>Ingresar</Text>
+        )}
       </TouchableOpacity>
 
-      {isBiometricSupported && (
-        <TouchableOpacity
-          style={[
-            buttonStyles.button,
-            { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-          ]}
-          onPress={handleBiometricAuth}
-        >
-          <Ionicons name="finger-print-outline" size={32} color={buttonStyles.buttonText.color} />
-          <Text style={buttonStyles.buttonText}> Ingresar con Huella</Text>
-        </TouchableOpacity>
-      )}
+      <View style={biometricStyles.divider}>
+        <View style={biometricStyles.dividerLine} />
+        <Text style={biometricStyles.dividerText}>o</Text>
+        <View style={biometricStyles.dividerLine} />
+      </View>
 
       <TouchableOpacity
-        style={[buttonStyles.button, { marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
+        style={[buttonStyles.button, biometricStyles.secondaryButton]}
         onPress={() => promptAsync()}
         disabled={!request}
       >
         <Ionicons
           name="logo-google"
-          size={24}
-          color={buttonStyles.buttonText.color}
+          size={20}
+          color="#333"
           style={{ marginRight: 8 }}
         />
-        <Text style={buttonStyles.buttonText}>Iniciar con Google</Text>
+        <Text style={biometricStyles.secondaryButtonText}>Continuar con Google</Text>
       </TouchableOpacity>
 
       <TouchableOpacity 
-        style={layoutStyles.touchableContainer}
+        style={biometricStyles.textLink}
         onPress={() => router.push('/(auth)/forgotPassword')}
       >
         <Text style={textStyles.link}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-       style={layoutStyles.touchableContainer}
+       style={biometricStyles.textLink}
        onPress={() => router.push('/(auth)/register')}>
         <Text style={textStyles.link}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
+
+  

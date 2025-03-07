@@ -105,7 +105,7 @@ export default function RegisterScreen() {
         style={miscStyles.input}
         placeholder="Nombre de usuario"
         value={username}
-        onChangeText={(text) => setUsername(text.trim())} // Evita espacios al inicio y fin
+        onChangeText={(text) => setUsername(text.trim())} 
         autoCapitalize="none"
       />
       <CustomInput
