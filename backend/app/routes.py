@@ -547,23 +547,15 @@ def get_dashboard_data():
         },
     }), 200
 
-@routes.route('/api/mi-perfil', methods=['GET'])
+@app.route('/api/mi-perfil', methods=['GET'])
 @jwt_required()
 def api_mi_perfil():
-    user_id = get_jwt_identity()
-
-    print("🔹 ID del usuario desde JWT:", user_id)
-    print("🔹 Tipo de user_id:", type(user_id))
-
-    if not user_id:
-        return jsonify({"error": "Token inválido o expirado"}), 401
-
+    user_id = get_jwt_identity()  # Obtiene el user_id desde el token
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
     last_record = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.id.desc()).first()
-    print("🔹 Último registro encontrado:", last_record)
 
     current_week = None
     progress_percentage = 0
@@ -628,10 +620,7 @@ def login2():
 
             # Crear el token JWT
             expires = timedelta(days=1)  # Token válido por 1 día
-            access_token = create_access_token(
-                identity=user.id,
-                expires_delta=expires
-            )
+            access_token = create_access_token(identity=str(user.id), expires_delta=expires)
             
             # Datos de sesión
             session['user_id'] = user.id
@@ -892,7 +881,7 @@ def handle_google_login():
                 return jsonify({"error": "Error updating user", "details": str(e)}), 500
         
         # Generar token de acceso JWT
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         
         response_data = {
             "id": user.id,
