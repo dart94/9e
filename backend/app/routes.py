@@ -552,6 +552,7 @@ def get_dashboard_data():
 def api_mi_perfil():
     user_id = get_jwt_identity()
     print("ID del usuario (desde el token JWT):", user_id)  # Verifica el ID del usuario
+    print("Tipo de user_id:", type(user_id), "Valor:", user_id)
 
     user = User.query.get(user_id)
     if not user:
