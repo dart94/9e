@@ -551,12 +551,17 @@ def get_dashboard_data():
 @jwt_required()
 def api_mi_perfil():
     user_id = get_jwt_identity()
-
     print("🔹 ID del usuario desde JWT:", user_id)
     print("🔹 Tipo de user_id:", type(user_id))
 
     if not user_id:
         return jsonify({"error": "Token inválido o expirado"}), 401
+
+    # Convertir el user_id a entero
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        return jsonify({"error": "El user_id debe ser un número entero"}), 400
 
     user = User.query.get(user_id)
     if not user:
@@ -577,10 +582,11 @@ def api_mi_perfil():
     return jsonify({
         "id": user.id,
         "name": user.name,
+        "email": user.email,  # Se incluye el email para el frontend
         "current_week": current_week,
         "progress_percentage": progress_percentage,
         "last_record": {
-            "start_date": last_record.start_date.strftime("%Y-%m-%d") if last_record else None,
+            "start_date": last_record.start_date.strftime("%Y-%m-%d") if last_record and last_record.start_date else None,
             "week": last_record.week if last_record else None
         }
     }), 200
