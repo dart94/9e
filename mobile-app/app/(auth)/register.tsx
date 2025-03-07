@@ -16,9 +16,50 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // Validar email con expresión regular
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Validar la contraseña (mínimo 6 caracteres)
+  interface ValidatePassword {
+    (password: string): boolean;
+  }
+
+  const validatePassword: ValidatePassword = (password) => {
+    return password.length >= 6;
+  };
+
+  // Validar nombre de usuario (sin espacios y longitud mínima)
+  interface ValidateUsername {
+    (username: string): boolean;
+  }
+
+  const validateUsername: ValidateUsername = (username) => {
+    return username.trim().length >= 3;
+  };
+
   const handleRegister = async () => {
+    if (loading) return; // Evita múltiples clics
+
     if (!username || !email || !password) {
       Alert.alert('Error', 'Por favor completa todos los campos.');
+      return;
+    }
+
+    if (!validateUsername(username)) {
+      Alert.alert('Error', 'El nombre de usuario debe tener al menos 3 caracteres.');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      Alert.alert('Error', 'Ingresa un correo electrónico válido.');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres.');
       return;
     }
 
@@ -64,14 +105,14 @@ export default function RegisterScreen() {
         style={miscStyles.input}
         placeholder="Nombre de usuario"
         value={username}
-        onChangeText={setUsername}
+        onChangeText={(text) => setUsername(text.trim())} // Evita espacios al inicio y fin
         autoCapitalize="none"
       />
       <CustomInput
         style={miscStyles.input}
         placeholder="Correo electrónico"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(text) => setEmail(text.trim().toLowerCase())}
         keyboardType="email-address"
         autoCapitalize="none"
       />
@@ -80,6 +121,7 @@ export default function RegisterScreen() {
         placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}
+        autoCapitalize="none"
         secureTextEntry
       />
       <TouchableOpacity

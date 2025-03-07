@@ -452,8 +452,7 @@ def register_user():
         return jsonify({"error": "El correo ya está registrado"}), 400
 
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    
-    # Importante: is_confirmed=False por defecto
+
     new_user = User(
         username=data['username'], 
         email=data['email'], 
@@ -466,19 +465,19 @@ def register_user():
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": f"Error al registrar usuario: {str(e)}"}), 500
-    
-   
+        print(f"Error en el registro: {str(e)}") 
+        return jsonify({"error": "No se pudo registrar el usuario. Intenta más tarde."}), 500
+
     try:
         serializer = current_app.extensions['email_confirm_serializer'] 
         token = serializer.dumps(new_user.email, salt='email-confirm-salt')       
         confirm_url = url_for('routes.confirm_email', token=token, _external=True)
-        # Enviar el correo de confirmación
         send_confirmation_email(new_user.email, confirm_url)
 
         return jsonify({"message": "Usuario registrado exitosamente. Revisa tu correo para confirmar la cuenta."}), 201
     except Exception as e:
-        return jsonify({"error": f"Error al enviar correo de confirmación: {str(e)}"}), 500
+        print(f"Error al enviar correo: {str(e)}")  # No mostrar este error al usuario
+        return jsonify({"error": "Registro exitoso, pero hubo un problema enviando el correo. Contacta al soporte."}), 500
 
 #Endpoint para confirmar
 @routes.route('/confirm_email/<token>', methods=['GET'])
