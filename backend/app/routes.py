@@ -551,19 +551,22 @@ def get_dashboard_data():
 @jwt_required()
 def api_mi_perfil():
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    print("ID del usuario:", user_id)  # Verifica el ID del usuario
 
+    user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
     last_record = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.id.desc()).first()
+    print("Último registro:", last_record)  # Verifica el último registro
+
     current_week = None
     progress_percentage = 0
 
     if last_record and last_record.start_date:
         today = datetime.now().date()
         days_since_start = (today - last_record.start_date).days
-        current_week = max(1, min(days_since_start // 7, 40))  # Asegura rango entre 1 y 40
+        current_week = max(1, min(days_since_start // 7, 40))
         progress_percentage = (current_week / 40) * 100
 
     return jsonify({
@@ -576,7 +579,6 @@ def api_mi_perfil():
             "week": last_record.week if last_record else None
         }
     }), 200
-
 
 # API: Editar perfil    
 @routes.route('/api/editar-perfil', methods=['POST'])

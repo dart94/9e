@@ -23,32 +23,49 @@ export default function SettingsScreen() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ username: '', email: '' });
 
+  // Interceptor de Axios para incluir el token JWT en las solicitudes
+  axios.interceptors.request.use(
+    async (config) => {
+      const token = await SecureStore.getItemAsync('userToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
+
+  // Cargar el perfil del usuario
   useEffect(() => {
     const fetchProfile = async () => {
-        try {
-          // Axios añadirá automáticamente el token a través del interceptor
-          const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
-            withCredentials: true,
-          });
-          
-          setProfileData(response.data);
-          
-          // Actualizar el formulario con los datos recibidos
-          setForm({ 
-            username: response.data.name, 
-            email: response.data.email || '' 
-          });
-        } catch (error) {
-          console.error('Error al cargar el perfil:', error);
-          Alert.alert('Error', 'No se pudo cargar la información del perfil.');
-        } finally {
-          setLoading(false);
-        }
-      };
+      try {
+        setLoading(true);
+        const token = await SecureStore.getItemAsync('userToken');
+        console.log('Token JWT:', token); // Verifica el token
     
-      fetchProfile();
-    }, []);
+        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`);
+        setProfileData(response.data);
+        setForm({
+          username: response.data.name,
+          email: response.data.email || '',
+        });
+      } catch (error) {
+        console.error('Error al cargar el perfil:', error);
+        if (axios.isAxiosError(error)) {
+          console.log('Respuesta del servidor:', error.response); // Verifica la respuesta del servidor
+          Alert.alert('Error', error.response?.data?.message || 'No se pudo cargar la información del perfil.');
+        } else {
+          Alert.alert('Error', 'Ocurrió un error inesperado.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchProfile();
+  }, []);
+
+  // Habilitar/deshabilitar autenticación biométrica
   const handleToggleBiometricAuth = async (enable: boolean) => {
     try {
       if (enable) {
@@ -63,20 +80,23 @@ export default function SettingsScreen() {
     }
   };
 
+  // Guardar cambios en el perfil
   const handleSave = async () => {
     try {
       setLoading(true);
       // Axios añadirá automáticamente el token a través del interceptor
-      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/editar-perfil`, form, {
-        withCredentials: true,
-      });
-      
+      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/editar-perfil`, form);
+
       Alert.alert('Éxito', response.data.message);
       setEditing(false);
-      setProfileData({ ...profileData, ...form });
+      setProfileData({ ...profileData, ...form }); // Actualizar el estado con los nuevos datos
     } catch (error) {
       console.error('Error al guardar el perfil:', error);
-      Alert.alert('Error', 'No se pudo actualizar el perfil.');
+      if (axios.isAxiosError(error)) {
+        Alert.alert('Error', error.response?.data?.message || 'No se pudo actualizar el perfil.');
+      } else {
+        Alert.alert('Error', 'Ocurrió un error inesperado.');
+      }
     } finally {
       setLoading(false);
     }
