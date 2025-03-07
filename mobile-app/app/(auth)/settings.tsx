@@ -35,15 +35,24 @@ export default function SettingsScreen() {
     (error) => Promise.reject(error)
   );
 
-  // Cargar el perfil del usuario
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
         const token = await SecureStore.getItemAsync('userToken');
         console.log('Token JWT:', token); // Verifica el token
-    
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`);
+      
+        if (!token) {
+          Alert.alert('Error', 'No se encontró el token de autenticación.');
+          return;
+        }
+  
+        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
         setProfileData(response.data);
         setForm({
           username: response.data.name,
@@ -61,9 +70,10 @@ export default function SettingsScreen() {
         setLoading(false);
       }
     };
-
+  
     fetchProfile();
   }, []);
+  
 
   // Habilitar/deshabilitar autenticación biométrica
   const handleToggleBiometricAuth = async (enable: boolean) => {
