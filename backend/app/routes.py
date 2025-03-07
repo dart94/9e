@@ -575,7 +575,6 @@ def api_mi_perfil():
 
         return jsonify({
             "id": user.id,
-            "name": user.name,
             "current_week": current_week,
             "progress_percentage": progress_percentage,
             "last_record": {
