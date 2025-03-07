@@ -569,7 +569,7 @@ def api_mi_perfil():
 
         if last_record and last_record.start_date:
             today = datetime.now().date()
-            days_since_start = (today - last_record.start_date).days
+            days_since_start = (today - last_record.last_period_date).days
             current_week = max(1, min(days_since_start // 7, 40))
             progress_percentage = (current_week / 40) * 100
 
