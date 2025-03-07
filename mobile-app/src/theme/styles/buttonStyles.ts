@@ -14,11 +14,6 @@ export const buttonStyles = StyleSheet.create({
   buttonDisabled: {
     backgroundColor: COLORS.primary + '88',
   },
-  buttonText: {
-    color: COLORS.white,
-    fontSize: SIZES.fontMedium,
-    fontWeight: 'bold',
-  },
   floatingButton: {
     position: 'absolute',
     right: SIZES.margin * 2,
@@ -57,5 +52,13 @@ export const buttonStyles = StyleSheet.create({
     padding: SIZES.padding,
     borderRadius: SIZES.borderRadius,
     alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',          // Color del texto
+    fontSize: 16,           // Tamaño de la fuente
+    textAlign: 'center',    // Centrado horizontal
+    fontWeight: 'bold',     // Texto en negrita
+    paddingVertical: 10,    // Espaciado vertical
+    paddingHorizontal: 20,  // Espaciado horizontal
   },
 });

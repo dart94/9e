@@ -63,8 +63,9 @@ python -m backend.run
 
 ---
 
-## 📊 Priorización de Funcionalidades
+# Notas actualizadas de desarrollo
 
+## 📊 Priorización de Funcionalidades
 | **Funcionalidad** | **Impacto** | **Complejidad** | **Prioridad** |
 |---|---|---|---|
 | **🔔 Notificaciones push remotas** (para recordatorios y actualizaciones) | 🔥 Alta | ⚡ Media | 🥇 Alta |
@@ -73,7 +74,6 @@ python -m backend.run
 | **🤖 IA para recomendaciones** (personalización de la experiencia) | 🧠 Muy Alta | 🛠️ Muy Alta | 🔜 Baja |
 
 ### 📅 Plan de Implementación por Sprints
-
 ✅ **Sprint 1 (2-3 semanas):** Implementación de notificaciones push remotas.  
 ✅ **Sprint 2 (3-4 semanas):** Desarrollo del diario postparto.  
 ✅ **Sprint 3 (4-5 semanas):** Pruebas e iteraciones con feedback de usuarios.  
@@ -82,7 +82,6 @@ python -m backend.run
 ---
 
 ## ✅ Tareas Pendientes
-
 ✅ **Sprint 1 - 🔔 Notificaciones push remotas**
 - [x] 📡 Configurar Firebase Cloud Messaging / Expo Notifications.
 - [x] 🔗 Integrar backend Flask para el envío de notificaciones.
@@ -91,7 +90,7 @@ python -m backend.run
 ✅ **Sprint 2 - 📖 Postparto**
 - [x] 🗄️ Diseñar la base de datos para entradas del diario.
 - [ ] 🎨 Crear UI para agregar, editar y visualizar Posparto.
-- [ ] 🔄 Sincronizar con backend.
+- [x] 🔄 Sincronizar con backend.
 
 ✅ **Sprint 3 - 🛠️ Pruebas e iteraciones**
 - [ ] 📝 Recoger feedback de usuarios.
@@ -101,3 +100,21 @@ python -m backend.run
 - [ ] 🧐 Explorar viabilidad del foro/comunidad.
 - [ ] 🤖 Analizar integración de IA en futuras versiones.
 
+## 🔄 Cambios Recientes Implementados
+
+### 🔐 Mejora en la experiencia de inicio de sesión
+- ✅ Rediseño de la pantalla de login para ofrecer una experiencia más intuitiva
+- ✅ Implementación de flujo contextual para usuarios recurrentes con opción biométrica
+- ✅ Jerarquización visual clara de los métodos de autenticación
+- ✅ Adición del logo de la aplicación para reforzar la identidad de marca
+- ✅ Divisores visuales para separar claramente las opciones de inicio de sesión
+
+### ⚙️ Corrección de la pestaña Settings.tsx
+- ✅ Corrección de problemas en la configuración de ajustes
+- ✅ Mejora de la interfaz de usuario para mayor claridad
+- ✅ Optimización del rendimiento
+
+### 📱 Próximos pasos
+- [ ] Finalizar la UI del diario postparto
+- [ ] Iniciar pruebas beta con usuarios reales
+- [ ] Analizar métricas de uso para optimizar la experiencia

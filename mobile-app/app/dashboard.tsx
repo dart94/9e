@@ -3,33 +3,35 @@ import {
   View,
   Text,
   ActivityIndicator,
-  FlatList,
   ScrollView,
   Image,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import axios from 'axios';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG } from '../src/config/config';
 import { layoutStyles } from '../src/theme/styles/layoutStyles';
 import { textStyles } from '../src/theme/styles/textStyles';
 import { miscStyles } from '../src/theme/styles/miscStyles';
 import { ProgressBar } from 'react-native-paper';
-import SettingsScreen from './(auth)/settings';
-import ViewPregnancyRecordsScreen from './viewPregnancy';
-import NewPregnancyRecordScreen from './newPregnancy';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { buttonStyles } from '@/src/theme/styles';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-const Tab = createBottomTabNavigator();
+// Importa las pantallas adicionales
+import SettingsScreen from './(auth)/settings';
+import NewPregnancyRecordScreen from './newPregnancy';
+import ViewPregnancyRecordsScreen from './viewPregnancy';
+import LogoutScreen from '../utils/auth';
 
-const LogoutScreen = () => null;
-
+// Componente que muestra el contenido del dashboard
 function DashboardContent() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -49,7 +51,8 @@ function DashboardContent() {
         setData(response.data);
       } catch (err) {
         console.error('Error al cargar datos del dashboard:', err);
-        setError('Registra tu embarazo desde el Menu "Nuevo".');
+        // Si se produce este error, asumimos que el usuario es nuevo
+        setError('Registra tu embarazo desde el menú "Nuevo".');
       } finally {
         setLoading(false);
       }
@@ -66,39 +69,61 @@ function DashboardContent() {
       </View>
     );
 
-  if (error)
+  if (error) {
+    // Si el error indica que el usuario es nuevo, mostramos una tarjeta visual con botón
+    if (error === 'Registra tu embarazo desde el menú "Nuevo".') {
+      return (
+        <View style={[layoutStyles.container, layoutStyles.center]}>
+          <View style={miscStyles.card}>
+            <Ionicons
+              name="information-circle-outline"
+              size={48}
+              color={textStyles.errorText.color}
+            />
+            <Text style={textStyles.errorText}>
+              Aún no has registrado tu embarazo.
+            </Text>
+            <TouchableOpacity
+              style={buttonStyles.button}
+              onPress={() => router.push('/newPregnancy')}
+            >
+              <Text style={buttonStyles.buttonText}>Registrar ahora</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+    // Para otros errores mostramos el mensaje simple
     return (
       <View style={[layoutStyles.container, layoutStyles.center]}>
         <Text style={textStyles.errorText}>{error}</Text>
       </View>
     );
+  }
 
   const { current_week, progress_percentage, week_info, month } = data;
 
   const normalizedProgress = progress_percentage
     ? Math.min(100, Math.max(0, Math.floor(progress_percentage)))
     : 0;
-
   const safeProgress = normalizedProgress / 100;
 
-  const renderList = (items: string[]) => {
-    return (
-      <View>
-        {items.map((item, index) => (
-          <Text key={index} style={textStyles.listItem}>
-            - {item}
-          </Text>
-        ))}
-      </View>
-    );
-  };
-
-
+  const renderList = (items: string[]) => (
+    <View>
+      {items.map((item, index) => (
+        <Text key={index} style={textStyles.listItem}>
+          - {item}
+        </Text>
+      ))}
+    </View>
+  );
 
   return (
     <ScrollView style={layoutStyles.container}>
       <View style={miscStyles.card}>
-        <Text style={textStyles.title}>Semana {current_week || 'N/A'} de 40</Text>
+        <Text style={textStyles.title}>
+          Semana {current_week || 'N/A'} de 40
+        </Text>
         <Image
           source={{
             uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png`,
@@ -115,10 +140,11 @@ function DashboardContent() {
 
       {week_info ? (
         <>
-            <View style={miscStyles.card}>
+          <View style={miscStyles.card}>
             <Text style={textStyles.subtitle}>Tamaño</Text>
-            <Text style={textStyles.paragraph}>{week_info.tamano}, peso aproximado:{week_info.peso}</Text>
-
+            <Text style={textStyles.paragraph}>
+              {week_info.tamano}, peso aproximado: {week_info.peso}
+            </Text>
             <Text style={textStyles.subtitle}>Comparación</Text>
             <Text style={textStyles.paragraph}>{week_info.comparacion}</Text>
           </View>
@@ -152,7 +178,10 @@ function DashboardContent() {
   );
 }
 
-export default function DashboardScreen() {
+// Configuración del Tab Navigator
+const Tab = createBottomTabNavigator();
+
+function DashboardScreen() {
   const router = useRouter();
 
   const logout = async () => {
@@ -197,15 +226,21 @@ export default function DashboardScreen() {
             iconName = 'log-out-outline';
           }
 
-          return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
+          return (
+            <Ionicons
+              name={iconName as keyof typeof Ionicons.glyphMap}
+              size={size}
+              color={color}
+            />
+          );
         },
       })}
-      >
-        <Tab.Screen
-          name="Dashboard"
-          component={DashboardContent}
-          options={{ title: 'Inicio', tabBarLabel: 'Dashboard' }}
-        />
+    >
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardContent}
+        options={{ title: 'Inicio', tabBarLabel: 'Dashboard' }}
+      />
       <Tab.Screen
         name="Settings"
         component={SettingsScreen}
@@ -239,3 +274,5 @@ export default function DashboardScreen() {
     </Tab.Navigator>
   );
 }
+
+export default DashboardScreen;
