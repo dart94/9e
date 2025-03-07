@@ -600,6 +600,7 @@ def api_editar_perfil():
     
 # Login
 @routes.route('/login2', methods=['GET', 'POST'])
+@jwt_required()
 def login2():
     form = LoginForm()
     if request.method == 'POST':

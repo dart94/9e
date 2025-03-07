@@ -25,31 +25,29 @@ export default function SettingsScreen() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (!userId) {
-          Alert.alert('Error', 'No se pudo obtener el usuario autenticado.');
+        try {
+          // Axios añadirá automáticamente el token a través del interceptor
+          const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
+            withCredentials: true,
+          });
+          
+          setProfileData(response.data);
+          
+          // Actualizar el formulario con los datos recibidos
+          setForm({ 
+            username: response.data.name, 
+            email: response.data.email || '' 
+          });
+        } catch (error) {
+          console.error('Error al cargar el perfil:', error);
+          Alert.alert('Error', 'No se pudo cargar la información del perfil.');
+        } finally {
           setLoading(false);
-          return;
         }
-
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
-          params: { user_id: userId },
-          withCredentials: true,
-        });
-
-        setProfileData(response.data);
-        setForm({ username: response.data.username, email: response.data.email });
-      } catch (error) {
-        console.error('Error al cargar el perfil:', error);
-        Alert.alert('Error', 'No se pudo cargar la información del perfil.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, []);
+      };
+    
+      fetchProfile();
+    }, []);
 
   const handleToggleBiometricAuth = async (enable: boolean) => {
     try {
@@ -68,9 +66,11 @@ export default function SettingsScreen() {
   const handleSave = async () => {
     try {
       setLoading(true);
+      // Axios añadirá automáticamente el token a través del interceptor
       const response = await axios.post(`${API_CONFIG.BASE_URL}/api/editar-perfil`, form, {
         withCredentials: true,
       });
+      
       Alert.alert('Éxito', response.data.message);
       setEditing(false);
       setProfileData({ ...profileData, ...form });
@@ -127,13 +127,13 @@ export default function SettingsScreen() {
             <View style={textStyles.infoRow}>
               <Ionicons name="person-outline" size={24} color={textStyles.infoLabel.color} />
               <Text style={textStyles.infoLabel}> Nombre de Usuario: </Text>
-              <Text style={textStyles.infoValue}>{profileData.username}</Text>
+              <Text style={textStyles.infoValue}>{profileData.name}</Text>
             </View>
 
             <View style={textStyles.infoRow}>
               <Ionicons name="mail-outline" size={24} color={textStyles.infoLabel.color} />
               <Text style={textStyles.infoLabel}> Correo Electrónico: </Text>
-              <Text style={textStyles.infoValue}>{profileData.email}</Text>
+              <Text style={textStyles.infoValue}>{profileData.email || 'N/A'}</Text>
             </View>
 
             <View style={textStyles.infoRow}>
