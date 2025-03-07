@@ -547,7 +547,7 @@ def get_dashboard_data():
         },
     }), 200
 
-@app.route('/api/mi-perfil', methods=['GET'])
+@routes.route('/api/mi-perfil', methods=['GET'])
 @jwt_required()
 def api_mi_perfil():
     user_id = get_jwt_identity()  # Obtiene el user_id desde el token
