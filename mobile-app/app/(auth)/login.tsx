@@ -174,9 +174,9 @@ export default function LoginScreen() {
         // Configurar interceptor de Axios
         axios.interceptors.request.use(
           async (config) => {
-            const token = await storage.getItem('userToken');
+            const token = await storage.getItem('userToken'); 
             if (token) {
-              config.headers.Authorization = `Bearer ${token}`;
+              config.headers.Authorization = `Bearer ${token}`; 
             }
             return config;
           },

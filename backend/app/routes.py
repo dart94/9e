@@ -548,6 +548,7 @@ def get_dashboard_data():
     }), 200
 
 @routes.route('/api/mi-perfil', methods=['GET'])
+@jwt_required()
 def api_mi_perfil():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
@@ -613,10 +614,11 @@ def login2():
         user = User.query.filter_by(email=email).first()
         
         if user and bcrypt.check_password_hash(user.password, password):
-            #confirmar usuario:
+            # Confirmar que el usuario está verificado
             if not user.is_verified:
                 return jsonify({"error": "Debes confirmar tu correo antes de iniciar sesión."}), 403
-            # Crear token JWT
+
+            # Crear el token JWT
             expires = timedelta(days=1)  # Token válido por 1 día
             access_token = create_access_token(
                 identity=user.id,
@@ -635,8 +637,7 @@ def login2():
             }), 200
         else:
             return jsonify({"error": "Correo o contraseña incorrectos"}), 401
-            
-    # Para solicitudes GET, renderizar el formulario de inicio de sesión
+
     return render_template('index.html', form=form)
 
 # API para manejar datos de embarazo
