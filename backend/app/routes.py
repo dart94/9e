@@ -574,12 +574,16 @@ def api_mi_perfil():
             progress_percentage = (current_week / 40) * 100
 
         return jsonify({
-            "id": user.id,
+            "username": user.username,
+            "email": user.email,
             "current_week": current_week,
             "progress_percentage": progress_percentage,
             "last_record": {
                 "perdiod_date": last_record.last_period_date.strftime("%Y-%m-%d") if last_record else None,
-                "week": last_record.week if last_record else None
+                "week": last_record.week if last_record else None,
+                "weight": last_record.weight if last_record else None,
+                "symptoms": last_record.symptoms if last_record else None,
+                "notes": last_record.notes if last_record else None,
             }
         }), 200
 
