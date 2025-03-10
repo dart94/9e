@@ -431,7 +431,7 @@ def forgot_password():
     user = User.query.filter_by(email=email).first()
     if user:
         # Generar token de recuperación
-        serializer = current_app.extensions['serializer']
+        serializer = current_app.extensions['password_reset_serializer']
         token = serializer.dumps(user.email, salt='password-reset-salt')
         reset_url = url_for('routes.reset_password', token=token, _external=True)
         send_reset_email(user.email, reset_url)
