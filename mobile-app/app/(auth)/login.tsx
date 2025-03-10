@@ -69,34 +69,33 @@ export default function LoginScreen() {
   const handleGoogleLogin = async (accessToken: string) => {
     setLoading(true);
     try {
-      await AsyncStorage.clear();
       const response = await axios.post<GoogleLoginResponse>(`${API_CONFIG.BASE_URL}/auth/google`, {
         token: accessToken,
       });
-
       if (response.status === 200) {
         const { id, username, token, email } = response.data;
-
+        // Guardar datos del usuario de forma secuencial para asegurar que se completen
         await AsyncStorage.setItem('userId', id.toString());
         await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
-
         await SecureStore.setItemAsync('userToken', token);
         await SecureStore.setItemAsync('userEmail', email);
-
-        router.push('/dashboard');
+        // Desactivar loading antes de navegar
+        setLoading(false);
+        router.replace('/dashboard');
+        return; // Evita que se ejecute el finally
       }
     } catch (error) {
       console.error('Error detallado:', error);
       Alert.alert('Error', 'No se pudo iniciar sesión con Google.');
-    } finally {
-      setLoading(false);
-    }
+    } 
+    setLoading(false);
   };
-
+  
   const validateEmail = (email: string): boolean => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
-
+  
   const handleBiometricAuth = async () => {
     try {
+      // Verificar email guardado
       const savedEmail = await SecureStore.getItemAsync('userEmail');
       if (!savedEmail) {
         Alert.alert(
@@ -105,23 +104,41 @@ export default function LoginScreen() {
         );
         return;
       }
-
+      
+      // Verificar si la contraseña está guardada
+      const savedPassword = await SecureStore.getItemAsync('userPassword');
+      if (!savedPassword) {
+        Alert.alert(
+          'Información incompleta',
+          'No se encontró la contraseña guardada. Por favor inicia sesión manualmente.'
+        );
+        return;
+      }
+      
+      // Intentar autenticación biométrica
       const result = await LocalAuthentication.authenticateAsync({
         promptMessage: 'Autenticación biométrica',
         cancelLabel: 'Cancelar',
+        disableDeviceFallback: false,
       });
-
+      
       if (result.success) {
-        const savedPassword = await SecureStore.getItemAsync('userPassword');
         setEmail(savedEmail);
-        await handleLogin(savedEmail, savedPassword || '');
+        // Llamar a handleLogin con los valores almacenados
+        await handleLogin(savedEmail, savedPassword);
+      } else {
+        // Si el usuario canceló o falló la autenticación biométrica
+        console.log('Autenticación biométrica cancelada o fallida', result);
+        if (result.error) {
+          Alert.alert('Error', `Error de autenticación: ${result.error}`);
+        }
       }
     } catch (error) {
       console.error('Error en autenticación biométrica:', error);
       Alert.alert('Error', 'No se pudo completar la autenticación biométrica');
     }
   };
-
+  
   const handleLogin = async (loginEmail = email, loginPassword = password) => {
     if (!loginEmail || !validateEmail(loginEmail)) {
       setEmailError(true);
@@ -133,24 +150,23 @@ export default function LoginScreen() {
       Alert.alert('Error', 'Por favor ingresa tu contraseña.');
       return;
     }
-
     setLoading(true);
     try {
       const response = await axios.post(`${API_CONFIG.BASE_URL}/login2`, {
         email: loginEmail,
         password: loginPassword,
       });
-
       if (response.status === 200) {
         const { id, username, token } = response.data;
-
         await AsyncStorage.setItem('userId', id.toString());
         await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
-
         await SecureStore.setItemAsync('userToken', token);
         await SecureStore.setItemAsync('userEmail', loginEmail);
-
-        router.push('/dashboard');
+        // Guardar la contraseña de forma segura para el inicio de sesión biométrico
+        await SecureStore.setItemAsync('userPassword', loginPassword);
+        
+        // Usar replace para evitar problemas de navegación
+        router.replace('/dashboard');
       }
     } catch (error) {
       console.error('Error detallado:', error);
