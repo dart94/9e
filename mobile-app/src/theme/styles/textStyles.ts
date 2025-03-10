@@ -69,4 +69,11 @@ export const textStyles = StyleSheet.create({
     color: COLORS.text,
     marginBottom: SIZES.margin / 2,
   },
+  body: {
+    fontSize: SIZES.fontMedium,
+    color: COLORS.text,
+    textAlign: 'center',
+    marginBottom: SIZES.margin,
+    lineHeight: SIZES.lineHeight,
+  },
 });

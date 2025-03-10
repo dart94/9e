@@ -75,13 +75,17 @@ function DashboardContent() {
       return (
         <View style={[layoutStyles.container, layoutStyles.center]}>
           <View style={miscStyles.card}>
+            
             <Ionicons
               name="information-circle-outline"
               size={48}
               color={textStyles.errorText.color}
             />
             <Text style={textStyles.errorText}>
-              Aún no has registrado tu embarazo.
+              ¡Bienvenida a Embrace! Aún no has registrado tu embarazo.
+            </Text>
+            <Text style={textStyles.body}>
+              Puedes empezar registrando tu propio embarazo o seguir el de un ser querido.
             </Text>
             <TouchableOpacity
               style={buttonStyles.button}
@@ -93,7 +97,7 @@ function DashboardContent() {
         </View>
       );
     }
-    // Para otros errores mostramos el mensaje simple
+    // Para otros errores mostramos el mensaje simple drivera@gruponissauto.com.mx@gmail.com
     return (
       <View style={[layoutStyles.container, layoutStyles.center]}>
         <Text style={textStyles.errorText}>{error}</Text>
