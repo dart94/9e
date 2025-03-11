@@ -303,7 +303,7 @@ def reset_password_request():
             # Agregar mensaje de error para SweetAlert2
             flash('No se encontró una cuenta con ese correo.', 'danger')
         return redirect(url_for('routes.reset_password_request'))
-    return render_template('reset_password.html', form=form)
+    return render_template('reset_password_form.html', form=form)
 
 # Página para restablecer contraseña
 @routes.route('/reset_password/<token>', methods=['GET', 'POST'])

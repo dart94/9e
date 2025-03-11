@@ -36,16 +36,19 @@ export default function LoginScreen() {
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: '30060725584-geltsl9088hehgclt642pv6t5t60ngo5.apps.googleusercontent.com',
+
   });
 
   useEffect(() => {
     const checkBiometricSupport = async () => {
       const compatible = await LocalAuthentication.hasHardwareAsync();
-      setIsBiometricSupported(compatible);
+      const enrolled = compatible ? await LocalAuthentication.isEnrolledAsync() : false;
+      setIsBiometricSupported(compatible && enrolled);
       
       // Verificar si hay credenciales almacenadas
       const savedEmail = await SecureStore.getItemAsync('userEmail');
-      setHasStoredCredentials(!!savedEmail);
+      const savedPassword = await SecureStore.getItemAsync('userPassword');
+      setHasStoredCredentials(!!savedEmail && !!savedPassword);
     };
     checkBiometricSupport();
   }, []);
@@ -56,6 +59,9 @@ export default function LoginScreen() {
       if (authentication) {
         handleGoogleLogin(authentication.accessToken);
       }
+    } else if (response?.type === 'error') {
+      console.error('Error de autenticación Google:', response.error);
+      Alert.alert('Error', 'No se pudo iniciar sesión con Google. Inténtalo de nuevo.');
     }
   }, [response]);
 
@@ -67,28 +73,41 @@ export default function LoginScreen() {
   }
 
   const handleGoogleLogin = async (accessToken: string) => {
+    if (loading) return; // Evitar múltiples solicitudes
+    
     setLoading(true);
     try {
+      
       const response = await axios.post<GoogleLoginResponse>(`${API_CONFIG.BASE_URL}/auth/google`, {
         token: accessToken,
       });
+      
       if (response.status === 200) {
         const { id, username, token, email } = response.data;
-        // Guardar datos del usuario de forma secuencial para asegurar que se completen
-        await AsyncStorage.setItem('userId', id.toString());
-        await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
-        await SecureStore.setItemAsync('userToken', token);
-        await SecureStore.setItemAsync('userEmail', email);
-        // Desactivar loading antes de navegar
-        setLoading(false);
-        router.replace('/dashboard');
-        return; // Evita que se ejecute el finally
+        
+        try {
+          // Guardar datos del usuario de forma secuencial para asegurar que se completen
+          await AsyncStorage.setItem('userId', id.toString());
+          await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
+          await SecureStore.setItemAsync('userToken', token);
+          await SecureStore.setItemAsync('userEmail', email);
+          
+          // Una pequeña pausa para asegurar que se completan las operaciones de almacenamiento
+          await new Promise(resolve => setTimeout(resolve, 300));
+          
+          // Navegar al dashboard usando push para mejor navegación
+          router.push('/dashboard');
+        } catch (storageError) {
+          console.error('Error al guardar datos:', storageError);
+          Alert.alert('Error', 'No se pudieron guardar las credenciales.');
+        }
       }
     } catch (error) {
       console.error('Error detallado:', error);
-      Alert.alert('Error', 'No se pudo iniciar sesión con Google.');
-    } 
-    setLoading(false);
+      Alert.alert('Error', 'No se pudo iniciar sesión con Google. Verifica tu conexión.');
+    } finally {
+      setLoading(false);
+    }
   };
   
   const validateEmail = (email: string): boolean => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
@@ -117,15 +136,40 @@ export default function LoginScreen() {
       
       // Intentar autenticación biométrica
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Autenticación biométrica',
+        promptMessage: 'Iniciar sesión con biometría',
         cancelLabel: 'Cancelar',
         disableDeviceFallback: false,
+        fallbackLabel: 'Usar contraseña',
       });
       
       if (result.success) {
         setEmail(savedEmail);
-        // Llamar a handleLogin con los valores almacenados
-        await handleLogin(savedEmail, savedPassword);
+        setLoading(true);
+        
+        try {
+          // Comunicación directa con el servidor en lugar de usar handleLogin
+          const response = await axios.post(`${API_CONFIG.BASE_URL}/login2`, {
+            email: savedEmail,
+            password: savedPassword,
+          });
+          
+          if (response.status === 200) {
+            const { id, username, token } = response.data;
+            
+            // Guardar o actualizar la información
+            await AsyncStorage.setItem('userId', id.toString());
+            await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
+            await SecureStore.setItemAsync('userToken', token);
+            
+            // Navegar al dashboard
+            router.push('/dashboard');
+          }
+        } catch (error) {
+          console.error('Error en login biométrico:', error);
+          Alert.alert('Error', 'No se pudo completar el inicio de sesión. Por favor, inténtalo de nuevo.');
+        } finally {
+          setLoading(false);
+        }
       } else {
         // Si el usuario canceló o falló la autenticación biométrica
         console.log('Autenticación biométrica cancelada o fallida', result);
@@ -145,28 +189,32 @@ export default function LoginScreen() {
       Alert.alert('Error', 'Por favor ingresa un correo electrónico válido.');
       return;
     }
+    
     if (!loginPassword) {
       setPasswordError(true);
       Alert.alert('Error', 'Por favor ingresa tu contraseña.');
       return;
     }
+    
     setLoading(true);
     try {
       const response = await axios.post(`${API_CONFIG.BASE_URL}/login2`, {
         email: loginEmail,
         password: loginPassword,
       });
+      
       if (response.status === 200) {
         const { id, username, token } = response.data;
+        
+        // Guardar datos del usuario
         await AsyncStorage.setItem('userId', id.toString());
         await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
         await SecureStore.setItemAsync('userToken', token);
         await SecureStore.setItemAsync('userEmail', loginEmail);
-        // Guardar la contraseña de forma segura para el inicio de sesión biométrico
         await SecureStore.setItemAsync('userPassword', loginPassword);
         
-        // Usar replace para evitar problemas de navegación
-        router.replace('/dashboard');
+        // Navegar al dashboard
+        router.push('/dashboard');
       }
     } catch (error) {
       console.error('Error detallado:', error);
@@ -190,9 +238,16 @@ export default function LoginScreen() {
         <TouchableOpacity
           style={[biometricStyles.biometricButton, { marginBottom: 20 }]}
           onPress={handleBiometricAuth}
+          disabled={loading}
         >
-          <Ionicons name="finger-print-outline" size={40} color="white" />
-          <Text style={biometricStyles.biometricText}>Ingresar con huella</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            <>
+              <Ionicons name="finger-print-outline" size={40} color="white" />
+              <Text style={biometricStyles.biometricText}>Ingresar con huella</Text>
+            </>
+          )}
         </TouchableOpacity>
         
         <Text style={biometricStyles.orText}>o</Text>
@@ -200,15 +255,22 @@ export default function LoginScreen() {
         <TouchableOpacity 
           style={[buttonStyles.button, biometricStyles.secondaryButton]}
           onPress={() => promptAsync()}
-          disabled={!request}
+          disabled={!request || loading}
         >
-          <Ionicons name="logo-google" size={20} color="#333" style={{ marginRight: 8 }} />
-          <Text style={biometricStyles.secondaryButtonText}>Continuar con Google</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#333" />
+          ) : (
+            <>
+              <Ionicons name="logo-google" size={20} color="#333" style={{ marginRight: 8 }} />
+              <Text style={biometricStyles.secondaryButtonText}>Continuar con Google</Text>
+            </>
+          )}
         </TouchableOpacity>
         
         <TouchableOpacity 
           style={[biometricStyles.textLink, { marginTop: 15 }]}
           onPress={() => setHasStoredCredentials(false)}
+          disabled={loading}
         >
           <Text style={textStyles.link}>Usar otro método de inicio de sesión</Text>
         </TouchableOpacity>
@@ -228,17 +290,25 @@ export default function LoginScreen() {
       <CustomInput
         placeholder="Correo electrónico"
         value={email}
-        onChangeText={(text) => setEmail(text)}
-        onBlur={() => setEmailError(!validateEmail(email))}
+        onChangeText={(text) => {
+          setEmail(text);
+          setEmailError(false);
+        }}
+        onBlur={() => setEmailError(!validateEmail(email) && email !== '')}
         keyboardType="email-address"
         autoCapitalize="none"
+        error={emailError}
       />
 
       <CustomInput
         placeholder="Contraseña"
         value={password}
-        onChangeText={(text) => setPassword(text)}
+        onChangeText={(text) => {
+          setPassword(text);
+          setPasswordError(false);
+        }}
         secureTextEntry
+        error={passwordError}
       />
 
       <TouchableOpacity
@@ -262,32 +332,37 @@ export default function LoginScreen() {
       <TouchableOpacity
         style={[buttonStyles.button, biometricStyles.secondaryButton]}
         onPress={() => promptAsync()}
-        disabled={!request}
+        disabled={!request || loading}
       >
-        <Ionicons
-          name="logo-google"
-          size={20}
-          color="#333"
-          style={{ marginRight: 8 }}
-        />
-        <Text style={biometricStyles.secondaryButtonText}>Continuar con Google</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="#333" />
+        ) : (
+          <>
+            <Ionicons
+              name="logo-google"
+              size={20}
+              color="#333"
+              style={{ marginRight: 8 }}
+            />
+            <Text style={biometricStyles.secondaryButtonText}>Continuar con Google</Text>
+          </>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity 
         style={biometricStyles.textLink}
         onPress={() => router.push('/(auth)/forgotPassword')}
+        disabled={loading}
       >
         <Text style={textStyles.link}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
        style={biometricStyles.textLink}
-       onPress={() => router.push('/(auth)/register')}>
+       onPress={() => router.push('/(auth)/register')}
+       disabled={loading}>
         <Text style={textStyles.link}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-
-  
