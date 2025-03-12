@@ -87,10 +87,12 @@ export default function LoginScreen() {
         
         try {
           // Guardar datos del usuario de forma secuencial para asegurar que se completen
-          await AsyncStorage.setItem('userId', id.toString());
-          await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
-          await SecureStore.setItemAsync('userToken', token);
-          await SecureStore.setItemAsync('userEmail', email);
+          await Promise.all([
+            AsyncStorage.setItem('userId', id.toString()),
+            AsyncStorage.setItem('user', JSON.stringify({ id, name: username })),
+            SecureStore.setItemAsync('userToken', token),
+            SecureStore.setItemAsync('userEmail', email)
+          ]);
           
           // Una pequeña pausa para asegurar que se completan las operaciones de almacenamiento
           await new Promise(resolve => setTimeout(resolve, 300));
@@ -106,7 +108,10 @@ export default function LoginScreen() {
       console.error('Error detallado:', error);
       Alert.alert('Error', 'No se pudo iniciar sesión con Google. Verifica tu conexión.');
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+
     }
   };
   
