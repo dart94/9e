@@ -1,35 +1,32 @@
 import { useEffect } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import { NotificationService } from '../services/notifications/NotificationService';
-import * as Notifications from 'expo-notifications';
-
-
 
 export default function Layout() {
   const router = useRouter();
 
   useEffect(() => {
     let subscription: { remove: () => void } | null = null;
-    
+
     const setupNotifications = async () => {
       try {
         const isInitialized = await NotificationService.initialize();
-       
         if (isInitialized) {
+          // Aquí definimos un callback para cuando se recibe una notificación
           subscription = await NotificationService.setupNotificationListeners(
             (notification) => {
               console.log('Notificación recibida:', notification);
             },
-            router // Pasar el objeto de navegación
+            router // Pasamos router como segundo parámetro para la navegación
           );
         }
       } catch (error) {
         console.error('Error al configurar las notificaciones:', error);
       }
     };
-    
+
     setupNotifications();
-    
+
     return () => {
       if (subscription) {
         subscription.remove();
@@ -43,7 +40,6 @@ export default function Layout() {
         headerShown: false,
       }}
     >
-      {/* Pantallas de autenticación */}
       <Stack.Screen
         name="(auth)/login"
         options={{
@@ -63,7 +59,6 @@ export default function Layout() {
           title: 'Recuperar Contraseña',
         }}
       />
-      {/* Pantallas principales */}
       <Stack.Screen
         name="dashboard"
         options={{
