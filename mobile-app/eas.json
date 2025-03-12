@@ -22,7 +22,8 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "RUNTIME_VERSION": "2.0.0"
+        "RUNTIME_VERSION": "2.0.0",
+        "EXPO_NODE_VERSION": "20"
       },
       "channel": "production"
     }
