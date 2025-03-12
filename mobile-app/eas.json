@@ -10,22 +10,24 @@
       "env": {
         "RUNTIME_VERSION": "2.0.0"
       },
-      "channel": "development"
+      "channel": "development",
+      "node": "20.18.1"
     },
     "preview": {
       "distribution": "internal",
       "env": {
         "RUNTIME_VERSION": "2.0.0"
       },
-      "channel": "preview"
+      "channel": "preview",
+      "node": "20.18.1"
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "RUNTIME_VERSION": "2.0.0",
-        "EXPO_NODE_VERSION": "20"
+        "RUNTIME_VERSION": "2.0.0"
       },
-      "channel": "production"
+      "channel": "production",
+      "node": "20.18.1"
     }
   },
   "submit": {
