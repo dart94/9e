@@ -1,0 +1,121 @@
+// archivo: BiometricAuthService.ts
+import * as LocalAuthentication from 'expo-local-authentication';
+import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { API_CONFIG } from '../src/config/config'; 
+
+export class BiometricAuthService {
+  // Verifica si el dispositivo soporta autenticación biométrica
+  static async isBiometricAvailable(): Promise<boolean> {
+    try {
+      const isCompatible = await LocalAuthentication.hasHardwareAsync();
+      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+      return isCompatible && isEnrolled;
+    } catch (error) {
+      console.error('Error al verificar soporte biométrico:', error);
+      return false;
+    }
+  }
+
+  // Verifica si hay credenciales guardadas para autenticación biométrica
+  static async hasStoredCredentials(): Promise<boolean> {
+    try {
+      const email = await SecureStore.getItemAsync('userEmail');
+      const password = await SecureStore.getItemAsync('userPassword');
+      return !!email && !!password;
+    } catch (error) {
+      console.error('Error al verificar credenciales almacenadas:', error);
+      return false;
+    }
+  }
+
+  // Autenticación biométrica completa (verifica, autentica y hace login)
+  static async authenticateAndLogin(): Promise<{success: boolean, message?: string, data?: any}> {
+    try {
+      // 1. Verificar que existan credenciales almacenadas
+      const hasCredentials = await this.hasStoredCredentials();
+      if (!hasCredentials) {
+        return {
+          success: false,
+          message: 'No hay credenciales guardadas. Por favor inicia sesión manualmente.'
+        };
+      }
+
+      // 2. Realizar autenticación biométrica
+      const biometricResult = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Iniciar sesión con biometría',
+        cancelLabel: 'Cancelar',
+        disableDeviceFallback: false,
+        fallbackLabel: 'Usar contraseña',
+      });
+
+      if (!biometricResult.success) {
+        return {
+          success: false,
+          message: biometricResult.error 
+            ? `Error de autenticación: ${biometricResult.error}` 
+            : 'Autenticación cancelada'
+        };
+      }
+
+      // 3. Obtener credenciales y hacer login
+      const email = await SecureStore.getItemAsync('userEmail');
+      const password = await SecureStore.getItemAsync('userPassword');
+
+      // 4. Llamada al API para login
+      try {
+        const response = await axios.post(`${API_CONFIG.BASE_URL}/login2`, {
+          email,
+          password,
+        });
+
+        if (response.status === 200) {
+          const { id, username, token } = response.data;
+
+          // 5. Guardar datos del usuario
+          await Promise.all([
+            AsyncStorage.setItem('userId', id.toString()),
+            AsyncStorage.setItem('user', JSON.stringify({ id, name: username })),
+            SecureStore.setItemAsync('userToken', token)
+          ]);
+
+          // 6. Devolver éxito
+          return {
+            success: true,
+            data: { id, username, token }
+          };
+        } else {
+          return {
+            success: false,
+            message: 'Error en la respuesta del servidor'
+          };
+        }
+      } catch (error) {
+        console.error('Error en login biométrico:', error);
+        return {
+          success: false,
+          message: 'No se pudo completar el inicio de sesión. Por favor, inténtalo de nuevo.'
+        };
+      }
+    } catch (error) {
+      console.error('Error en el proceso de autenticación biométrica:', error);
+      return {
+        success: false,
+        message: 'Error en la autenticación biométrica'
+      };
+    }
+  }
+
+  // Guarda las credenciales para uso futuro con biometría
+  static async saveCredentials(email: string, password: string): Promise<boolean> {
+    try {
+      await SecureStore.setItemAsync('userEmail', email);
+      await SecureStore.setItemAsync('userPassword', password);
+      return true;
+    } catch (error) {
+      console.error('Error al guardar credenciales:', error);
+      return false;
+    }
+  }
+}

@@ -21,6 +21,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as SecureStore from 'expo-secure-store';
 import * as Google from 'expo-auth-session/providers/google';
 import {biometricStyles} from '../../src/theme/styles/biometricStyles';
+import { BiometricAuthService } from '../../services/BiometricAuthService'; 
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -77,7 +78,6 @@ export default function LoginScreen() {
     
     setLoading(true);
     try {
-      
       const response = await axios.post<GoogleLoginResponse>(`${API_CONFIG.BASE_URL}/auth/google`, {
         token: accessToken,
       });
@@ -86,7 +86,7 @@ export default function LoginScreen() {
         const { id, username, token, email } = response.data;
         
         try {
-          // Guardar datos del usuario de forma secuencial para asegurar que se completen
+          // Guardar datos del usuario de forma secuencial
           await Promise.all([
             AsyncStorage.setItem('userId', id.toString()),
             AsyncStorage.setItem('user', JSON.stringify({ id, name: username })),
@@ -94,11 +94,15 @@ export default function LoginScreen() {
             SecureStore.setItemAsync('userEmail', email)
           ]);
           
-          // Una pequeña pausa para asegurar que se completan las operaciones de almacenamiento
-          await new Promise(resolve => setTimeout(resolve, 300));
+          // Guardar credenciales para biometría
+          // Usamos el token como "contraseña", ya que no tenemos una contraseña real
+          await BiometricAuthService.saveCredentials(email, token);
           
-          // Navegar al dashboard usando push para mejor navegación
-          router.push('/dashboard');
+          // Esperar un momento para asegurar que los datos se han guardado
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Usar replace en lugar de push para evitar problemas de pila de navegación
+          router.replace('/dashboard');
         } catch (storageError) {
           console.error('Error al guardar datos:', storageError);
           Alert.alert('Error', 'No se pudieron guardar las credenciales.');
@@ -108,83 +112,32 @@ export default function LoginScreen() {
       console.error('Error detallado:', error);
       Alert.alert('Error', 'No se pudo iniciar sesión con Google. Verifica tu conexión.');
     } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
-
+      setLoading(false);
     }
   };
   
   const validateEmail = (email: string): boolean => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
   
   const handleBiometricAuth = async () => {
+    setLoading(true);
     try {
-      // Verificar email guardado
-      const savedEmail = await SecureStore.getItemAsync('userEmail');
-      if (!savedEmail) {
-        Alert.alert(
-          'No hay datos guardados',
-          'Por favor, inicia sesión primero con tu correo y contraseña.'
-        );
-        return;
-      }
-      
-      // Verificar si la contraseña está guardada
-      const savedPassword = await SecureStore.getItemAsync('userPassword');
-      if (!savedPassword) {
-        Alert.alert(
-          'Información incompleta',
-          'No se encontró la contraseña guardada. Por favor inicia sesión manualmente.'
-        );
-        return;
-      }
-      
-      // Intentar autenticación biométrica
-      const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Iniciar sesión con biometría',
-        cancelLabel: 'Cancelar',
-        disableDeviceFallback: false,
-        fallbackLabel: 'Usar contraseña',
-      });
+      const result = await BiometricAuthService.authenticateAndLogin();
       
       if (result.success) {
-        setEmail(savedEmail);
-        setLoading(true);
+        // Actualizar el estado del email para la UI si es necesario
+        setEmail(await SecureStore.getItemAsync('userEmail') || '');
         
-        try {
-          // Comunicación directa con el servidor en lugar de usar handleLogin
-          const response = await axios.post(`${API_CONFIG.BASE_URL}/login2`, {
-            email: savedEmail,
-            password: savedPassword,
-          });
-          
-          if (response.status === 200) {
-            const { id, username, token } = response.data;
-            
-            // Guardar o actualizar la información
-            await AsyncStorage.setItem('userId', id.toString());
-            await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
-            await SecureStore.setItemAsync('userToken', token);
-            
-            // Navegar al dashboard
-            router.push('/dashboard');
-          }
-        } catch (error) {
-          console.error('Error en login biométrico:', error);
-          Alert.alert('Error', 'No se pudo completar el inicio de sesión. Por favor, inténtalo de nuevo.');
-        } finally {
-          setLoading(false);
-        }
+        // Esperar un momento antes de navegar
+        await new Promise(resolve => setTimeout(resolve, 500));
+        router.replace('/dashboard');
       } else {
-        // Si el usuario canceló o falló la autenticación biométrica
-        console.log('Autenticación biométrica cancelada o fallida', result);
-        if (result.error) {
-          Alert.alert('Error', `Error de autenticación: ${result.error}`);
-        }
+        Alert.alert('Error', result.message || 'No se pudo autenticar');
       }
     } catch (error) {
       console.error('Error en autenticación biométrica:', error);
       Alert.alert('Error', 'No se pudo completar la autenticación biométrica');
+    } finally {
+      setLoading(false);
     }
   };
   
@@ -218,8 +171,8 @@ export default function LoginScreen() {
         await SecureStore.setItemAsync('userEmail', loginEmail);
         await SecureStore.setItemAsync('userPassword', loginPassword);
         
-        // Navegar al dashboard
-        router.push('/dashboard');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        router.replace('/dashboard');
       }
     } catch (error) {
       console.error('Error detallado:', error);

@@ -1,38 +1,35 @@
-import { useEffect } from 'react';
-import { Stack, useRouter } from 'expo-router';
-import { NotificationService } from '../services/notifications/NotificationService';
+import { useEffect, useState } from 'react';
+import { Redirect, Stack, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+import { ActivityIndicator, View } from 'react-native';
 
-export default function Layout() {
+export default function AppLayout() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    let subscription: { remove: () => void } | null = null;
-
-    const setupNotifications = async () => {
+    const checkAuth = async () => {
       try {
-        const isInitialized = await NotificationService.initialize();
-        if (isInitialized) {
-          // Aquí definimos un callback para cuando se recibe una notificación
-          subscription = await NotificationService.setupNotificationListeners(
-            (notification) => {
-              console.log('Notificación recibida:', notification);
-            },
-            router // Pasamos router como segundo parámetro para la navegación
-          );
-        }
+        const userToken = await SecureStore.getItemAsync('userToken');
+        setIsAuthenticated(!!userToken);
       } catch (error) {
-        console.error('Error al configurar las notificaciones:', error);
+        console.error('Error al verificar autenticación:', error);
+        setIsAuthenticated(false);
       }
     };
 
-    setupNotifications();
+    checkAuth();
+  }, []);
 
-    return () => {
-      if (subscription) {
-        subscription.remove();
-      }
-    };
-  }, [router]);
+  // Mostrar indicador de carga mientras se verifica la autenticación
+  if (isAuthenticated === null) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <Stack
@@ -40,49 +37,47 @@ export default function Layout() {
         headerShown: false,
       }}
     >
+      {/* Rutas públicas */}
       <Stack.Screen
         name="(auth)/login"
-        options={{
-          title: 'Iniciar Sesión',
-          headerShown: false,
-        }}
+        options={{ headerShown: false }}
+        redirect={isAuthenticated}
       />
       <Stack.Screen
         name="(auth)/register"
-        options={{
-          title: 'Crear Cuenta',
-        }}
+        options={{ headerShown: false }}
+        redirect={isAuthenticated}
       />
       <Stack.Screen
         name="(auth)/forgotPassword"
-        options={{
-          title: 'Recuperar Contraseña',
-        }}
+        options={{ headerShown: false }}
+        redirect={isAuthenticated}
       />
+      
+      {/* Rutas protegidas */}
       <Stack.Screen
         name="dashboard"
-        options={{
-          title: 'Dashboard',
-        }}
-      />
-      <Stack.Screen
-        name="(auth)/settings"
-        options={{
-          title: 'Configuración',
-        }}
+        options={{ headerShown: false }}
+        redirect={!isAuthenticated}
       />
       <Stack.Screen
         name="newPregnancy"
-        options={{
-          title: 'Nuevo Registro',
-        }}
+        options={{ headerShown: false }}
+        redirect={!isAuthenticated}
       />
       <Stack.Screen
         name="viewPregnancy"
-        options={{
-          title: 'Ver Registros',
-        }}
+        options={{ headerShown: false }}
+        redirect={!isAuthenticated}
       />
+      <Stack.Screen
+        name="(auth)/settings"
+        options={{ headerShown: false }}
+        redirect={!isAuthenticated}
+      />
+      
+      {/* Página por defecto y manejo de error */}
+      <Stack.Screen name="index" initialParams={{ redirect: isAuthenticated ? "/dashboard" : "/(auth)/login" }} />
     </Stack>
   );
 }

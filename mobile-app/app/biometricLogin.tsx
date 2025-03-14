@@ -1,66 +1,102 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import * as LocalAuthentication from 'expo-local-authentication';
-import * as SecureStore from 'expo-secure-store';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { layoutStyles } from '../src/theme/styles/layoutStyles';
 import { textStyles } from '../src/theme/styles/textStyles';
 import { buttonStyles } from '../src/theme/styles/buttonStyles';
 import { Ionicons } from '@expo/vector-icons';
+import { BiometricAuthService } from '../services/BiometricAuthService'; 
 
 export default function BiometricLogin() {
   const [isBiometricAvailable, setIsBiometricAvailable] = useState(false);
+  const [hasCredentials, setHasCredentials] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const checkBiometricSupport = async () => {
-      const isCompatible = await LocalAuthentication.hasHardwareAsync();
-      const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
-      setIsBiometricAvailable(isCompatible && types.length > 0);
+      // Verificar soporte biométrico
+      const isAvailable = await BiometricAuthService.isBiometricAvailable();
+      setIsBiometricAvailable(isAvailable);
+      
+      // Verificar si hay credenciales almacenadas
+      const hasStoredCreds = await BiometricAuthService.hasStoredCredentials();
+      setHasCredentials(hasStoredCreds);
     };
-
+    
     checkBiometricSupport();
   }, []);
 
   const handleBiometricAuth = async () => {
+    setLoading(true);
     try {
-      const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Autenticación Biométrica',
-        fallbackLabel: 'Usar Contraseña',
-        disableDeviceFallback: true,
-      });
-
+      const result = await BiometricAuthService.authenticateAndLogin();
+      
       if (result.success) {
-        const token = await SecureStore.getItemAsync('userToken');
-        if (token) {
-          Alert.alert('Éxito', 'Autenticado con huella.');
-          router.replace('/dashboard');
-        } else {
-          Alert.alert('Error', 'No se encontraron credenciales. Por favor, inicia sesión.');
+        // Esperar un momento antes de navegar para asegurar que todo se guardó
+        await new Promise(resolve => setTimeout(resolve, 500));
+        router.replace('/dashboard');
+      } else {
+        Alert.alert('Error', result.message || 'No se pudo autenticar');
+        if (!hasCredentials) {
           router.replace('/(auth)/login');
         }
-      } else {
-        Alert.alert('Error', 'Autenticación cancelada.');
       }
     } catch (error) {
       console.error('Error en autenticación biométrica:', error);
       Alert.alert('Error', 'No se pudo autenticar. Intenta nuevamente.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <View style={layoutStyles.container}>
-      <Text style={textStyles.title}>Autenticación Biométrica</Text>
-      {isBiometricAvailable ? (
-        <TouchableOpacity style={buttonStyles.button} onPress={handleBiometricAuth}>
-          <Ionicons name="finger-print-outline" size={32} color={buttonStyles.buttonText.color} />
-          <Text style={buttonStyles.buttonText}>Ingresar con Huella</Text>
-        </TouchableOpacity>
-      ) : (
-        <Text style={textStyles.errorText}>
-          La autenticación biométrica no está disponible en este dispositivo.
+  if (!isBiometricAvailable || !hasCredentials) {
+    // Si no hay soporte biométrico o credenciales, redirigir al login normal
+    return (
+      <View style={[layoutStyles.container, layoutStyles.center]}>
+        <Text style={textStyles.title}>
+          {!isBiometricAvailable 
+            ? 'La autenticación biométrica no está disponible en este dispositivo.' 
+            : 'No hay credenciales guardadas. Por favor inicia sesión.'}
         </Text>
-      )}
+        <TouchableOpacity 
+          style={[buttonStyles.button, { marginTop: 20 }]} 
+          onPress={() => router.replace('/(auth)/login')}>
+          <Text style={buttonStyles.buttonText}>Ir a Login</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <View style={[layoutStyles.container, layoutStyles.center]}>
+      <Text style={textStyles.title}>Autenticación Biométrica</Text>
+      
+      <TouchableOpacity 
+        style={[buttonStyles.button, loading && buttonStyles.buttonDisabled]} 
+        onPress={handleBiometricAuth}
+        disabled={loading}>
+        {loading ? (
+          <ActivityIndicator size="small" color={buttonStyles.buttonText.color} />
+        ) : (
+          <>
+            <Ionicons 
+              name="finger-print-outline" 
+              size={32} 
+              color={buttonStyles.buttonText.color} 
+              style={{ marginRight: 8 }} 
+            />
+            <Text style={buttonStyles.buttonText}>Ingresar con Huella</Text>
+          </>
+        )}
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={{ marginTop: 20 }} 
+        onPress={() => router.replace('/(auth)/login')}
+        disabled={loading}>
+        <Text style={textStyles.link}>Usar otro método de inicio de sesión</Text>
+      </TouchableOpacity>
     </View>
   );
 }
