@@ -1,35 +1,38 @@
-import { useEffect, useState } from 'react';
-import { Redirect, Stack, useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SecureStore from 'expo-secure-store';
-import { ActivityIndicator, View } from 'react-native';
+import { useEffect } from 'react';
+import { Stack, useRouter } from 'expo-router';
+import { NotificationService } from '../services/notifications/NotificationService';
 
-export default function AppLayout() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+export default function Layout() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
+    let subscription: { remove: () => void } | null = null;
+
+    const setupNotifications = async () => {
       try {
-        const userToken = await SecureStore.getItemAsync('userToken');
-        setIsAuthenticated(!!userToken);
+        const isInitialized = await NotificationService.initialize();
+        if (isInitialized) {
+          // Aquí definimos un callback para cuando se recibe una notificación
+          subscription = await NotificationService.setupNotificationListeners(
+            (notification) => {
+              console.log('Notificación recibida:', notification);
+            },
+            router // Pasamos router como segundo parámetro para la navegación
+          );
+        }
       } catch (error) {
-        console.error('Error al verificar autenticación:', error);
-        setIsAuthenticated(false);
+        console.error('Error al configurar las notificaciones:', error);
       }
     };
 
-    checkAuth();
-  }, []);
+    setupNotifications();
 
-  // Mostrar indicador de carga mientras se verifica la autenticación
-  if (isAuthenticated === null) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+    return () => {
+      if (subscription) {
+        subscription.remove();
+      }
+    };
+  }, [router]);
 
   return (
     <Stack
@@ -37,47 +40,49 @@ export default function AppLayout() {
         headerShown: false,
       }}
     >
-      {/* Rutas públicas */}
       <Stack.Screen
         name="(auth)/login"
-        options={{ headerShown: false }}
-        redirect={isAuthenticated}
+        options={{
+          title: 'Iniciar Sesión',
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name="(auth)/register"
-        options={{ headerShown: false }}
-        redirect={isAuthenticated}
+        options={{
+          title: 'Crear Cuenta',
+        }}
       />
       <Stack.Screen
         name="(auth)/forgotPassword"
-        options={{ headerShown: false }}
-        redirect={isAuthenticated}
+        options={{
+          title: 'Recuperar Contraseña',
+        }}
       />
-      
-      {/* Rutas protegidas */}
       <Stack.Screen
         name="dashboard"
-        options={{ headerShown: false }}
-        redirect={!isAuthenticated}
-      />
-      <Stack.Screen
-        name="newPregnancy"
-        options={{ headerShown: false }}
-        redirect={!isAuthenticated}
-      />
-      <Stack.Screen
-        name="viewPregnancy"
-        options={{ headerShown: false }}
-        redirect={!isAuthenticated}
+        options={{
+          title: 'Dashboard',
+        }}
       />
       <Stack.Screen
         name="(auth)/settings"
-        options={{ headerShown: false }}
-        redirect={!isAuthenticated}
+        options={{
+          title: 'Configuración',
+        }}
       />
-      
-      {/* Página por defecto y manejo de error */}
-      <Stack.Screen name="index" initialParams={{ redirect: isAuthenticated ? "/dashboard" : "/(auth)/login" }} />
+      <Stack.Screen
+        name="newPregnancy"
+        options={{
+          title: 'Nuevo Registro',
+        }}
+      />
+      <Stack.Screen
+        name="viewPregnancy"
+        options={{
+          title: 'Ver Registros',
+        }}
+      />
     </Stack>
   );
 }
