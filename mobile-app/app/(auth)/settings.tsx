@@ -243,25 +243,25 @@ export default function SettingsScreen() {
                 <View style={textStyles.infoRow}>
                   <Ionicons name="calendar-outline" size={24} color={textStyles.infoLabel.color} />
                   <Text style={textStyles.infoLabel}> Fecha de inicio: </Text>
-                  <Text style={textStyles.infoValue}>{profileData.last_record.start_date || 'N/A'}</Text>
+                  <Text style={textStyles.infoValue}>{profileData.last_record.start_date || 'Sin registro'}</Text>
                 </View>
 
                 <View style={textStyles.infoRow}>
                   <Ionicons name="scale-outline" size={24} color={textStyles.infoLabel.color} />
                   <Text style={textStyles.infoLabel}> Peso: </Text>
-                  <Text style={textStyles.infoValue}>{profileData.last_record.weight || 'N/A'} Kg</Text>
+                  <Text style={textStyles.infoValue}>{profileData.last_record.weight || 'Sin registro'} Kg</Text>
                 </View>
 
                 <View style={textStyles.infoRow}>
                   <Ionicons name="medical-outline" size={24} color={textStyles.infoLabel.color} />
                   <Text style={textStyles.infoLabel}> Últimos Síntomas: </Text>
-                  <Text style={textStyles.infoValue}>{profileData.last_record.symptoms || 'N/A'}</Text>
+                  <Text style={textStyles.infoValue}>{profileData.last_record.symptoms || 'Sin registro'}</Text>
                 </View>
 
                 <View style={textStyles.infoRow}>
                   <Ionicons name="clipboard-outline" size={24} color={textStyles.infoLabel.color} />
                   <Text style={textStyles.infoLabel}> Notas: </Text>
-                  <Text style={textStyles.infoValue}>{profileData.last_record.notes || 'N/A'}</Text>
+                  <Text style={textStyles.infoValue}>{profileData.last_record.notes || 'Sin registro'}</Text>
                 </View>
               </>
             )}
