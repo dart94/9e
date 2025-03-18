@@ -720,56 +720,72 @@ def manejar_registros_embarazo():
             return jsonify(registros_serializados), 200
 
         elif request.method == 'POST':
-            data = request.get_json()
-
-            # Validación de campos obligatorios
-            required_fields = ['last_period_date', 'weight']
-            missing_fields = [field for field in required_fields if field not in data]
-            if missing_fields:
-                return jsonify({"error": f"Faltan campos obligatorios: {', '.join(missing_fields)}"}), 400
-
-            # Validar fecha del último período
             try:
-                last_period_date = datetime.strptime(data['last_period_date'], '%Y-%m-%d').date()
-            except ValueError:
-                return jsonify({"error": "El formato de la fecha debe ser YYYY-MM-DD"}), 400
+                data = request.get_json()
 
-            # Validar weight (debe ser un número positivo)
-            try:
-                weight = float(data['weight'])
-                if weight <= 0:
-                    return jsonify({"error": "'weight' debe ser un número positivo"}), 400
-            except (ValueError, TypeError):
-                return jsonify({"error": "'weight' debe ser un número válido"}), 400
+                # Validación de campos obligatorios
+                required_fields = ['user_id', 'last_period_date', 'weight']
+                missing_fields = [field for field in required_fields if field not in data]
+                if missing_fields:
+                    return jsonify({"error": f"Faltan campos obligatorios: {', '.join(missing_fields)}"}), 400
 
-            # Determinar fecha de parto (opcional, se calcula si no se envía)
-            due_date = data.get('due_date')
-            if due_date:
+                # Validar user_id
                 try:
-                    due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
+                    user_id = int(data['user_id'])
+                except (ValueError, TypeError):
+                    return jsonify({"error": "'user_id' debe ser un número entero"}), 400
+
+                # Validar fecha del último período
+                try:
+                    last_period_date = datetime.strptime(data['last_period_date'], '%Y-%m-%d').date()
                 except ValueError:
-                    return jsonify({"error": "El formato de la fecha de parto debe ser YYYY-MM-DD"}), 400
-            else:
-                due_date = last_period_date + timedelta(days=280)  # Calcula la fecha de parto estimada
+                    return jsonify({"error": "El formato de la fecha debe ser YYYY-MM-DD"}), 400
 
-            # Crear nuevo registro sin restricciones de duplicados
-            nuevo_registro = PregnancyData(
-                user_id=user_id,
-                last_period_date=last_period_date,
-                due_date=due_date,
-                weight=weight,
-                symptoms=data.get('symptoms', ''),
-                notes=data.get('notes', ''),
-            )
+                # Validar weight (debe ser un número positivo)
+                try:
+                    weight = float(data['weight'])
+                    if weight <= 0:
+                        return jsonify({"error": "'weight' debe ser un número positivo"}), 400
+                except (ValueError, TypeError):
+                    return jsonify({"error": "'weight' debe ser un número válido"}), 400
 
-            # Guardar en la base de datos
-            db.session.add(nuevo_registro)
-            db.session.commit()
-            return jsonify({"message": "Registro de embarazo añadido correctamente"}), 201
+                # Determinar fecha de parto (opcional, se calcula si no se envía)
+                due_date = data.get('due_date')
+                if due_date:
+                    try:
+                        due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
+                    except ValueError:
+                        return jsonify({"error": "El formato de la fecha de parto debe ser YYYY-MM-DD"}), 400
+                else:
+                    due_date = last_period_date + timedelta(days=280)  # Calcula la fecha de parto estimada
 
-    except Exception as e:
-        print(f"🔴 Error general en /api/embarazos: {str(e)}")  # Para depuración
-        return jsonify({"error": "Error interno del servidor"}), 500
+                # Calcular la semana si no se proporciona
+                week = data.get('week')
+                if not week:
+                    today = datetime.utcnow().date()
+                    delta = today - last_period_date
+                    week = max(1, delta.days // 7)  # Al menos 1 semana
+
+                # Crear nuevo registro sin restricciones de duplicados
+                nuevo_registro = PregnancyData(
+                    user_id=user_id,
+                    last_period_date=last_period_date,
+                    due_date=due_date,
+                    weight=weight,
+                    symptoms=data.get('symptoms', ''),
+                    notes=data.get('notes', ''),
+                    week=week  # Asegurar que week no sea None
+                )
+
+                # Guardar en la base de datos
+                db.session.add(nuevo_registro)
+                db.session.commit()
+                return jsonify({"message": "Registro de embarazo añadido correctamente"}), 201
+
+            except Exception as e:
+                db.session.rollback()
+                print(f"🔴 Error general en /api/embarazos: {str(e)}")  # Para depuración
+                return jsonify({"error": "Error interno del servidor"}), 500
 
 #Eliminar registro de embarazo
 @routes.route('/api/embarazos/<int:id>', methods=['DELETE'])
