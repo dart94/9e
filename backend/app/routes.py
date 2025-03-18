@@ -543,43 +543,50 @@ def confirm_email(token):
 # API: Obtener datos del dashboard
 @routes.route('/api/dashboard', methods=['GET'])
 @jwt_required()
-def get_dashboard_data(user_id):
-    user_id = get_jwt_identity()  # Obtiene el user_id del JWT
-    print(f"🔹 User ID desde JWT en dashboard: {user_id}")  # Depuración
+def get_dashboard_data():
+    try:
+        user_id = get_jwt_identity()  # Obtiene el user_id del JWT
+        print(f"🔹 User ID desde JWT en dashboard: {user_id}")  # Depuración
 
-    if not user_id:
-        return jsonify({"error": "Token inválido o expirado"}), 401
+        if not user_id:
+            return jsonify({"error": "Token inválido o expirado"}), 401
 
-    # Obtener el último registro de embarazo del usuario
-    last_record = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.id.desc()).first()
+        # Obtener el último registro de embarazo del usuario
+        last_record = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.id.desc()).first()
 
-    if not last_record or not last_record.last_period_date:
-        return jsonify({"error": "No hay datos de embarazo registrados"}), 404
+        if not last_record or not last_record.last_period_date:
+            return jsonify({"error": "No hay datos de embarazo registrados"}), 404
 
-    # Calcula la semana actual
-    today = datetime.now().date()
-    days_since_period = (today - last_record.last_period_date).days
-    current_week = max(1, days_since_period // 7)
+        # Calcula la semana actual
+        today = datetime.now().date()
+        days_since_period = (today - last_record.last_period_date).days
+        current_week = max(1, days_since_period // 7)
 
-    # Obtiene los datos fetales para la semana actual
-    week_info = fetal_data.get_week_info(current_week)
+        # Obtiene los datos fetales para la semana actual
+        week_info = fetal_data.get_week_info(current_week)
 
-    if not week_info:
-        return jsonify({"error": "Datos fetales no disponibles para esta semana"}), 404
-    month = week_to_month(current_week)
-    return jsonify({
-        "current_week": current_week,
-        "progress_percentage": (current_week / 40) * 100,
-        "month": month,
-        "week_info": week_info,
-        "last_record": {
-            "id": last_record.id,
-            "weight": last_record.weight,
-            "symptoms": last_record.symptoms,
-            "notes": last_record.notes,
-            "last_period_date": last_record.last_period_date.strftime('%Y-%m-%d'),
-        },
-    }), 200
+        if not week_info:
+            return jsonify({"error": "Datos fetales no disponibles para esta semana"}), 404
+
+        month = week_to_month(current_week)
+
+        return jsonify({
+            "current_week": current_week,
+            "progress_percentage": (current_week / 40) * 100,
+            "month": month,
+            "week_info": week_info,
+            "last_record": {
+                "id": last_record.id,
+                "weight": last_record.weight,
+                "symptoms": last_record.symptoms,
+                "notes": last_record.notes,
+                "last_period_date": last_record.last_period_date.strftime('%Y-%m-%d'),
+            },
+        }), 200
+
+    except Exception as e:
+        print(f"🔴 Error en /api/dashboard: {str(e)}")  # Depuración
+        return jsonify({"error": "Error interno del servidor"}), 500
 
 @routes.route('/api/mi-perfil', methods=['GET'])
 @jwt_required()
@@ -686,100 +693,99 @@ def login2():
     return render_template('index.html', form=form)
 
 # API para manejar datos de embarazo
+
 @routes.route('/api/embarazos', methods=['GET', 'POST'])
 @jwt_required()
 def manejar_registros_embarazo():
-    user_id = get_jwt_identity()  # Asegúrate de obtener el user_id desde el JWT
-    print(f"🔹 User ID desde JWT en embarazos: {user_id}")  # Depuración
-    if request.method == 'GET':
-        try:
-            user_id = int(user_id)
-        except ValueError:
-            return jsonify({"error": "'user_id' debe ser un número entero"}), 400
+    try:
+        user_id = get_jwt_identity()  # Obtiene el user_id del JWT
+        print(f"🔹 User ID desde JWT en embarazos: {user_id}")  # Depuración
 
-        # Obtener registros del usuario
-        registros = PregnancyData.query.filter_by(user_id=user_id).all()
-        if not registros:
-            return jsonify([])  # Lista vacía si no hay registros
+        if request.method == 'GET':
+            # Obtener registros del usuario
+            registros = PregnancyData.query.filter_by(user_id=user_id).all()
 
-        registros_serializados = [
-            {
-                "id": r.id,
-                "week": r.calculate_week,  # Calcula la semana en tiempo real
-                "weight": r.weight,
-                "symptoms": r.symptoms,
-                "notes": r.notes,
-                "is_postpartum": r.is_postpartum,  # Indica si es posparto
-                "last_period_date": r.last_period_date.strftime('%Y-%m-%d') if r.last_period_date else None,
-                "due_date": r.due_date.strftime('%Y-%m-%d') if r.due_date else None,
-            }
-            for r in registros
-        ]
-        return jsonify(registros_serializados), 200
+            if not registros:
+                return jsonify([])  # Retorna una lista vacía si no hay registros
+
+            registros_serializados = [
+                {
+                    "id": r.id,
+                    "week": r.calculate_week,  # Calcula la semana en tiempo real
+                    "weight": r.weight,
+                    "symptoms": r.symptoms,
+                    "notes": r.notes,
+                    "is_postpartum": r.is_postpartum,  # Indica si es posparto
+                    "last_period_date": r.last_period_date.strftime('%Y-%m-%d') if r.last_period_date else None,
+                    "due_date": r.due_date.strftime('%Y-%m-%d') if r.due_date else None,
+                }
+                for r in registros
+            ]
+            return jsonify(registros_serializados), 200
 
     elif request.method == 'POST':
-        # Obtener datos del cuerpo de la solicitud
-        data = request.get_json()
+    # Obtener datos del cuerpo de la solicitud
+    data = request.get_json()
 
-        # Validación de campos obligatorios
-        required_fields = ['user_id', 'last_period_date', 'weight']
-        missing_fields = [field for field in required_fields if field not in data]
-        if missing_fields:
-            return jsonify({"error": f"Faltan campos obligatorios: {', '.join(missing_fields)}"}), 400
+    # Validación de campos obligatorios
+    required_fields = ['user_id', 'last_period_date', 'weight']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return jsonify({"error": f"Faltan campos obligatorios: {', '.join(missing_fields)}"}), 400
 
+    try:
+        last_period_date = datetime.strptime(data.get('last_period_date'), '%Y-%m-%d').date()
+    except ValueError:
+        return jsonify({"error": "El formato de la fecha debe ser YYYY-MM-DD"}), 400
+
+    # Validar user_id
+    try:
+        user_id = int(data.get('user_id'))
+    except (ValueError, TypeError):
+        return jsonify({"error": "'user_id' debe ser un número entero"}), 400
+
+    # Validar weight
+    try:
+        weight = float(data.get('weight'))
+    except (ValueError, TypeError):
+        return jsonify({"error": "'weight' debe ser un número válido"}), 400
+
+    # Determinar fecha de parto (solo si no está en el JSON)
+    due_date = data.get('due_date')
+    if due_date:
         try:
-            last_period_date = datetime.strptime(data.get('last_period_date'), '%Y-%m-%d').date()
+            due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
         except ValueError:
-            return jsonify({"error": "El formato de la fecha debe ser YYYY-MM-DD"}), 400
+            return jsonify({"error": "El formato de la fecha de parto debe ser YYYY-MM-DD"}), 400
+    else:
+        due_date = last_period_date + timedelta(days=280)
 
-        # Validar user_id
-        try:
-            user_id = int(data.get('user_id'))
-        except (ValueError, TypeError):
-            return jsonify({"error": "'user_id' debe ser un número entero"}), 400
+    # Calcular semana actual si no se envía
+    week = data.get('week')
+    if not week:
+        today = datetime.utcnow().date()
+        delta = today - last_period_date
+        week = max(1, delta.days // 7)  # Al menos 1 semana
 
-        # Validar weight
-        try:
-            weight = float(data.get('weight'))
-        except (ValueError, TypeError):
-            return jsonify({"error": "'weight' debe ser un número válido"}), 400
+    # Crear nuevo registro
+    nuevo_registro = PregnancyData(
+        user_id=user_id,
+        last_period_date=last_period_date,
+        due_date=due_date,
+        weight=weight,
+        symptoms=data.get('symptoms'),
+        notes=data.get('notes'),
+        week=week,
+    )
 
-        # Determinar fecha de parto (solo si no está en el JSON)
-        due_date = data.get('due_date')
-        if due_date:
-            try:
-                due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
-            except ValueError:
-                return jsonify({"error": "El formato de la fecha de parto debe ser YYYY-MM-DD"}), 400
-        else:
-            due_date = last_period_date + timedelta(days=280)
-
-        # Calcular semana actual si no se envía
-        week = data.get('week')
-        if not week:
-            today = datetime.utcnow().date()
-            delta = today - last_period_date
-            week = max(1, delta.days // 7)  # Al menos 1 semana
-
-        # Crear nuevo registro
-        nuevo_registro = PregnancyData(
-            user_id=user_id,
-            last_period_date=last_period_date,
-            due_date=due_date,
-            weight=weight,
-            symptoms=data.get('symptoms'),
-            notes=data.get('notes'),
-            week=week,
-        )
-
-        try:
-            # Guardar en la base de datos
-            db.session.add(nuevo_registro)
-            db.session.commit()
-            return jsonify({"message": "Registro de embarazo añadido correctamente"}), 201
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({"error": f"Error al guardar en la base de datos: {str(e)}"}), 500
+    try:
+        # Guardar en la base de datos
+        db.session.add(nuevo_registro)
+        db.session.commit()
+        return jsonify({"message": "Registro de embarazo añadido correctamente"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al guardar en la base de datos: {str(e)}"}), 500
 
 #Eliminar registro de embarazo
 @routes.route('/api/embarazos/<int:id>', methods=['DELETE'])

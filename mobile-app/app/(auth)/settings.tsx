@@ -86,10 +86,9 @@ export default function SettingsScreen() {
             console.log('Response data:', JSON.stringify(error.response?.data));
             console.log('Request headers enviados:', JSON.stringify(error.config?.headers));
 
-            // Si el error es 401, posiblemente el token sea inválido o haya expirado
             if (error.response?.status === 401) {
                 Alert.alert('Error', 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-                // Aquí podrías limpiar el token y redirigir al usuario al login
+
             } else {
                 const errorMessage =
                     error.response?.data?.message ||
