@@ -784,11 +784,12 @@ def manejar_registros_embarazo():
         return jsonify({"error": "Error interno del servidor"}), 500
 
 #Eliminar registro de embarazo
-@routes.route('/api/embarazos/<int:id>', methods=['DELETE'])
+@routes.route('/api/embarazos/<int:registro_id>', methods=['DELETE'])
 @jwt_required()
-def eliminar_registro_embarazo(id):
+def eliminar_registro_embarazo(registro_id):
     try:
         # Buscar el registro por ID único
+        print(f"🔎 Tipo de id antes de la consulta: {type(id)}")
         registro = PregnancyData.query.get(id)
 
         if not registro:
