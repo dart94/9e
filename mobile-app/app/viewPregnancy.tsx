@@ -42,7 +42,6 @@ export default function ViewPregnancyRecordsScreen() {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        // Obtener el token JWT
         const token = await SecureStore.getItemAsync('userToken');
         
         if (!token) {
@@ -51,18 +50,14 @@ export default function ViewPregnancyRecordsScreen() {
           return;
         }
         
-        // Mantener el userId por compatibilidad mientras se implementa la solución completa
-        const userId = await AsyncStorage.getItem('userId');
-        
         const response = await axios.get(`${API_CONFIG.BASE_URL}/api/embarazos`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          params: userId ? { user_id: userId } : undefined,
           withCredentials: true,
         });
-       
+  
         setRecords(response.data);
       } catch (error) {
         console.error('Error al cargar registros:', error);
@@ -75,9 +70,11 @@ export default function ViewPregnancyRecordsScreen() {
         setLoading(false);
       }
     };
-    
+  
     fetchRecords();
   }, []);
+
+  
   const handleDelete = async (id: number) => {
     Alert.alert(
       'Confirmación',

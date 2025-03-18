@@ -36,28 +36,22 @@ function DashboardContent() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // Obtener el token JWT en lugar del userId
         const token = await SecureStore.getItemAsync('userToken');
-        
+  
         if (!token) {
           setError('No se pudo obtener el token de autenticación.');
           setLoading(false);
           return;
         }
-        
-        // También obtener el userId para mantener compatibilidad si es necesario
-        const userId = await AsyncStorage.getItem('userId');
-        
-        // Hacer la solicitud con el token en los headers Y el userId como parámetro
+  
         const response = await axios.get(`${API_CONFIG.BASE_URL}/api/dashboard`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          params: userId ? { user_id: userId } : undefined,
           withCredentials: true,
         });
-        
+  
         setData(response.data);
       } catch (err) {
         console.error('Error al cargar datos del dashboard:', err);
@@ -70,10 +64,9 @@ function DashboardContent() {
         setLoading(false);
       }
     };
-    
+  
     fetchDashboardData();
   }, []);
-
   if (loading)
     return (
       <View style={[layoutStyles.container, layoutStyles.center]}>

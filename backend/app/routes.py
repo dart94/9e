@@ -542,8 +542,13 @@ def confirm_email(token):
         
 # API: Obtener datos del dashboard
 @routes.route('/api/dashboard', methods=['GET'])
-@token_required
+@jwt_required()
 def get_dashboard_data(user_id):
+    user_id = get_jwt_identity()  # Obtiene el user_id del JWT
+    print(f"🔹 User ID desde JWT en dashboard: {user_id}")  # Depuración
+
+    if not user_id:
+        return jsonify({"error": "Token inválido o expirado"}), 401
 
     # Obtener el último registro de embarazo del usuario
     last_record = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.id.desc()).first()
@@ -682,8 +687,10 @@ def login2():
 
 # API para manejar datos de embarazo
 @routes.route('/api/embarazos', methods=['GET', 'POST'])
-@token_required
-def manejar_registros_embarazo(user_id):
+@jwt_required()
+def manejar_registros_embarazo():
+    user_id = get_jwt_identity()  # Asegúrate de obtener el user_id desde el JWT
+    print(f"🔹 User ID desde JWT en embarazos: {user_id}")  # Depuración
     if request.method == 'GET':
         try:
             user_id = int(user_id)
