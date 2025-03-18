@@ -707,7 +707,7 @@ def manejar_registros_embarazo():
             registros_serializados = [
                 {
                     "id": r.id,
-                    "week": r.calculate_week(),  # Llamar al método si es necesario
+                    "week": r.calculate_week,
                     "weight": r.weight,
                     "symptoms": r.symptoms,
                     "notes": r.notes,
