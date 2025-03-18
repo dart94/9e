@@ -20,6 +20,7 @@ import { modalStyles } from '../src/theme/styles/modalStyles';
 import { miscStyles as miscStylesStyles } from '../src/theme/styles/miscStyles';
 import { API_CONFIG } from '../src/config/config';
 import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 import NewPregnancyRecordScreen from './newPregnancy';
 
 
@@ -37,33 +38,46 @@ export default function ViewPregnancyRecordsScreen() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const router = useRouter();
 
+
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (!userId) {
+        // Obtener el token JWT
+        const token = await SecureStore.getItemAsync('userToken');
+        
+        if (!token) {
           Alert.alert('Error', 'Usuario no autenticado.');
           router.replace('/(auth)/login');
           return;
         }
-
+        
+        // Mantener el userId por compatibilidad mientras se implementa la solución completa
+        const userId = await AsyncStorage.getItem('userId');
+        
         const response = await axios.get(`${API_CONFIG.BASE_URL}/api/embarazos`, {
-          params: { user_id: userId },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          params: userId ? { user_id: userId } : undefined,
           withCredentials: true,
         });
-        
+       
         setRecords(response.data);
       } catch (error) {
         console.error('Error al cargar registros:', error);
+        if (axios.isAxiosError(error)) {
+          console.log('Status:', error.response?.status);
+          console.log('Response data:', JSON.stringify(error.response?.data));
+        }
         Alert.alert('Error', 'No se pudieron cargar los registros.');
       } finally {
         setLoading(false);
       }
     };
-
+    
     fetchRecords();
   }, []);
-
   const handleDelete = async (id: number) => {
     Alert.alert(
       'Confirmación',

@@ -20,7 +20,7 @@ from urllib.parse import urlencode
 import uuid
 from flask_login import login_user
 from urllib.parse import urlparse
-
+import jwt
 
 
 # Blueprints
@@ -32,6 +32,37 @@ delete_account = Blueprint('delete_account', __name__)
 # Configurar el serializador para generar tokens seguro
 def get_serializer():
     return current_app.extensions.get('delete_account_serializer')
+
+# Función decoradora para verificar JWT
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        
+        # Obtener token del header Authorization
+        auth_header = request.headers.get('Authorization')
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+        
+        if not token:
+            # Fallback al método antiguo si no hay token
+            user_id = session.get('user_id') or request.args.get('user_id')
+            if not user_id:
+                return jsonify({'error': 'Token de autenticación no proporcionado'}), 401
+            return f(user_id=user_id, *args, **kwargs)
+        
+        try:
+            # Decodificar el token (ajusta con tu SECRET_KEY)
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+            user_id = data['user_id']
+        except:
+            return jsonify({'error': 'Token inválido o expirado'}), 401
+            
+        # Pasar el user_id a la función original
+        return f(user_id=user_id, *args, **kwargs)
+            
+    return decorated
+
 
 
 # Instancia de datos fetales
@@ -511,10 +542,8 @@ def confirm_email(token):
         
 # API: Obtener datos del dashboard
 @routes.route('/api/dashboard', methods=['GET'])
-def get_dashboard_data():
-    user_id = session.get('user_id') or request.args.get('user_id')
-    if not user_id:
-        return jsonify({"error": "Unauthorized"}), 401
+@token_required
+def get_dashboard_data(user_id):
 
     # Obtener el último registro de embarazo del usuario
     last_record = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.id.desc()).first()
@@ -653,13 +682,9 @@ def login2():
 
 # API para manejar datos de embarazo
 @routes.route('/api/embarazos', methods=['GET', 'POST'])
-def manejar_registros_embarazo():
+@token_required
+def manejar_registros_embarazo(user_id):
     if request.method == 'GET':
-        # Obtener user_id de los parámetros de la URL
-        user_id = session.get('user_id') or request.args.get('user_id')  
-        if not user_id:
-            return jsonify({"error": "Usuario no autenticado"}), 401
-
         try:
             user_id = int(user_id)
         except ValueError:

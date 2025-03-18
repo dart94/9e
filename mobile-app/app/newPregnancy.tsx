@@ -17,6 +17,7 @@ import { miscStyles } from '../src/theme/styles/miscStyles';
 import { API_CONFIG } from '../src/config/config';
 import { useRouter } from 'expo-router';
 import CustomInput from '@/src/components/CustomInput';
+import * as SecureStore from 'expo-secure-store';
 
 
 
@@ -36,19 +37,28 @@ export default function NewPregnancyRecordScreen() {
   useEffect(() => {
     const fetchLastPeriodDate = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (!userId) {
+        // Obtener el token JWT
+        const token = await SecureStore.getItemAsync('userToken');
+        
+        if (!token) {
           Alert.alert('Error', 'No se pudo obtener el usuario autenticado.');
           router.replace('/(auth)/login');
           return;
         }
-
+        
+        // Mantener el userId por compatibilidad mientras se implementa la solución completa
+        const userId = await AsyncStorage.getItem('userId');
+        
         setLoading(true);
         const response = await axios.get(`${API_CONFIG.BASE_URL}/api/embarazos`, {
-          params: { user_id: userId },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          params: userId ? { user_id: userId } : undefined,
           withCredentials: true,
         });
-
+        
         if (response.data && response.data.length > 0) {
           const latestRecord = response.data[0];
           if (latestRecord?.last_period_date) {
@@ -61,12 +71,16 @@ export default function NewPregnancyRecordScreen() {
         }
       } catch (error) {
         console.error('Error al cargar la última fecha de periodo:', error);
+        if (axios.isAxiosError(error)) {
+          console.log('Status:', error.response?.status);
+          console.log('Response data:', JSON.stringify(error.response?.data));
+        }
         Alert.alert('Error', 'No se pudo cargar la última fecha de periodo.');
       } finally {
         setLoading(false);
       }
     };
-
+    
     fetchLastPeriodDate();
   }, []);
 

@@ -18,6 +18,7 @@ import { ProgressBar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { buttonStyles } from '@/src/theme/styles';
+import * as SecureStore from 'expo-secure-store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Importa las pantallas adicionales
@@ -26,38 +27,50 @@ import NewPregnancyRecordScreen from './newPregnancy';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
 import LogoutScreen from '../utils/auth';
 
-// Componente que muestra el contenido del dashboard
 function DashboardContent() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
+  
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (!userId) {
-          setError('No se pudo obtener el usuario autenticado.');
+        // Obtener el token JWT en lugar del userId
+        const token = await SecureStore.getItemAsync('userToken');
+        
+        if (!token) {
+          setError('No se pudo obtener el token de autenticación.');
           setLoading(false);
           return;
         }
-
+        
+        // También obtener el userId para mantener compatibilidad si es necesario
+        const userId = await AsyncStorage.getItem('userId');
+        
+        // Hacer la solicitud con el token en los headers Y el userId como parámetro
         const response = await axios.get(`${API_CONFIG.BASE_URL}/api/dashboard`, {
-          params: { user_id: userId },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          params: userId ? { user_id: userId } : undefined,
           withCredentials: true,
         });
-
+        
         setData(response.data);
       } catch (err) {
         console.error('Error al cargar datos del dashboard:', err);
-        // Si se produce este error, asumimos que el usuario es nuevo
+        if (axios.isAxiosError(err)) {
+          console.log('Status:', err.response?.status);
+          console.log('Response data:', JSON.stringify(err.response?.data));
+        }
         setError('Registra tu embarazo desde el menú "Nuevo".');
       } finally {
         setLoading(false);
       }
     };
-
+    
     fetchDashboardData();
   }, []);
 
@@ -97,7 +110,7 @@ function DashboardContent() {
         </View>
       );
     }
-    // Para otros errores mostramos el mensaje simple drivera@gruponissauto.com.mx@gmail.com
+    // Para otros errores mostramos el mensaje simple 
     return (
       <View style={[layoutStyles.container, layoutStyles.center]}>
         <Text style={textStyles.errorText}>{error}</Text>
