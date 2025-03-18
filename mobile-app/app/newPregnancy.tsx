@@ -112,30 +112,32 @@ export default function NewPregnancyRecordScreen() {
       Alert.alert('Error', 'Por favor, completa todos los campos obligatorios.');
       return;
     }
-
+  
     try {
       setLoading(true);
-      const userId = await AsyncStorage.getItem('userId');
-      if (!userId) {
+  
+      // Obtener el token JWT
+      const token = await SecureStore.getItemAsync('userToken');
+      if (!token) {
         Alert.alert('Error', 'Usuario no autenticado. Intenta iniciar sesión nuevamente.');
         router.replace('/(auth)/login');
         return;
       }
-
+  
       const payload = {
-        user_id: Number(userId),
         last_period_date: form.last_period_date,
         weight: form.weight,
         symptoms: form.symptoms,
         notes: form.notes,
       };
-
+  
       await axios.post(`${API_CONFIG.BASE_URL}/api/embarazos`, payload, {
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Enviar token en los headers
         },
       });
-
+  
       Alert.alert('Éxito', 'Registro de embarazo añadido correctamente.');
       router.replace('/dashboard');
     } catch (error) {

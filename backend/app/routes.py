@@ -701,11 +701,8 @@ def manejar_registros_embarazo():
         print(f"🔹 User ID desde JWT en embarazos: {user_id}")  # Depuración
 
         if request.method == 'GET':
-            # Obtener registros del usuario autenticado
-            registros = PregnancyData.query.filter_by(user_id=user_id).all()
-
-            if not registros:
-                return jsonify([])  # Retorna una lista vacía si no hay registros
+            # Obtener registros del usuario autenticado, ordenados por fecha del último período (descendente)
+            registros = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.last_period_date.desc()).all()
 
             registros_serializados = [
                 {
@@ -723,7 +720,6 @@ def manejar_registros_embarazo():
             return jsonify(registros_serializados), 200
 
         elif request.method == 'POST':
-            # Obtener datos del cuerpo de la solicitud
             data = request.get_json()
 
             # Validación de campos obligatorios
@@ -732,14 +728,17 @@ def manejar_registros_embarazo():
             if missing_fields:
                 return jsonify({"error": f"Faltan campos obligatorios: {', '.join(missing_fields)}"}), 400
 
+            # Validar fecha del último período
             try:
                 last_period_date = datetime.strptime(data['last_period_date'], '%Y-%m-%d').date()
             except ValueError:
                 return jsonify({"error": "El formato de la fecha debe ser YYYY-MM-DD"}), 400
 
-            # Validar weight
+            # Validar weight (debe ser un número positivo)
             try:
                 weight = float(data['weight'])
+                if weight <= 0:
+                    return jsonify({"error": "'weight' debe ser un número positivo"}), 400
             except (ValueError, TypeError):
                 return jsonify({"error": "'weight' debe ser un número válido"}), 400
 
@@ -751,30 +750,25 @@ def manejar_registros_embarazo():
                 except ValueError:
                     return jsonify({"error": "El formato de la fecha de parto debe ser YYYY-MM-DD"}), 400
             else:
-                due_date = last_period_date + timedelta(days=280)
+                due_date = last_period_date + timedelta(days=280)  # Calcula la fecha de parto estimada
 
-            # Crear nuevo registro (sin recibir `user_id` del frontend)
+            # Crear nuevo registro sin restricciones de duplicados
             nuevo_registro = PregnancyData(
-                user_id=user_id,  # Usar siempre el user_id del JWT
+                user_id=user_id,
                 last_period_date=last_period_date,
                 due_date=due_date,
                 weight=weight,
-                symptoms=data.get('symptoms'),
-                notes=data.get('notes'),
+                symptoms=data.get('symptoms', ''),
+                notes=data.get('notes', ''),
             )
 
-            try:
-                # Guardar en la base de datos
-                db.session.add(nuevo_registro)
-                db.session.commit()
-                return jsonify({"message": "Registro de embarazo añadido correctamente"}), 201
-            except Exception as e:
-                db.session.rollback()
-                print(f"🔴 Error en la base de datos: {str(e)}")  # Para depuración
-                return jsonify({"error": "Error interno del servidor"}), 500
+            # Guardar en la base de datos
+            db.session.add(nuevo_registro)
+            db.session.commit()
+            return jsonify({"message": "Registro de embarazo añadido correctamente"}), 201
 
     except Exception as e:
-        print(f"🔴 Error general en /api/embarazos: {str(e)}")  # Depuración
+        print(f"🔴 Error general en /api/embarazos: {str(e)}")  # Para depuración
         return jsonify({"error": "Error interno del servidor"}), 500
 
 #Eliminar registro de embarazo
