@@ -707,13 +707,13 @@ def manejar_registros_embarazo():
             registros_serializados = [
                 {
                     "id": r.id,
-                    "week": r.calculate_week,  # Calcula la semana en tiempo real
+                    "week": r.calculate_week(),  # Llamar al método si es necesario
                     "weight": r.weight,
                     "symptoms": r.symptoms,
                     "notes": r.notes,
-                    "is_postpartum": r.is_postpartum,  # Indica si es posparto
-                    "last_period_date": r.last_period_date.strftime('%Y-%m-%d') if r.last_period_date else None,
-                    "due_date": r.due_date.strftime('%Y-%m-%d') if r.due_date else None,
+                    "is_postpartum": r.is_postpartum,
+                    "last_period_date": r.last_period_date.strftime('%Y-%m-%d') if r.last_period_date else "",
+                    "due_date": r.due_date.strftime('%Y-%m-%d') if r.due_date else "",
                 }
                 for r in registros
             ]
@@ -724,16 +724,10 @@ def manejar_registros_embarazo():
                 data = request.get_json()
 
                 # Validación de campos obligatorios
-                required_fields = ['user_id', 'last_period_date', 'weight']
+                required_fields = ['last_period_date', 'weight']
                 missing_fields = [field for field in required_fields if field not in data]
                 if missing_fields:
                     return jsonify({"error": f"Faltan campos obligatorios: {', '.join(missing_fields)}"}), 400
-
-                # Validar user_id
-                try:
-                    user_id = int(data['user_id'])
-                except (ValueError, TypeError):
-                    return jsonify({"error": "'user_id' debe ser un número entero"}), 400
 
                 # Validar fecha del último período
                 try:
@@ -759,22 +753,20 @@ def manejar_registros_embarazo():
                 else:
                     due_date = last_period_date + timedelta(days=280)  # Calcula la fecha de parto estimada
 
-                # Calcular la semana si no se proporciona
-                week = data.get('week')
-                if not week:
-                    today = datetime.utcnow().date()
-                    delta = today - last_period_date
-                    week = max(1, delta.days // 7)  # Al menos 1 semana
+                # Calcular la semana de embarazo automáticamente
+                today = datetime.utcnow().date()
+                delta = today - last_period_date
+                week = max(1, delta.days // 7)  # Al menos 1 semana
 
-                # Crear nuevo registro sin restricciones de duplicados
+                # Crear nuevo registro
                 nuevo_registro = PregnancyData(
-                    user_id=user_id,
+                    user_id=user_id,  # Se obtiene del JWT
                     last_period_date=last_period_date,
                     due_date=due_date,
                     weight=weight,
                     symptoms=data.get('symptoms', ''),
                     notes=data.get('notes', ''),
-                    week=week  # Asegurar que week no sea None
+                    week=week
                 )
 
                 # Guardar en la base de datos
@@ -784,11 +776,16 @@ def manejar_registros_embarazo():
 
             except Exception as e:
                 db.session.rollback()
-                print(f"🔴 Error general en /api/embarazos: {str(e)}")  # Para depuración
+                print(f"🔴 Error en /api/embarazos: {str(e)}")  # Para depuración
                 return jsonify({"error": "Error interno del servidor"}), 500
+
+    except Exception as e:
+        print(f"🔴 Error general en /api/embarazos: {str(e)}")  # Para depuración
+        return jsonify({"error": "Error interno del servidor"}), 500
 
 #Eliminar registro de embarazo
 @routes.route('/api/embarazos/<int:id>', methods=['DELETE'])
+@jwt_required()
 def eliminar_registro_embarazo(id):
     try:
         # Buscar el registro por ID único
