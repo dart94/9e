@@ -635,17 +635,16 @@ def api_mi_perfil():
 
 # API: Editar perfil    
 @routes.route('/api/editar-perfil', methods=['POST'])
-@login_required
+@jwt_required()
 def api_editar_perfil():
-    user_id = session.get('user_id')
-    user = User.query.get(user_id)
+    user_id = get_jwt_identity()
 
-    if not user:
+    if not user_id:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
     data = request.get_json()
-    user.username = data.get('username', user.username)
-    user.email = data.get('email', user.email)
+    user_id.username = data.get('username', user_id.username)
+    user_id.email = data.get('email', user_id.email)
 
     try:
         db.session.commit()
@@ -851,7 +850,7 @@ def auth_callback():
         print(f"Error during the request: {e}")  # Imprime el error si la solicitud falla
         return jsonify({"error": "Request to Google API failed", "details": str(e)}), 500
 
-
+correo4@correo.com
 # Autenticación con Google
 @routes.route("/auth/google")
 def auth_google():
