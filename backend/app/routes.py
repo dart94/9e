@@ -850,7 +850,7 @@ def auth_callback():
         print(f"Error during the request: {e}")  # Imprime el error si la solicitud falla
         return jsonify({"error": "Request to Google API failed", "details": str(e)}), 500
 
-correo4@correo.com
+
 # Autenticación con Google
 @routes.route("/auth/google")
 def auth_google():
