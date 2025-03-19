@@ -228,7 +228,7 @@ export default function SettingsScreen() {
             <View style={textStyles.infoRow}>
               <Ionicons name="person-outline" size={24} color={textStyles.infoLabel.color} />
               <Text style={textStyles.infoLabel}> Nombre de Usuario: </Text>
-              <Text style={textStyles.infoValue}>{profileData.name}</Text>
+              <Text style={textStyles.infoValue}>{profileData.username}</Text>
             </View>
 
             <View style={textStyles.infoRow}>

@@ -46,10 +46,9 @@ export default function LoginScreen() {
       const enrolled = compatible ? await LocalAuthentication.isEnrolledAsync() : false;
       setIsBiometricSupported(compatible && enrolled);
       
-      // Verificar si hay credenciales almacenadas
-      const savedEmail = await SecureStore.getItemAsync('userEmail');
-      const savedPassword = await SecureStore.getItemAsync('userPassword');
-      setHasStoredCredentials(!!savedEmail && !!savedPassword);
+      // Usar el método actualizado de BiometricAuthService
+      const hasCredentials = await BiometricAuthService.hasStoredCredentials();
+      setHasStoredCredentials(hasCredentials);
     };
     checkBiometricSupport();
   }, []);
@@ -96,7 +95,7 @@ export default function LoginScreen() {
           
           // Guardar credenciales para biometría
           // Usamos el token como "contraseña", ya que no tenemos una contraseña real
-          await BiometricAuthService.saveCredentials(email, token);
+          await BiometricAuthService.saveCredentials(email, token, true);
           
           // Esperar un momento para asegurar que los datos se han guardado
           await new Promise(resolve => setTimeout(resolve, 500));

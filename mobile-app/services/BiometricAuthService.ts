@@ -22,8 +22,15 @@ export class BiometricAuthService {
   static async hasStoredCredentials(): Promise<boolean> {
     try {
       const email = await SecureStore.getItemAsync('userEmail');
-      const password = await SecureStore.getItemAsync('userPassword');
-      return !!email && !!password;
+      const isGoogleAuth = await SecureStore.getItemAsync('isGoogleAuth') === 'true';
+      
+      if (isGoogleAuth) {
+        const token = await SecureStore.getItemAsync('userToken');
+        return !!email && !!token;
+      } else {
+        const password = await SecureStore.getItemAsync('userPassword');
+        return !!email && !!password;
+      }
     } catch (error) {
       console.error('Error al verificar credenciales almacenadas:', error);
       return false;
@@ -59,38 +66,69 @@ export class BiometricAuthService {
         };
       }
 
-      // 3. Obtener credenciales y hacer login
+      // 3. Determinar el tipo de autenticación y obtener credenciales
       const email = await SecureStore.getItemAsync('userEmail');
-      const password = await SecureStore.getItemAsync('userPassword');
-
-      // 4. Llamada al API para login
+      const isGoogleAuth = await SecureStore.getItemAsync('isGoogleAuth') === 'true';
+      
       try {
-        const response = await axios.post(`${API_CONFIG.BASE_URL}/login2`, {
-          email,
-          password,
-        });
-
-        if (response.status === 200) {
-          const { id, username, token } = response.data;
-
-          // 5. Guardar datos del usuario
-          await Promise.all([
-            AsyncStorage.setItem('userId', id.toString()),
-            AsyncStorage.setItem('user', JSON.stringify({ id, name: username })),
-            SecureStore.setItemAsync('userToken', token)
-          ]);
-
-          // 6. Devolver éxito
-          return {
-            success: true,
-            data: { id, username, token }
-          };
+        if (isGoogleAuth) {
+          // Para autenticación con Google
+          const token = await SecureStore.getItemAsync('userToken');
+          
+          // Verificar token de Google o realizar una autenticación silenciosa
+          // Esto dependerá de tu implementación específica en el backend
+          const response = await axios.post(`${API_CONFIG.BASE_URL}/auth/google/validate`, {
+            email,
+            token
+          });
+          
+          if (response.status === 200) {
+            const { id, username, token: newToken } = response.data;
+            
+            // Guardar datos del usuario
+            await Promise.all([
+              AsyncStorage.setItem('userId', id.toString()),
+              AsyncStorage.setItem('user', JSON.stringify({ id, name: username })),
+              SecureStore.setItemAsync('userToken', newToken || token)
+            ]);
+            
+            return {
+              success: true,
+              data: { id, username, token: newToken || token }
+            };
+          }
         } else {
-          return {
-            success: false,
-            message: 'Error en la respuesta del servidor'
-          };
+          // Para autenticación normal con correo y contraseña
+          const password = await SecureStore.getItemAsync('userPassword');
+          
+          // Llamada al API para login normal
+          const response = await axios.post(`${API_CONFIG.BASE_URL}/login2`, {
+            email,
+            password,
+          });
+
+          if (response.status === 200) {
+            const { id, username, token } = response.data;
+
+            // Guardar datos del usuario
+            await Promise.all([
+              AsyncStorage.setItem('userId', id.toString()),
+              AsyncStorage.setItem('user', JSON.stringify({ id, name: username })),
+              SecureStore.setItemAsync('userToken', token)
+            ]);
+
+            return {
+              success: true,
+              data: { id, username, token }
+            };
+          }
         }
+        
+        // Si llegamos aquí, algo falló en la autenticación
+        return {
+          success: false,
+          message: 'Error en la respuesta del servidor'
+        };
       } catch (error) {
         console.error('Error en login biométrico:', error);
         return {
@@ -108,10 +146,17 @@ export class BiometricAuthService {
   }
 
   // Guarda las credenciales para uso futuro con biometría
-  static async saveCredentials(email: string, password: string): Promise<boolean> {
+  static async saveCredentials(email: string, passwordOrToken: string, isGoogleAuth: boolean = false): Promise<boolean> {
     try {
       await SecureStore.setItemAsync('userEmail', email);
-      await SecureStore.setItemAsync('userPassword', password);
+      await SecureStore.setItemAsync('isGoogleAuth', isGoogleAuth ? 'true' : 'false');
+      
+      if (isGoogleAuth) {
+        await SecureStore.setItemAsync('userToken', passwordOrToken);
+      } else {
+        await SecureStore.setItemAsync('userPassword', passwordOrToken);
+      }
+      
       return true;
     } catch (error) {
       console.error('Error al guardar credenciales:', error);

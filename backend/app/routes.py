@@ -952,3 +952,40 @@ def handle_google_login():
         return jsonify({"error": "Unexpected error", "details": str(e)}), 500
     finally:
         db.session.remove()
+
+@routes.route("/auth/google/validate", methods=['POST'])
+def validate_google_token():
+    data = request.json
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not email or not token:
+        return jsonify({"error": "Email y token son requeridos"}), 400
+    
+    try:
+        # Primero, verificar si el usuario existe
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+        
+        # Verificar que el usuario tenga un google_id (es un usuario de Google)
+        if not user.google_id or user.auth_provider != 'google':
+            return jsonify({"error": "Usuario no autenticado con Google"}), 400
+                
+        # Generar nuevo token JWT
+        access_token = create_access_token(identity=str(user.id))
+        
+        response_data = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "token": access_token
+        }
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        print(f"Error validando token de Google: {str(e)}")
+        return jsonify({"error": "Error validando credenciales", "details": str(e)}), 500
+    finally:
+        db.session.remove()
