@@ -638,19 +638,24 @@ def api_mi_perfil():
 @jwt_required()
 def api_editar_perfil():
     user_id = get_jwt_identity()
-
     if not user_id:
         return jsonify({"error": "Usuario no encontrado"}), 404
-
+    
+    # Obtener el usuario a partir del ID
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+    
     data = request.get_json()
-    user_id.username = data.get('username', user_id.username)
-    user_id.email = data.get('email', user_id.email)
-
+    user.username = data.get('username', user.username)
+    user.email = data.get('email', user.email)
+    
     try:
         db.session.commit()
         return jsonify({"message": "Perfil actualizado con éxito"}), 200
-    except:
+    except Exception as e:
         db.session.rollback()
+        print(f"🔴 Error al actualizar perfil: {str(e)}")  # Depuración
         return jsonify({"error": "Error al actualizar el perfil"}), 500
     
 # Login

@@ -129,9 +129,21 @@ export default function SettingsScreen() {
     try {
       setLoading(true);
       
-      // Verificamos si tenemos el endpoint correcto según tu backend
-      // Usamos la ruta que parece corresponder al patrón de tu backend
-      const response = await axios.put(`${API_CONFIG.BASE_URL}/api/actualizar-perfil`, form);
+      // Obtener el token primero
+      const token = await SecureStore.getItemAsync('userToken');
+      if (!token) {
+        Alert.alert('Error', 'No se encontró el token de autenticación.');
+        return;
+      }
+      
+      // Usar la ruta correcta y el método correcto
+      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/editar-perfil`, form, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
       
       console.log('Respuesta de actualización:', response.data);
       
@@ -143,12 +155,12 @@ export default function SettingsScreen() {
     } catch (error) {
       console.error('Error al guardar el perfil:', error);
       if (axios.isAxiosError(error)) {
-        const errorMessage = 
-          error.response?.data?.message || 
-          error.response?.data?.error || 
+        const errorMessage =
+          error.response?.data?.message ||
+          error.response?.data?.error ||
           'No se pudo actualizar el perfil.';
           
-        Alert.alert('Error', errorMessage);
+        Alert.alert('Error', `${errorMessage} (${error.response?.status || 'desconocido'})`);
       } else {
         Alert.alert('Error', 'Ocurrió un error inesperado.');
       }
