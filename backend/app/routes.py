@@ -107,6 +107,7 @@ def dashboard():
     progress_percentage = 0
     week_info = None
     image_path = None
+    image_path2 = None
 
     if last_record and last_record.last_period_date:
         today = datetime.now().date()
@@ -117,6 +118,7 @@ def dashboard():
         # Determinar la imagen
         month = week_to_month(current_week)
         image_path = f"/static/images/development/month{month}.png"
+        image_path2 = f"/static/images/img/s{current_week}.png"
 
         # Obtener datos de la API fetal
         week_info = fetal_data.get_week_info(current_week)
@@ -127,7 +129,8 @@ def dashboard():
         current_week=current_week,
         progress_percentage=progress_percentage,
         week_info=week_info,
-        image_path=image_path
+        image_path=image_path,
+        image_path2=image_path2
     )
 
 # Login

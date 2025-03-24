@@ -4,7 +4,7 @@
         "desarrollo_bebe": "El óvulo fertilizado comienza a dividirse mientras viaja hacia el útero.",
         "tamano": "0.1 mm",
         "peso": "0 g",
-        "comparacion": "Más pequeño que un grano de sal",
+        "comparacion": "Semilla pequeña",
         "sintomas_comunes": [
             "No hay síntomas visibles aún",
             "Posible sensibilidad en los senos"
@@ -22,7 +22,7 @@
         "desarrollo_bebe": "El blastocisto viaja por las trompas de Falopio.",
         "tamano": "0.2 mm",
         "peso": "0 g",
-        "comparacion": "Tamaño de un punto",
+        "comparacion": "Tamaño de una semilla pequeña",
         "sintomas_comunes": [
             "Posible sensibilidad en los senos",
             "Fatiga leve"
@@ -40,7 +40,7 @@
         "desarrollo_bebe": "El blastocisto comienza a implantarse en el útero.",
         "tamano": "0.3 mm",
         "peso": "0 g",
-        "comparacion": "Tamaño de un punto decimal",
+        "comparacion": "Tamaño de una semilla mediana",
         "sintomas_comunes": [
             "Posible manchado de implantación",
             "Sensibilidad en los senos",
@@ -493,12 +493,250 @@
         "cambios_madre": "Mayor curvatura de la espalda",
         "pruebas_medicas": []
     },
+    "27": {
+        "semana": 27,
+        "desarrollo_bebe": "El bebé empieza a abrir y cerrar los ojos y tiene un ciclo de sueño más definido.",
+        "tamano": "24 cm",
+        "peso": "1000 g",
+        "comparacion": "Tamaño de una col rizada",
+        "sintomas_comunes": [
+            "Fatiga",
+            "Dolor lumbar",
+            "Calambres en las piernas"
+        ],
+        "consejos": [
+            "Descansar con las piernas elevadas",
+            "Evitar estar mucho tiempo sentada o de pie",
+            "Realizar ejercicios de estiramiento"
+        ],
+        "cambios_madre": "Mayor crecimiento del abdomen",
+        "pruebas_medicas": []
+    },
+    "28": {
+        "semana": 28,
+        "desarrollo_bebe": "El cerebro del bebé está más desarrollado y puede distinguir la luz de la oscuridad.",
+        "tamano": "25 cm",
+        "peso": "1100 g",
+        "comparacion": "Tamaño de una lechuga romana",
+        "sintomas_comunes": [
+            "Hinchazón en manos y pies",
+            "Insomnio",
+            "Dificultad para respirar"
+        ],
+        "consejos": [
+            "Evitar el consumo excesivo de sal",
+            "Dormir de lado para mejorar la circulación",
+            "Realizar masajes en las piernas"
+        ],
+        "cambios_madre": "Mayor aumento de peso",
+        "pruebas_medicas": ["Prueba de anemia"]
+    },
+    "29": {
+        "semana": 29,
+        "desarrollo_bebe": "Los músculos y pulmones del bebé continúan madurando.",
+        "tamano": "26 cm",
+        "peso": "1250 g",
+        "comparacion": "Tamaño de una calabaza pequeña",
+        "sintomas_comunes": [
+            "Cansancio",
+            "Dolores de espalda",
+            "Mayor sensibilidad emocional"
+        ],
+        "consejos": [
+            "Tomar descansos frecuentes",
+            "Hacer ejercicios de respiración",
+            "Pedir apoyo emocional"
+        ],
+        "cambios_madre": "Mayor presión en la parte baja del abdomen",
+        "pruebas_medicas": []
+    },
+    "30": {
+        "semana": 30,
+        "desarrollo_bebe": "El bebé continúa desarrollando su sistema nervioso y empieza a acumular grasa, preparándose para la vida fuera del útero.",
+        "tamano": "27 cm",
+        "peso": "1400 g",
+        "comparacion": "Tamaño de una naranja",
+        "sintomas_comunes": [
+            "Aumento de la fatiga",
+            "Dolores en las articulaciones",
+            "Sensación de pesadez"
+        ],
+        "consejos": [
+            "Mantener una dieta equilibrada",
+            "Realizar caminatas suaves",
+            "Hacer ejercicios de relajación"
+        ],
+        "cambios_madre": "El útero se expande y la piel puede mostrar estrías",
+        "pruebas_medicas": [
+            "Control de glucosa"
+        ]
+    },
+    "31": {
+        "semana": 31,
+        "desarrollo_bebe": "El bebé sigue acumulando grasa y sus pulmones continúan madurando, preparándose para respirar por sí mismos.",
+        "tamano": "28 cm",
+        "peso": "1550 g",
+        "comparacion": "Tamaño de una coco",
+        "sintomas_comunes": [
+            "Dolor de espalda",
+            "Hinchazón en pies",
+            "Cambios en el sueño"
+        ],
+        "consejos": [
+            "Usar calzado cómodo",
+            "Realizar ejercicios de estiramiento",
+            "Mantenerse hidratada"
+        ],
+        "cambios_madre": "Aumento notable de peso y presión en la espalda",
+        "pruebas_medicas": []
+    },
+    "32": {
+        "semana": 32,
+        "desarrollo_bebe": "El sistema nervioso y respiratorio del bebé se afina, permitiendo movimientos más coordinados.",
+        "tamano": "29 cm",
+        "peso": "1700 g",
+        "comparacion": "Tamaño de un papaya",
+        "sintomas_comunes": [
+            "Dificultad para dormir",
+            "Dolores en el abdomen",
+            "Mareos"
+        ],
+        "consejos": [
+            "Practicar técnicas de respiración",
+            "Descansar en posición lateral",
+            "Evitar comidas pesadas antes de dormir"
+        ],
+        "cambios_madre": "Incremento del tamaño del abdomen y cambios en la postura",
+        "pruebas_medicas": [
+            "Ecografía de seguimiento"
+        ]
+    },
+    "33": {
+        "semana": 33,
+        "desarrollo_bebe": "El bebé adquiere más proporción de grasa corporal y sus movimientos se vuelven más coordinados.",
+        "tamano": "30 cm",
+        "peso": "1850 g",
+        "comparacion": "Tamaño de un piña",
+        "sintomas_comunes": [
+            "Dolor en la parte baja de la espalda",
+            "Presión en la vejiga",
+            "Calambres en las piernas"
+        ],
+        "consejos": [
+            "Realizar ejercicios de estiramiento",
+            "Evitar largos periodos de pie",
+            "Descansar con las piernas elevadas"
+        ],
+        "cambios_madre": "Mayor presión en la vejiga y dificultad para encontrar una posición cómoda",
+        "pruebas_medicas": []
+    },
+    "34": {
+        "semana": 34,
+        "desarrollo_bebe": "El bebé continúa ganando peso y sus órganos siguen madurando, acercándose a la viabilidad completa.",
+        "tamano": "31 cm",
+        "peso": "2000 g",
+        "comparacion": "Tamaño de una melón pequeño",
+        "sintomas_comunes": [
+            "Dificultad para respirar",
+            "Hinchazón en piernas",
+            "Fatiga extrema"
+        ],
+        "consejos": [
+            "Realizar ejercicios de relajación",
+            "Evitar esfuerzos físicos intensos",
+            "Mantener una dieta ligera"
+        ],
+        "cambios_madre": "Incremento de la fatiga y presión en el abdomen",
+        "pruebas_medicas": [
+            "Prueba de bienestar fetal"
+        ]
+    },
+    "35": {
+        "semana": 35,
+        "desarrollo_bebe": "El bebé se prepara para el nacimiento, con movimientos más coordinados y mayor acumulación de grasa corporal.",
+        "tamano": "32 cm",
+        "peso": "2150 g",
+        "comparacion": "Tamaño de una melón grande",
+        "sintomas_comunes": [
+            "Molestias en la cadera",
+            "Insomnio",
+            "Contracciones leves"
+        ],
+        "consejos": [
+            "Practicar técnicas de relajación",
+            "Preparar la maleta de hospital",
+            "Mantener contacto con el médico"
+        ],
+        "cambios_madre": "Sensación de presión en la pelvis y aumento de contracciones",
+        "pruebas_medicas": []
+    },
+    "36": {
+        "semana": 36,
+        "desarrollo_bebe": "El bebé está casi completamente desarrollado, preparándose para el nacimiento en cualquier momento.",
+        "tamano": "33 cm",
+        "peso": "2300 g",
+        "comparacion": "Tamaño de una sandía pequeña",
+        "sintomas_comunes": [
+            "Aumento de las contracciones",
+            "Incomodidad general",
+            "Aumento de la ansiedad"
+        ],
+        "consejos": [
+            "Descansar y evitar esfuerzos excesivos",
+            "Monitorear las contracciones",
+            "Mantener comunicación con el profesional de salud"
+        ],
+        "cambios_madre": "Mayor preparación para el parto, con contracciones irregulares",
+        "pruebas_medicas": [
+            "Monitoreo de contracciones"
+        ]
+    },
+    "37": {
+        "semana": 37,
+        "desarrollo_bebe": "El bebé alcanza la madurez, con un desarrollo completo de sus órganos y listo para el nacimiento.",
+        "tamano": "34 cm",
+        "peso": "2450 g",
+        "comparacion": "Tamaño de una sandía pequeña",
+        "sintomas_comunes": [
+            "Aumento de la fatiga",
+            "Presión en la pelvis",
+            "Contracciones de Braxton Hicks"
+        ],
+        "consejos": [
+            "Preparar el plan de parto",
+            "Realizar ejercicios de respiración",
+            "Mantenerse en contacto con el médico"
+        ],
+        "cambios_madre": "Se preparan los órganos para el parto y se intensifican las contracciones de práctica",
+        "pruebas_medicas": [
+            "Revisión prenatal final"
+        ]
+    },
+    "38": {
+        "semana": 38,
+        "desarrollo_bebe": "El bebé está completamente desarrollado y listo para nacer.",
+        "tamano": "49 cm",
+        "peso": "3100 g",
+        "comparacion": "Tamaño de una sandía mediana",
+        "sintomas_comunes": [
+            "Presión en la pelvis",
+            "Contracciones irregulares",
+            "Cansancio extremo"
+        ],
+        "consejos": [
+            "Tener lista la maleta para el hospital",
+            "Identificar signos de parto",
+            "Descansar lo más posible"
+        ],
+        "cambios_madre": "Sensación de presión en la parte baja del abdomen",
+        "pruebas_medicas": ["Monitoreo fetal"]
+    },
     "39": {
         "semana": 39,
         "desarrollo_bebe": "El bebé está completamente desarrollado y listo para nacer.",
         "tamano": "50 cm",
         "peso": "3.3 kg",
-        "comparacion": "Tamaño de una sandía pequeña",
+        "comparacion": "Tamaño de una sandía grande",
         "sintomas_comunes": [
             "Presión en la pelvis",
             "Contracciones de Braxton Hicks",
