@@ -130,38 +130,47 @@ function DashboardContent() {
 
   return (
     <ScrollView style={layoutStyles.container}>
-      <View style={miscStyles.card}>
-        <Text style={textStyles.title}>
-          Semana {current_week || 'N/A'} de 40
-        </Text>
+    <View style={miscStyles.card}>
+      <Text style={textStyles.title}>
+        Semana {current_week || 'N/A'} de 40
+      </Text>
+      
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Image
           source={{
             uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png`,
           }}
           style={miscStyles.image}
         />
-        <Text style={textStyles.subtitle}>Progreso: {normalizedProgress}%</Text>
-        <ProgressBar
-          progress={safeProgress}
-          color={textStyles.subtitle.color}
-          style={[miscStyles.progressBar, { height: 8 }]}
-        />
       </View>
+
+      <Text style={textStyles.subtitle}>Progreso: {normalizedProgress}%</Text>
+      <ProgressBar
+        progress={safeProgress}
+        color={textStyles.subtitle.color}
+        style={[miscStyles.progressBar, { height: 8 }]}
+      />
+
+      {week_info && (
+        <>
+          <Text style={textStyles.subtitle}>Tamaño</Text>
+          <Text style={textStyles.paragraph}> Tu bebé está creciendo: Ya mide
+            {week_info.tamano}, y pesa alrededor de: {week_info.peso}
+          </Text>
+          <Image
+          source={{
+            uri: `${API_CONFIG.BASE_URL}/static/images/img/s${current_week}.png`,
+          }}
+          style={miscStyles.image2}
+        />
+          <Text style={textStyles.subtitle}>Comparación</Text>
+          <Text style={textStyles.paragraph}>{week_info.comparacion}</Text>
+        </>
+      )}
+    </View>
 
       {week_info ? (
         <>
-          <View style={miscStyles.card}>
-            <Text style={textStyles.subtitle}>Tamaño</Text>
-            <Text style={textStyles.paragraph}>
-              {week_info.tamano}, peso aproximado: {week_info.peso}
-            </Text>
-            <Text style={textStyles.subtitle}>Comparación</Text>
-            <Text style={textStyles.paragraph}>{week_info.comparacion}</Text>
-          </View>
-          <View style={miscStyles.card}>
-            <Text style={textStyles.subtitle}>Desarrollo del Bebé</Text>
-            <Text style={textStyles.paragraph}>{week_info.desarrollo_bebe}</Text>
-          </View>
           <View style={miscStyles.card}>
             <Text style={textStyles.subtitle}>Cambios en la Madre</Text>
             <Text style={textStyles.paragraph}>{week_info.cambios_madre}</Text>

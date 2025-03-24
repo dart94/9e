@@ -15,6 +15,12 @@ export const miscStyles = StyleSheet.create({
     resizeMode: 'contain',
     marginVertical: SIZES.margin,
   },
+  image2: {
+    width: '100%',
+    height: 100,
+    resizeMode: 'contain',
+    marginVertical: SIZES.margin,
+  },
   input: {
     width: '100%',
     padding: SIZES.padding / 2,
