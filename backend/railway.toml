@@ -4,6 +4,3 @@ builder = "nixpacks"
 [deploy]
 startCommand = "gunicorn run:app"
 healthcheckPath = "/"
-healthcheckTimeout = 100
-restartPolicyType = "on-failure"
-restartPolicyMaxRetries = 10
