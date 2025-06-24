@@ -96,7 +96,7 @@ def get_posparto_info(week):
         return jsonify({"error": "Datos no disponibles para esta semana"}), 404
     return jsonify(week_info), 200
 
-
+# Endpoint para registrar un nuevo registro de posparto
 @posparto_api.route("/is-born", methods=['POST'])
 @jwt_required()
 def api_is_born():
@@ -139,3 +139,33 @@ def api_is_born():
     except Exception as e:
         print(f"Error al guardar el registro: {str(e)}")
         return jsonify({"error": "Error al guardar el registro"}), 500
+    
+#Endpor para obtener la información de posparto por usuario
+@posparto_api.route('/is-born/user/<int:user_id>', methods=['GET'])
+@jwt_required()
+def get_posparto_info_by_user(user_id):
+    """Endpoint para obtener los registros de posparto de un usuario específico.
+
+    Args:
+        user_id (int): ID del usuario.
+
+    Returns:
+        Response: JSON con la información de los registros de posparto o un error 404 si no se encuentran.
+    """
+
+    records = IsBorn.query.filter_by(user_id=user_id).all()
+
+    if not records:
+        return jsonify({"error": "Datos no disponibles para este usuario"}), 404
+
+    result = []
+    for record in records:
+        result.append({
+            "id": record.id,
+            "birth_date": record.birth_date.strftime('%Y-%m-%d'),
+            "weight": record.weight,
+            "notes": record.notes,
+            "created_at": record.created_at.isoformat()
+        })
+
+    return jsonify(result), 200

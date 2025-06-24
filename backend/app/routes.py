@@ -992,6 +992,3 @@ def validate_google_token():
         return jsonify({"error": "Error validando credenciales", "details": str(e)}), 500
     finally:
         db.session.remove()
-
-
-
