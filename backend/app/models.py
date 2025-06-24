@@ -64,3 +64,17 @@ class FetalDevelopment(db.Model):
     comparison = db.Column(db.String(100), nullable=False)
     symptoms = db.Column(db.Text, nullable=True)
     advice = db.Column(db.Text, nullable=True)
+
+
+#Is Born
+class IsBorn(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    birth_date = db.Column(db.Date, nullable=False)
+    weight = db.Column(db.Float, nullable=True)
+    notes = db.Column(db.String(500), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def __init__(self, user_id, birth_date, **kwargs):
+        super().__init__(user_id=user_id, birth_date=birth_date, **kwargs)
+        self.created_at = datetime.utcnow()

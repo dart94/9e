@@ -1,7 +1,11 @@
 import os
 import json
 import logging
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request, session
+from datetime import datetime
+from flask_jwt_extended import jwt_required
+from ..models import IsBorn
+from .. import db
 
 # Configuración del logger para este módulo
 logger = logging.getLogger(__name__)
@@ -91,3 +95,47 @@ def get_posparto_info(week):
     if not week_info:
         return jsonify({"error": "Datos no disponibles para esta semana"}), 404
     return jsonify(week_info), 200
+
+
+@posparto_api.route("/is-born", methods=['POST'])
+@jwt_required()
+def api_is_born():
+    try:
+        data = request.get_json()
+        if not data or not all(key in data for key in ("birth_date", "weight")):
+            return jsonify({"error": "Datos incompletos"}), 400
+
+        # Validar fecha de nacimiento
+        try:
+            birth_date = datetime.strptime(data['birth_date'], '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({"error": "La fecha de nacimiento no es válida"}), 400
+
+        # Validar peso (debe ser un número positivo)
+        try:
+            weight = float(data['weight'])
+            if weight <= 0:
+                return jsonify({"error": "El peso no puede ser negativo"}), 400
+        except (ValueError, TypeError):
+            return jsonify({"error": "El peso debe ser un número válido"}), 400
+
+        # Crear nuevo registro
+        nuevo_registro = IsBorn(
+            user_id=session.get('user_id'),  # Se obtiene del JWT
+            birth_date=birth_date,
+            weight=weight,
+            notes=data.get('notes', ''),
+        )
+
+        try:
+            db.session.add(nuevo_registro)
+            db.session.commit()
+            return jsonify({"message": "Registro de nacimiento guardado con éxito"}), 201
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error al guardar el registro: {str(e)}")
+            return jsonify({"error": "Error al guardar el registro"}), 500
+
+    except Exception as e:
+        print(f"Error al guardar el registro: {str(e)}")
+        return jsonify({"error": "Error al guardar el registro"}), 500
