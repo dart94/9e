@@ -57,7 +57,7 @@ $env:PYTHONPATH = "$env:PYTHONPATH;."
 
 #### ▶️ Ejecutar la aplicación:
 ```bash
-python -m backend.run
+flask run
 ```
 *(Asegúrate de estar en la carpeta adecuada al lanzar estos comandos.)*
 

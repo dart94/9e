@@ -4,7 +4,7 @@ import logging
 from flask import Blueprint, jsonify, request, session
 from datetime import datetime
 from flask_jwt_extended import jwt_required
-from ..models import IsBorn
+from ..models import IsBorn, User
 from .. import db
 
 # Configuración del logger para este módulo
@@ -140,32 +140,93 @@ def api_is_born():
         print(f"Error al guardar el registro: {str(e)}")
         return jsonify({"error": "Error al guardar el registro"}), 500
     
-#Endpor para obtener la información de posparto por usuario
+
+
+@posparto_api.route('/is-born', methods=['GET'])
+def get_posparto_info_by_week():
+    birth_date_str = request.args.get('birth_date')
+    if not birth_date_str:
+        return jsonify({"error": "Debe proporcionar birth_date en formato YYYY-MM-DD"}), 400
+
+    try:
+        birth_date = datetime.strptime(birth_date_str, "%Y-%m-%d").date()
+    except ValueError:
+        return jsonify({"error": "Formato de birth_date inválido. Use YYYY-MM-DD"}), 400
+
+    today = datetime.utcnow().date()
+    delta_days = (today - birth_date).days
+
+    if delta_days < 0:
+        return jsonify({"error": "birth_date no puede ser una fecha futura"}), 400
+
+    weeks_passed = delta_days // 7
+
+    # Leer el archivo JSON
+    json_path = os.path.join(os.path.dirname(__file__), "posparto.json")
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            full_data = json.load(f)
+            data = full_data.get("posparto", [])
+    except Exception as e:
+        return jsonify({"error": f"No se pudo leer el archivo JSON: {str(e)}"}), 500
+
+    # Buscar la entrada de semana más cercana (sin pasarse)
+    selected_entry = None
+    for entry in sorted(data, key=lambda x: x['semana']):
+        if entry["semana"] <= weeks_passed:
+            selected_entry = entry
+        else:
+            break
+
+    if not selected_entry:
+        return jsonify({"error": "No hay datos para la semana calculada"}), 404
+
+    # Añadir semanas transcurridas
+    selected_entry["semanas_transcurridas"] = weeks_passed
+
+    return jsonify(selected_entry),200
+
+
 @posparto_api.route('/is-born/user/<int:user_id>', methods=['GET'])
-@jwt_required()
 def get_posparto_info_by_user(user_id):
-    """Endpoint para obtener los registros de posparto de un usuario específico.
+    # Buscar usuario en la BD
+    record = IsBorn.query.filter_by(user_id=user_id).first()
+    if not record:
+        return jsonify({"error": "Registro de nacimiento no encontrado para ese usuario"}), 404
 
-    Args:
-        user_id (int): ID del usuario.
+    if not hasattr(record, 'birth_date') or not record.birth_date:
+        return jsonify({"error": "El usuario no tiene fecha de nacimiento registrada"}), 400
 
-    Returns:
-        Response: JSON con la información de los registros de posparto o un error 404 si no se encuentran.
-    """
+    birth_date = record.birth_date
+    today = datetime.utcnow().date()
+    delta_days = (today - birth_date).days
 
-    records = IsBorn.query.filter_by(user_id=user_id).all()
+    if delta_days < 0:
+        return jsonify({"error": "birth_date no puede ser una fecha futura"}), 400
 
-    if not records:
-        return jsonify({"error": "Datos no disponibles para este usuario"}), 404
+    weeks_passed = delta_days // 7
 
-    result = []
-    for record in records:
-        result.append({
-            "id": record.id,
-            "birth_date": record.birth_date.strftime('%Y-%m-%d'),
-            "weight": record.weight,
-            "notes": record.notes,
-            "created_at": record.created_at.isoformat()
-        })
+    # Leer el JSON de posparto.json
+    json_path = os.path.join(os.path.dirname(__file__), "posparto.json")
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            full_data = json.load(f)
+            data = full_data.get("posparto", [])
+    except Exception as e:
+        return jsonify({"error": f"No se pudo leer el archivo JSON: {str(e)}"}), 500
 
-    return jsonify(result), 200
+    # Filtrar semanas válidas (menores o iguales a weeks_passed)
+    semanas_validas = [item for item in data if item.get("semana", 0) <= weeks_passed]
+
+
+    if not semanas_validas:
+        return jsonify({"error": "No hay datos disponibles para la semana calculada"}), 404
+
+    # Seleccionar la semana más cercana (mayor valor menor o igual a weeks_passed)
+    selected_week_data = max(semanas_validas, key=lambda x: x.get("semana", 0))
+
+    # Agregar info extra
+    selected_week_data["semanas_transcurridas"] = weeks_passed
+
+
+    return jsonify(selected_week_data)
