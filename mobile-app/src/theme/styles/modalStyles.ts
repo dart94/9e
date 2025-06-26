@@ -4,7 +4,7 @@ import { SIZES, COLORS } from '../theme';
 export const modalStyles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     padding: 20,
@@ -32,5 +32,16 @@ export const modalStyles = StyleSheet.create({
     fontSize: SIZES.fontLarge,
     fontWeight: 'bold',
     color: COLORS.text,
+  },
+    closeButton: {
+    position: "absolute",
+    right: 10,
+    top: 10,
+    zIndex: 1,
+    padding: 5,
+  },
+  closeText: {
+    fontSize: 20,
+    color: "#999",
   },
 });

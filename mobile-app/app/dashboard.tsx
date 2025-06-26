@@ -20,6 +20,8 @@ import { useRouter } from 'expo-router';
 import { buttonStyles } from '@/src/theme/styles';
 import * as SecureStore from 'expo-secure-store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { PosPartoModal } from '@/components/modals/posPartoModal';
+import { BirthFloatingButton } from '@/components/CustomInput';
 
 // Importa las pantallas adicionales
 import SettingsScreen from './(auth)/settings';
@@ -32,6 +34,7 @@ function DashboardContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [showPostpartoModal, setShowPostpartoModal] = useState(false);
   
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -129,45 +132,46 @@ function DashboardContent() {
   );
 
   return (
+  <View style={{ flex: 1 }}>
     <ScrollView style={layoutStyles.container}>
-    <View style={miscStyles.card}>
-      <Text style={textStyles.title}>
-        Semana {current_week || 'N/A'} de 40
-      </Text>
-      
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Image
-          source={{
-            uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png`,
-          }}
-          style={miscStyles.image}
-        />
-      </View>
+      <View style={miscStyles.card}>
+        <Text style={textStyles.title}>
+          Semana {current_week || 'N/A'} de 40
+        </Text>
 
-      <Text style={textStyles.subtitle}>Progreso: {normalizedProgress}%</Text>
-      <ProgressBar
-        progress={safeProgress}
-        color={textStyles.subtitle.color}
-        style={[miscStyles.progressBar, { height: 8 }]}
-      />
-
-      {week_info && (
-        <>
-          <Text style={textStyles.subtitle}>Tamaño</Text>
-          <Text style={textStyles.paragraph}> Tu bebé está creciendo: Ya mide
-            {week_info.tamano}, y pesa alrededor de: {week_info.peso}
-          </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Image
-          source={{
-            uri: `${API_CONFIG.BASE_URL}/static/images/img/s${current_week}.png`,
-          }}
-          style={miscStyles.image2}
+            source={{
+              uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png`,
+            }}
+            style={miscStyles.image}
+          />
+        </View>
+
+        <Text style={textStyles.subtitle}>Progreso: {normalizedProgress}%</Text>
+        <ProgressBar
+          progress={safeProgress}
+          color={textStyles.subtitle.color}
+          style={[miscStyles.progressBar, { height: 8 }]}
         />
-          <Text style={textStyles.subtitle}>Comparación</Text>
-          <Text style={textStyles.paragraph}>{week_info.comparacion}</Text>
-        </>
-      )}
-    </View>
+
+        {week_info && (
+          <>
+            <Text style={textStyles.subtitle}>Tamaño</Text>
+            <Text style={textStyles.paragraph}> Tu bebé está creciendo: Ya mide
+              {week_info.tamano}, y pesa alrededor de: {week_info.peso}
+            </Text>
+            <Image
+              source={{
+                uri: `${API_CONFIG.BASE_URL}/static/images/img/s${current_week}.png`,
+              }}
+              style={miscStyles.image2}
+            />
+            <Text style={textStyles.subtitle}>Comparación</Text>
+            <Text style={textStyles.paragraph}>{week_info.comparacion}</Text>
+          </>
+        )}
+      </View>
 
       {week_info ? (
         <>
@@ -194,7 +198,19 @@ function DashboardContent() {
         </Text>
       )}
     </ScrollView>
-  );
+
+    {/* MODAL + BOTÓN flotante solo si es semana 37+ */}
+    {current_week >= 36 && (
+      <>
+        <BirthFloatingButton onPress={() => setShowPostpartoModal(true)} />
+        <PosPartoModal
+          visible={showPostpartoModal}
+          onClose={() => setShowPostpartoModal(false)}
+        />
+      </>
+    )}
+  </View>
+);
 }
 
 // Configuración del Tab Navigator

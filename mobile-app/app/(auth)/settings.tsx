@@ -53,7 +53,7 @@ export default function SettingsScreen() {
         setLoading(true);
 
         const token = await SecureStore.getItemAsync('userToken');
-        console.log('Token JWT obtenido:', token); // Verifica que el token exista
+        console.log('Token JWT obtenido:', token); 
 
         if (!token) {
             Alert.alert('Error', 'No se encontró el token de autenticación.');
@@ -67,7 +67,7 @@ export default function SettingsScreen() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            withCredentials: true, // Asegúrate de incluir esto si es necesario
+            withCredentials: true, 
         });
 
         console.log('Datos del perfil recibidos:', response.data);
