@@ -13,6 +13,7 @@ import { textStyles } from "@/src/theme/styles/textStyles";
 import { validateEmail } from "@/utils/validations";
 import { loginWithEmail } from "@/services/AuthService";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 type LoginFormProps = {
   email: string;
@@ -35,6 +36,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 }) => {
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
+  const router = useRouter();
 
   const handleLogin = async () => {
     if (!validateEmail(email)) {
@@ -134,11 +136,18 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           Continuar con Google
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={biometricStyles.textLink}>
+      <TouchableOpacity
+        style={biometricStyles.textLink}
+        onPress={() => router.push("/(auth)/forgotPassword")}
+        disabled={loading}
+      >
         <Text style={textStyles.link}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity style={biometricStyles.textLink}>
+      <TouchableOpacity
+        style={biometricStyles.textLink}
+        onPress={() => router.push("/(auth)/register")}
+        disabled={loading}
+      >
         <Text style={textStyles.link}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
     </View>
