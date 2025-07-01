@@ -6,9 +6,6 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import axios from 'axios';
-import { API_CONFIG } from '../../src/config/config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 import { layoutStyles } from '../../src/theme/styles/layoutStyles';
@@ -16,106 +13,60 @@ import { textStyles } from '../../src/theme/styles/textStyles';
 import { miscStyles } from '../../src/theme/styles/miscStyles';
 import { buttonStyles } from '../../src/theme/styles/buttonStyles';
 import CustomInput from '@/src/components/CustomInput';
-import { getProfile, updateProfile } from '@/api/profile';
-
-// Configuramos el interceptor una sola vez fuera del componente para evitar
-
-axios.interceptors.request.use(
-  async (config) => {
-    const token = await SecureStore.getItemAsync('userToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// Interceptor para mejorar el logging de errores
-axios.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (axios.isAxiosError(error)) 
-    return Promise.reject(error);
-  }
-);
+import { updateProfile } from '@/api/profile';
+import { useProfileData } from '@/hooks/useProfileData';
 
 export default function SettingsScreen() {
-  const [profileData, setProfileData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
+  const { profile, loading: profileLoading, error, refetch } = useProfileData();
   const [form, setForm] = useState({ username: '', email: '' });
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-useEffect(() => {
-  fetchProfile();
-}, []);
-
-const fetchProfile = async () => {
-  try {
-    setLoading(true);
-    const data = await getProfile();
-
-    console.log("Datos del perfil recibidos:", data);
-
-    setProfileData(data);
-    setForm({
-      username: data.name,
-      email: data.email || "",
-    });
-  } catch (err: any) {
-    console.error("Error:", err);
-    switch (err.code) {
-      case "NO_TOKEN":
-        Alert.alert("Error", "No se encontró el token de autenticación.");
-        break;
-      case "UNAUTHORIZED":
-        Alert.alert("Error", "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-        break;
-      case "API_ERROR":
-        Alert.alert("Error", err.message);
-        break;
-      default:
-        Alert.alert("Error", "Ocurrió un error inesperado.");
+  useEffect(() => {
+    if (profile) {
+      setForm({
+        username: profile.name,
+        email: profile.email || '',
+      });
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  }, [profile]);
 
-const handleSave = async () => {
-  try {
-    setLoading(true);
-
-    const response = await updateProfile(form);
-
-    console.log("Respuesta de actualización:", response);
-    Alert.alert("Éxito", response.message || "Perfil actualizado correctamente");
-
-    setEditing(false);
-    await fetchProfile(); // Refrescar perfil después de guardar
-  } catch (err: any) {
-    console.error("Error al guardar perfil:", err);
-    Alert.alert("Error", err.message || "No se pudo actualizar el perfil.");
-  } finally {
-    setLoading(false);
-  }
-};
-
-const handleToggleBiometricAuth = async (enable: boolean) => {
-  try {
-    if (enable) {
-      Alert.alert("Configuración", "Autenticación biométrica habilitada.");
-    } else {
-      await SecureStore.deleteItemAsync("userToken");
-      Alert.alert("Configuración", "Autenticación biométrica deshabilitada.");
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Error', error);
     }
-  } catch (error) {
-    console.error("Error en biométricos:", error);
-    Alert.alert("Error", "No se pudo cambiar la configuración.");
-  }
-};
+  }, [error]);
 
-  if (loading) {
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      const response = await updateProfile(form);
+
+      Alert.alert('Éxito', response.message || 'Perfil actualizado correctamente');
+      setEditing(false);
+      await refetch(); // Recargar perfil
+    } catch (err: any) {
+      Alert.alert('Error', err.message || 'No se pudo actualizar el perfil.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleToggleBiometricAuth = async (enable: boolean) => {
+    try {
+      if (enable) {
+        Alert.alert('Configuración', 'Autenticación biométrica habilitada.');
+      } else {
+        await SecureStore.deleteItemAsync('userToken');
+        Alert.alert('Configuración', 'Autenticación biométrica deshabilitada.');
+      }
+    } catch (error) {
+      console.error('Error en biométricos:', error);
+      Alert.alert('Error', 'No se pudo cambiar la configuración.');
+    }
+  };
+
+  if (profileLoading || saving) {
     return (
       <View style={[layoutStyles.container, layoutStyles.center]}>
         <ActivityIndicator size="large" color={textStyles.title.color} />
@@ -124,13 +75,13 @@ const handleToggleBiometricAuth = async (enable: boolean) => {
     );
   }
 
-  if (!profileData) {
+  if (!profile) {
     return (
       <View style={[layoutStyles.container, layoutStyles.center]}>
         <Text style={textStyles.errorText}>No se pudo cargar el perfil.</Text>
         <TouchableOpacity 
           style={[buttonStyles.button, { marginTop: 20 }]} 
-          onPress={fetchProfile}
+          onPress={refetch}
         >
           <Text style={buttonStyles.buttonText}>Reintentar</Text>
         </TouchableOpacity>
@@ -150,7 +101,6 @@ const handleToggleBiometricAuth = async (enable: boolean) => {
             value={form.username}
             onChangeText={(text) => setForm({ ...form, username: text })}
           />
-          
           <Text style={textStyles.subtitle}>Correo Electrónico</Text>
           <CustomInput
             style={miscStyles.input}
@@ -158,7 +108,6 @@ const handleToggleBiometricAuth = async (enable: boolean) => {
             onChangeText={(text) => setForm({ ...form, email: text })}
             keyboardType="email-address"
           />
-
           <TouchableOpacity style={buttonStyles.button} onPress={handleSave}>
             <Text style={buttonStyles.buttonText}>Guardar</Text>
           </TouchableOpacity>
@@ -174,51 +123,50 @@ const handleToggleBiometricAuth = async (enable: boolean) => {
             <View style={textStyles.infoRow}>
               <Ionicons name="person-outline" size={24} color={textStyles.infoLabel.color} />
               <Text style={textStyles.infoLabel}> Nombre de Usuario: </Text>
-              <Text style={textStyles.infoValue}>{profileData.username}</Text>
+              <Text style={textStyles.infoValue}>{profile.username}</Text>
             </View>
 
             <View style={textStyles.infoRow}>
               <Ionicons name="mail-outline" size={24} color={textStyles.infoLabel.color} />
               <Text style={textStyles.infoLabel}> Correo Electrónico: </Text>
-              <Text style={textStyles.infoValue}>{profileData.email || 'N/A'}</Text>
+              <Text style={textStyles.infoValue}>{profile.email || 'N/A'}</Text>
             </View>
 
             <View style={textStyles.infoRow}>
               <Ionicons name="calendar-outline" size={24} color={textStyles.infoLabel.color} />
               <Text style={textStyles.infoLabel}> Semana Actual: </Text>
-              <Text style={textStyles.infoValue}>{profileData.current_week || 'N/A'}</Text>
+              <Text style={textStyles.infoValue}>{profile.current_week || 'N/A'}</Text>
             </View>
 
             <View style={textStyles.infoRow}>
               <Ionicons name="calendar-outline" size={24} color={textStyles.infoLabel.color} />
               <Text style={textStyles.infoLabel}> Progreso de Embarazo: </Text>
-              <Text style={textStyles.infoValue}>{profileData.progress_percentage?.toFixed(2) || '0'}%</Text>
+              <Text style={textStyles.infoValue}>
+                {profile.progress_percentage?.toFixed(2) || '0'}%
+              </Text>
             </View>
 
-            {profileData.last_record && (
+            {profile.last_record && (
               <>
                 <View style={textStyles.infoRow}>
                   <Ionicons name="calendar-outline" size={24} color={textStyles.infoLabel.color} />
                   <Text style={textStyles.infoLabel}> Fecha de inicio: </Text>
-                  <Text style={textStyles.infoValue}>{profileData.last_record.start_date || 'Sin registro'}</Text>
+                  <Text style={textStyles.infoValue}>{profile.last_record.start_date || 'Sin registro'}</Text>
                 </View>
-
                 <View style={textStyles.infoRow}>
                   <Ionicons name="scale-outline" size={24} color={textStyles.infoLabel.color} />
                   <Text style={textStyles.infoLabel}> Peso: </Text>
-                  <Text style={textStyles.infoValue}>{profileData.last_record.weight || 'Sin registro'} Kg</Text>
+                  <Text style={textStyles.infoValue}>{profile.last_record.weight || 'Sin registro'} Kg</Text>
                 </View>
-
                 <View style={textStyles.infoRow}>
                   <Ionicons name="medical-outline" size={24} color={textStyles.infoLabel.color} />
                   <Text style={textStyles.infoLabel}> Últimos Síntomas: </Text>
-                  <Text style={textStyles.infoValue}>{profileData.last_record.symptoms || 'Sin registro'}</Text>
+                  <Text style={textStyles.infoValue}>{profile.last_record.symptoms || 'Sin registro'}</Text>
                 </View>
-
                 <View style={textStyles.infoRow}>
                   <Ionicons name="clipboard-outline" size={24} color={textStyles.infoLabel.color} />
                   <Text style={textStyles.infoLabel}> Notas: </Text>
-                  <Text style={textStyles.infoValue}>{profileData.last_record.notes || 'Sin registro'}</Text>
+                  <Text style={textStyles.infoValue}>{profile.last_record.notes || 'Sin registro'}</Text>
                 </View>
               </>
             )}
@@ -227,24 +175,18 @@ const handleToggleBiometricAuth = async (enable: boolean) => {
           <TouchableOpacity style={buttonStyles.button} onPress={() => setEditing(true)}>
             <Text style={buttonStyles.buttonText}>Editar Perfil</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={buttonStyles.button}
-            onPress={() => handleToggleBiometricAuth(true)}
-          >
+
+          <TouchableOpacity style={buttonStyles.button} onPress={() => handleToggleBiometricAuth(true)}>
             <Text style={buttonStyles.buttonText}>Habilitar Huella</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={buttonStyles.button}
-            onPress={() => handleToggleBiometricAuth(false)}
-          >
+
+          <TouchableOpacity style={buttonStyles.button} onPress={() => handleToggleBiometricAuth(false)}>
             <Text style={buttonStyles.buttonText}>Deshabilitar Huella</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={[buttonStyles.button, { backgroundColor: '#333' }]}
-            onPress={fetchProfile}
+            onPress={refetch}
           >
             <Text style={buttonStyles.buttonText}>Actualizar Datos</Text>
           </TouchableOpacity>
