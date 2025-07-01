@@ -141,7 +141,7 @@ def api_is_born():
         return jsonify({"error": "Error al guardar el registro"}), 500
     
 
-
+# Endpoint para obtener información de posparto basada en la fecha de nacimiento
 @posparto_api.route('/is-born', methods=['GET'])
 def get_posparto_info_by_week():
     birth_date_str = request.args.get('birth_date')
@@ -187,6 +187,7 @@ def get_posparto_info_by_week():
     return jsonify(selected_entry),200
 
 
+# Endpoint para obtener información de posparto basada en el ID del usuario
 @posparto_api.route('/is-born/user/<int:user_id>', methods=['GET'])
 def get_posparto_info_by_user(user_id):
     # Buscar usuario en la BD
@@ -230,3 +231,28 @@ def get_posparto_info_by_user(user_id):
 
 
     return jsonify(selected_week_data)
+
+
+# Endpoint para obtener toda la información de posparto (todas las semanas)
+@posparto_api.route('/all-weeks', methods=['GET'])
+def get_all_posparto_weeks():
+    # Leer el JSON de posparto.json
+    json_path = os.path.join(os.path.dirname(__file__), "posparto.json")
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            full_data = json.load(f)
+            data = full_data.get("posparto", [])
+    except Exception as e:
+        return jsonify({"error": f"No se pudo leer el archivo JSON: {str(e)}"}), 500
+    
+    if not data:
+        return jsonify({"error": "No hay datos de posparto disponibles"}), 404
+    
+    # Ordenar por semana para asegurar orden correcto
+    data_sorted = sorted(data, key=lambda x: x.get("semana", 0))
+    
+    return jsonify({
+        "total_semanas": len(data_sorted),
+        "posparto": data_sorted
+    })
+

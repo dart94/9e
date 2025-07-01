@@ -8,10 +8,10 @@ export const useProfileData = () => {
   const [error, setError] = useState<string | null>(null);
 
   const refetch = useCallback(async () => {
-    setLoading(true);
+    setLoading(true); // usar el estado de carga para mostrar un indicador de progreso
     try {
       const data = await getProfile();
-      setProfile(data);
+      setProfile(data); // actualizar el estado del perfil con los datos obtenidos
       setError(null);
     } catch (err: any) {
       setError(err.message || "Error al obtener el perfil.");
@@ -22,7 +22,7 @@ export const useProfileData = () => {
 
   useEffect(() => {
     refetch();
-  }, [refetch]);
+  }, [refetch]); // Llamar a refetch al montar el componente para obtener los datos del perfil
 
   return {
     profile,
