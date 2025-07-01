@@ -16,6 +16,7 @@ import { textStyles } from '../../src/theme/styles/textStyles';
 import { miscStyles } from '../../src/theme/styles/miscStyles';
 import { buttonStyles } from '../../src/theme/styles/buttonStyles';
 import CustomInput from '@/src/components/CustomInput';
+import { getProfile, updateProfile } from '@/api/profile';
 
 // Configuramos el interceptor una sola vez fuera del componente para evitar
 
@@ -34,10 +35,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (axios.isAxiosError(error)) {
-      console.log('Error Status:', error.response?.status);
-      console.log('Error Data:', error.response?.data);
-    }
+    if (axios.isAxiosError(error)) 
     return Promise.reject(error);
   }
 );
@@ -48,126 +46,74 @@ export default function SettingsScreen() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ username: '', email: '' });
 
-  const fetchProfile = async () => {
-    try {
-        setLoading(true);
+useEffect(() => {
+  fetchProfile();
+}, []);
 
-        const token = await SecureStore.getItemAsync('userToken');
-        console.log('Token JWT obtenido:', token); 
+const fetchProfile = async () => {
+  try {
+    setLoading(true);
+    const data = await getProfile();
 
-        if (!token) {
-            Alert.alert('Error', 'No se encontró el token de autenticación.');
-            return;
-        }
+    console.log("Datos del perfil recibidos:", data);
 
-        // Hacer la solicitud con axios
-        console.log('Intentando obtener perfil con el token...');
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            withCredentials: true, 
-        });
-
-        console.log('Datos del perfil recibidos:', response.data);
-
-        // Guardar los datos en el estado
-        setProfileData(response.data);
-        setForm({
-            username: response.data.name,
-            email: response.data.email || '',
-        });
-    } catch (error) {
-        console.error('Error al obtener el perfil:', error);
-
-        if (axios.isAxiosError(error)) {
-            console.log('Status:', error.response?.status);
-            console.log('Response data:', JSON.stringify(error.response?.data));
-            console.log('Request headers enviados:', JSON.stringify(error.config?.headers));
-
-            if (error.response?.status === 401) {
-                Alert.alert('Error', 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-
-            } else {
-                const errorMessage =
-                    error.response?.data?.message ||
-                    error.response?.data?.error ||
-                    'No se pudo cargar la información del perfil.';
-                Alert.alert('Error', `${errorMessage} (${error.response?.status || 'desconocido'})`);
-            }
-        } else {
-            Alert.alert('Error', 'Ocurrió un error inesperado.');
-        }
-    } finally {
-        setLoading(false);
+    setProfileData(data);
+    setForm({
+      username: data.name,
+      email: data.email || "",
+    });
+  } catch (err: any) {
+    console.error("Error:", err);
+    switch (err.code) {
+      case "NO_TOKEN":
+        Alert.alert("Error", "No se encontró el token de autenticación.");
+        break;
+      case "UNAUTHORIZED":
+        Alert.alert("Error", "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        break;
+      case "API_ERROR":
+        Alert.alert("Error", err.message);
+        break;
+      default:
+        Alert.alert("Error", "Ocurrió un error inesperado.");
     }
+  } finally {
+    setLoading(false);
+  }
 };
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+const handleSave = async () => {
+  try {
+    setLoading(true);
 
-  
-  // Habilitar/deshabilitar autenticación biométrica
-  const handleToggleBiometricAuth = async (enable: boolean) => {
-    try {
-      if (enable) {
-        Alert.alert('Configuración', 'Autenticación biométrica habilitada.');
-      } else {
-        await SecureStore.deleteItemAsync('userToken');
-        Alert.alert('Configuración', 'Autenticación biométrica deshabilitada.');
-      }
-    } catch (error) {
-      console.error('Error al cambiar la configuración de autenticación biométrica:', error);
-      Alert.alert('Error', 'No se pudo cambiar la configuración.');
-    }
-  };
+    const response = await updateProfile(form);
 
-  // Guardar cambios en el perfil
-  const handleSave = async () => {
-    try {
-      setLoading(true);
-      
-      // Obtener el token primero
-      const token = await SecureStore.getItemAsync('userToken');
-      if (!token) {
-        Alert.alert('Error', 'No se encontró el token de autenticación.');
-        return;
-      }
-      
-      // Usar la ruta correcta y el método correcto
-      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/editar-perfil`, form, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
-      
-      console.log('Respuesta de actualización:', response.data);
-      
-      Alert.alert('Éxito', response.data.message || 'Perfil actualizado correctamente');
-      setEditing(false);
-      
-      // Actualizamos el perfil después de guardar
-      await fetchProfile();
-    } catch (error) {
-      console.error('Error al guardar el perfil:', error);
-      if (axios.isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.message ||
-          error.response?.data?.error ||
-          'No se pudo actualizar el perfil.';
-          
-        Alert.alert('Error', `${errorMessage} (${error.response?.status || 'desconocido'})`);
-      } else {
-        Alert.alert('Error', 'Ocurrió un error inesperado.');
-      }
-    } finally {
-      setLoading(false);
+    console.log("Respuesta de actualización:", response);
+    Alert.alert("Éxito", response.message || "Perfil actualizado correctamente");
+
+    setEditing(false);
+    await fetchProfile(); // Refrescar perfil después de guardar
+  } catch (err: any) {
+    console.error("Error al guardar perfil:", err);
+    Alert.alert("Error", err.message || "No se pudo actualizar el perfil.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleToggleBiometricAuth = async (enable: boolean) => {
+  try {
+    if (enable) {
+      Alert.alert("Configuración", "Autenticación biométrica habilitada.");
+    } else {
+      await SecureStore.deleteItemAsync("userToken");
+      Alert.alert("Configuración", "Autenticación biométrica deshabilitada.");
     }
-  };
+  } catch (error) {
+    console.error("Error en biométricos:", error);
+    Alert.alert("Error", "No se pudo cambiar la configuración.");
+  }
+};
 
   if (loading) {
     return (

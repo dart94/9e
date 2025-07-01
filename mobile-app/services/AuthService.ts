@@ -11,6 +11,19 @@ const storeUserSession = async (id: number, username: string, token: string, ema
   await SecureStore.setItemAsync('userEmail', email);
 };
 
+// Registro de usuario
+export const registerUser = async (username: string, email: string, password: string) => {
+  try {
+    if (!username || !email || !password) throw new Error('Faltan datos requeridos');
+
+    const { data } = await axios.post(`${API_CONFIG.BASE_URL}/register2`, { username, email, password });
+    return data;
+  } catch (error) {
+    console.error('Error en registerUser:', error);
+    throw error;
+  }
+};
+
 // Login con Email
 export const loginWithEmail = async (email: string, password: string) => {
   try {

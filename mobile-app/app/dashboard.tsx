@@ -22,6 +22,7 @@ import * as SecureStore from 'expo-secure-store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { PosPartoModal } from '@/components/modals/posPartoModal';
 import { BirthFloatingButton } from '@/components/CustomInput';
+import { getDashboard } from '@/api/dashboard';
 
 // Importa las pantallas adicionales
 import SettingsScreen from './(auth)/settings';
@@ -36,40 +37,35 @@ function DashboardContent() {
   const router = useRouter();
   const [showPostpartoModal, setShowPostpartoModal] = useState(false);
   
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const token = await SecureStore.getItemAsync('userToken');
-  
-        if (!token) {
-          setError('No se pudo obtener el token de autenticación.');
-          setLoading(false);
-          return;
-        }
-  
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/dashboard`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
-  
-        setData(response.data);
-      } catch (err) {
-        console.error('Error al cargar datos del dashboard:', err);
-        if (axios.isAxiosError(err)) {
-          console.log('Status:', err.response?.status);
-          console.log('Response data:', JSON.stringify(err.response?.data));
-        }
-        setError('Registra tu embarazo desde el menú "Nuevo".');
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const dashboardData = await getDashboard();
+      setData(dashboardData);
+    } catch (err: any) {
+      console.error("Error al cargar datos:", err);
+
+      switch (err.code) {
+        case "NO_TOKEN":
+          setError("No se encontró el token de autenticación.");
+          break;
+        case "UNAUTHORIZED":
+          setError("Tu sesión ha expirado. Por favor inicia sesión nuevamente.");
+          break;
+        case "SERVER_ERROR":
+          setError("Ocurrió un problema en el servidor.");
+          break;
+        default:
+          setError("No se pudo cargar la información.");
       }
-    };
-  
-    fetchDashboardData();
-  }, []);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
   if (loading)
     return (
       <View style={[layoutStyles.container, layoutStyles.center]}>

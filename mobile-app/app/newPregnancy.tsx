@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,83 +6,67 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import axios, { AxiosError } from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { layoutStyles } from '../src/theme/styles/layoutStyles';
-import { textStyles } from '../src/theme/styles/textStyles';
-import { buttonStyles } from '../src/theme/styles/buttonStyles';
-import { miscStyles } from '../src/theme/styles/miscStyles';
-import { API_CONFIG } from '../src/config/config';
-import { useRouter } from 'expo-router';
-import CustomInput from '@/src/components/CustomInput';
-import * as SecureStore from 'expo-secure-store';
-
-
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import axios, { AxiosError } from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { layoutStyles } from "../src/theme/styles/layoutStyles";
+import { textStyles } from "../src/theme/styles/textStyles";
+import { buttonStyles } from "../src/theme/styles/buttonStyles";
+import { miscStyles } from "../src/theme/styles/miscStyles";
+import { API_CONFIG } from "../src/config/config";
+import { useRouter } from "expo-router";
+import CustomInput from "@/src/components/CustomInput";
+import * as SecureStore from "expo-secure-store";
+import { getLastPeriodDate } from "@/api/embarazos";
 
 export default function NewPregnancyRecordScreen() {
   const [form, setForm] = useState({
-    last_period_date: '',
-    weight: '',
-    symptoms: '',
-    notes: '',
+    last_period_date: "",
+    weight: "",
+    symptoms: "",
+    notes: "",
   });
   const [loading, setLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const router = useRouter();
 
+useEffect(() => {
+  const fetchLastPeriod = async () => {
+    try {
+      setLoading(true);
 
-  useEffect(() => {
-    const fetchLastPeriodDate = async () => {
-      try {
-        // Obtener el token JWT
-        const token = await SecureStore.getItemAsync('userToken');
-        
-        if (!token) {
-          Alert.alert('Error', 'No se pudo obtener el usuario autenticado.');
-          router.replace('/(auth)/login');
-          return;
-        }
-        
-        // Mantener el userId por compatibilidad mientras se implementa la solución completa
-        const userId = await AsyncStorage.getItem('userId');
-        
-        setLoading(true);
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/embarazos`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          params: userId ? { user_id: userId } : undefined,
-          withCredentials: true,
-        });
-        
-        if (response.data && response.data.length > 0) {
-          const latestRecord = response.data[0];
-          if (latestRecord?.last_period_date) {
-            setForm((prevForm) => ({
-              ...prevForm,
-              last_period_date: latestRecord.last_period_date,
-            }));
-            setDate(new Date(latestRecord.last_period_date));
-          }
-        }
-      } catch (error) {
-        console.error('Error al cargar la última fecha de periodo:', error);
-        if (axios.isAxiosError(error)) {
-          console.log('Status:', error.response?.status);
-          console.log('Response data:', JSON.stringify(error.response?.data));
-        }
-        Alert.alert('Error', 'No se pudo cargar la última fecha de periodo.');
-      } finally {
-        setLoading(false);
+      const lastPeriodDate = await getLastPeriodDate();
+
+      setForm((prevForm) => ({
+        ...prevForm,
+        last_period_date: lastPeriodDate,
+      }));
+
+      setDate(new Date(lastPeriodDate));
+    } catch (err: any) {
+      console.error("Error:", err);
+
+      switch (err.code) {
+        case "NO_TOKEN":
+        case "UNAUTHORIZED":
+          Alert.alert("Error", "Debes iniciar sesión.");
+          router.replace("/(auth)/login");
+          break;
+        case "SERVER_ERROR":
+          Alert.alert("Error", "Error interno del servidor.");
+          break;
+        default:
+          Alert.alert("Error", "No se pudo cargar la última fecha de periodo.");
       }
-    };
-    
-    fetchLastPeriodDate();
-  }, []);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchLastPeriod();
+}, []);
 
   const handleInputChange = (field: string, value: string) => {
     setForm((prevForm) => ({
@@ -92,10 +76,10 @@ export default function NewPregnancyRecordScreen() {
   };
 
   const onDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(Platform.OS === 'ios');
+    setShowDatePicker(Platform.OS === "ios");
     if (selectedDate) {
       setDate(selectedDate);
-      const formattedDate = selectedDate.toISOString().split('T')[0];
+      const formattedDate = selectedDate.toISOString().split("T")[0];
       setForm((prevForm) => ({
         ...prevForm,
         last_period_date: formattedDate,
@@ -109,41 +93,50 @@ export default function NewPregnancyRecordScreen() {
 
   const handleSubmit = async () => {
     if (!form.last_period_date || !form.weight) {
-      Alert.alert('Error', 'Por favor, completa todos los campos obligatorios.');
+      Alert.alert(
+        "Error",
+        "Por favor, completa todos los campos obligatorios."
+      );
       return;
     }
-  
+
     try {
       setLoading(true);
-  
+
       // Obtener el token JWT
-      const token = await SecureStore.getItemAsync('userToken');
+      const token = await SecureStore.getItemAsync("userToken");
       if (!token) {
-        Alert.alert('Error', 'Usuario no autenticado. Intenta iniciar sesión nuevamente.');
-        router.replace('/(auth)/login');
+        Alert.alert(
+          "Error",
+          "Usuario no autenticado. Intenta iniciar sesión nuevamente."
+        );
+        router.replace("/(auth)/login");
         return;
       }
-  
+
       const payload = {
         last_period_date: form.last_period_date,
         weight: form.weight,
         symptoms: form.symptoms,
         notes: form.notes,
       };
-  
+
       await axios.post(`${API_CONFIG.BASE_URL}/api/embarazos`, payload, {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Enviar token en los headers
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Enviar token en los headers
         },
       });
-  
-      Alert.alert('Éxito', 'Registro de embarazo añadido correctamente.');
-      router.replace('/dashboard');
+
+      Alert.alert("Éxito", "Registro de embarazo añadido correctamente.");
+      router.replace("/dashboard");
     } catch (error) {
       const axiosError = error as AxiosError;
       const errorData = axiosError.response?.data as { error?: string };
-      Alert.alert('Error', errorData?.error || 'No se pudo guardar el registro.');
+      Alert.alert(
+        "Error",
+        errorData?.error || "No se pudo guardar el registro."
+      );
     } finally {
       setLoading(false);
     }
@@ -151,15 +144,17 @@ export default function NewPregnancyRecordScreen() {
 
   return (
     <View style={layoutStyles.container}>
-      {loading && <ActivityIndicator size="large" color={textStyles.title.color} />}
+      {loading && (
+        <ActivityIndicator size="large" color={textStyles.title.color} />
+      )}
       <Text style={textStyles.title}>Registro de Embarazo</Text>
 
       <Text style={textStyles.label}>Última Fecha de Periodo</Text>
-      <TouchableOpacity 
-        style={[miscStyles.input, { justifyContent: 'center' }]} 
+      <TouchableOpacity
+        style={[miscStyles.input, { justifyContent: "center" }]}
         onPress={showDatepicker}
       >
-        <Text>{form.last_period_date || 'Seleccionar fecha'}</Text>
+        <Text>{form.last_period_date || "Seleccionar fecha"}</Text>
       </TouchableOpacity>
 
       {showDatePicker && (
@@ -177,7 +172,7 @@ export default function NewPregnancyRecordScreen() {
       <CustomInput
         style={miscStyles.input}
         value={form.weight}
-        onChangeText={(value) => handleInputChange('weight', value)}
+        onChangeText={(value) => handleInputChange("weight", value)}
         placeholder="Peso de la madre"
         keyboardType="numeric"
       />
@@ -186,7 +181,7 @@ export default function NewPregnancyRecordScreen() {
       <CustomInput
         style={miscStyles.input}
         value={form.symptoms}
-        onChangeText={(value) => handleInputChange('symptoms', value)}
+        onChangeText={(value) => handleInputChange("symptoms", value)}
         placeholder="Síntomas de la madre"
       />
 
@@ -194,7 +189,7 @@ export default function NewPregnancyRecordScreen() {
       <CustomInput
         style={miscStyles.input}
         value={form.notes}
-        onChangeText={(value) => handleInputChange('notes', value)}
+        onChangeText={(value) => handleInputChange("notes", value)}
         placeholder="Recordatorios o notas adicionales"
         multiline
       />

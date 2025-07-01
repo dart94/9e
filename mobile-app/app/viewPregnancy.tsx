@@ -22,15 +22,11 @@ import { API_CONFIG } from '../src/config/config';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import NewPregnancyRecordScreen from './newPregnancy';
+import type { PregnancyRecord } from '../types/PregnancyRecord';
+import { getPregnancyRecords, deletePregnancyRecord } from '@/api/embarazos';
 
 
-interface PregnancyRecord {
-  id: number;
-  week: number;
-  weight: number | null;
-  symptoms: string | null;
-  notes: string | null;
-}
+
 
 export default function ViewPregnancyRecordsScreen() {
   const [records, setRecords] = useState<PregnancyRecord[]>([]);
@@ -40,73 +36,63 @@ export default function ViewPregnancyRecordsScreen() {
 
 
   useEffect(() => {
-    const fetchRecords = async () => {
+    const fetchData = async () => {
       try {
-        const token = await SecureStore.getItemAsync('userToken');
-        
-        if (!token) {
-          Alert.alert('Error', 'Usuario no autenticado.');
-          router.replace('/(auth)/login');
-          return;
+        const data = await getPregnancyRecords();
+        setRecords(data);
+      } catch (err: any) {
+        console.error("Error:", err);
+        switch (err.code) {
+          case "NO_TOKEN":
+          case "UNAUTHORIZED":
+            Alert.alert("Error", "Debes iniciar sesión.");
+            router.replace("/(auth)/login");
+            break;
+          case "SERVER_ERROR":
+            Alert.alert("Error", "Problema en el servidor.");
+            break;
+          default:
+            Alert.alert("Error", "No se pudieron cargar los registros.");
         }
-        
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/embarazos`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
-  
-        setRecords(response.data);
-      } catch (error) {
-        console.error('Error al cargar registros:', error);
-        if (axios.isAxiosError(error)) {
-          console.log('Status:', error.response?.status);
-          console.log('Response data:', JSON.stringify(error.response?.data));
-        }
-        Alert.alert('Error', 'No se pudieron cargar los registros.');
       } finally {
         setLoading(false);
       }
     };
-  
-    fetchRecords();
+
+    fetchData();
   }, []);
 
-  
-  const handleDelete = async (id: number) => {
+  const handleDelete = (id: number) => {
     Alert.alert(
-      'Confirmación',
-      '¿Estás seguro de que deseas eliminar este registro?',
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar este registro?",
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: "Cancelar", style: "cancel" },
         {
-          text: 'Eliminar',
-          style: 'destructive',
+          text: "Eliminar",
+          style: "destructive",
           onPress: async () => {
             try {
-              console.log('ID to delete:', id);
-              await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos/${id}`);
-  
-              Alert.alert('Éxito', 'Registro eliminado correctamente.');
-              setRecords((prevRecords) =>
-                prevRecords.filter((record) => record.id !== id)
-              );
-            } catch (error) {
-              if (axios.isAxiosError(error)) {
-                console.error('Response error data:', error.response?.data);
-                console.error('Response status:', error.response?.status);
-              } else {
-                console.error('Unknown error:', error);
-              }
-              Alert.alert('Error', 'No se pudo eliminar el registro.');
+              await deletePregnancyRecord(id);
+              Alert.alert("Éxito", "Registro eliminado correctamente.");
+              setRecords((prev) => prev.filter((r) => r.id !== id));
+            } catch (err: any) {
+              console.error("Error al eliminar:", err);
+              Alert.alert("Error", err.message || "No se pudo eliminar el registro.");
             }
           },
         },
       ]
     );
   };
+
+  if (loading)
+    return (
+      <View style={[layoutStyles.container, layoutStyles.center]}>
+        <ActivityIndicator size="large" color={textStyles.title.color} />
+        <Text style={textStyles.title}>Cargando registros...</Text>
+      </View>
+    );
 
   
   const renderRecord = ({ item }: { item: PregnancyRecord }) => (
