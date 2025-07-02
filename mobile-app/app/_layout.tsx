@@ -83,6 +83,13 @@ export default function Layout() {
           title: 'Ver Registros',
         }}
       />
+      <Stack.Screen
+        name="PostParto"
+        options={{
+          title: 'Seguimiento Postparto',
+        }}
+      />
     </Stack>
+    
   );
 }

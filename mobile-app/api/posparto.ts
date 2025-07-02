@@ -1,8 +1,9 @@
 import { API_CONFIG } from "@/src/config/config";
+import axios from "axios";
 
 interface PostpartoData {
   user_id: number;
-  birth_date: string; 
+  birth_date: string;
   weight: number;
   notes: string;
 }
@@ -10,9 +11,9 @@ interface PostpartoData {
 export const postparto = async (data: PostpartoData): Promise<any> => {
   try {
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/is-born`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
@@ -25,7 +26,26 @@ export const postparto = async (data: PostpartoData): Promise<any> => {
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error('❌ Error al enviar datos de postparto:', error);
+    console.error("❌ Error al enviar datos de postparto:", error);
     throw error;
   }
+};
+
+// Obtener toda la información de posparto
+export const getAllPostpartoData = async (): Promise<any> => {
+  try {
+    const url = `${API_CONFIG.BASE_URL.replace(/\/$/, "")}/api/all-weeks`;
+    console.log("🔗 Llamando a:", url);
+    const response = await axios.get(url, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (error: any) {
+  console.error(
+    "❌ Error al obtener datos de posparto:",
+    error.response?.status,
+    error.response?.data
+  );
+  throw error;
+}
 };

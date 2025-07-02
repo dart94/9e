@@ -29,6 +29,7 @@ import SettingsScreen from './(auth)/settings';
 import NewPregnancyRecordScreen from './newPregnancy';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
 import LogoutScreen from '../utils/auth';
+import PostpartumScreen from './PostParto';
 
 function DashboardContent() {
   const [data, setData] = useState<any>(null);
@@ -253,6 +254,8 @@ function DashboardScreen() {
             iconName = focused ? 'add' : 'add-outline';
           } else if (route.name === 'ViewPregnancyRecords') {
             iconName = focused ? 'list' : 'list-outline';
+            } else if (route.name === 'Postpartum') {
+            iconName = focused ? 'list' : 'list-outline';
           } else if (route.name === 'Logout') {
             iconName = 'log-out-outline';
           }
@@ -286,6 +289,11 @@ function DashboardScreen() {
         name="ViewPregnancyRecords"
         component={ViewPregnancyRecordsScreen}
         options={{ title: 'Ver Registros', tabBarLabel: 'Ver Registros' }}
+      />
+      <Tab.Screen
+        name="Postpartum"
+        component={PostpartumScreen}
+        options={{ title: 'Seguimiento Postparto', tabBarLabel: 'Seguimiento Postparto' }}
       />
       <Tab.Screen
         name="Logout"
