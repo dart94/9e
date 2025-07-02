@@ -12,12 +12,10 @@ export const usePostpartoData = () => {
     
     try {
       console.log('🔄 Obteniendo datos de posparto...');
-      const response = await getAllPostpartoData();
-      console.log('✅ Datos obtenidos exitosamente:', response);
-      
+      const response = await getAllPostpartoData();   
       setData(response);
     } catch (err: any) {
-      console.error('❌ Error en usePostpartoData:', err);
+
       const errorMessage = err.message || 'Error al obtener la información de posparto.';
       setError(errorMessage);
       setData(null); // Limpiar datos en caso de error
