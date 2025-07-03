@@ -11,7 +11,6 @@ export const usePostpartoData = () => {
     setError(null); // Limpiar error anterior
     
     try {
-      console.log('🔄 Obteniendo datos de posparto...');
       const response = await getAllPostpartoData();   
       setData(response);
     } catch (err: any) {

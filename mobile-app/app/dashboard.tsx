@@ -44,8 +44,6 @@ function DashboardContent() {
     error: bornUserError,
   } = useBornUser();
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -241,10 +239,9 @@ function DashboardScreen() {
   const isBornUser = bornUser === true;
 
   const showPostpartumTab =
-  currentWeek !== null  &&
-  !bornUserLoading &&
-  (currentWeek > 34 || isBornUser);
-
+    currentWeek !== null &&
+    !bornUserLoading &&
+    (currentWeek > 34 || isBornUser);
 
   // Fetch dashboard data to get current_week
   useEffect(() => {

@@ -7,9 +7,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const getDashboard = async () => {
   const token = await SecureStore.getItemAsync("userToken");
   const userId = await AsyncStorage.getItem("userId");
-  console.log("🪪 Token actual:", token);
-  console.log("👤 ID del usuario:", userId);
-
   if (!token) {
     const error = new Error("Token de autenticación no encontrado");
     (error as any).code = "NO_TOKEN";

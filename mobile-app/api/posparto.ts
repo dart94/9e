@@ -35,17 +35,12 @@ export const postparto = async (data: PostpartoData): Promise<any> => {
 export const getAllPostpartoData = async (): Promise<any> => {
   try {
     const url = `${API_CONFIG.BASE_URL.replace(/\/$/, "")}/api/all-weeks`;
-    console.log("🔗 Llamando a:", url);
+
     const response = await axios.get(url, {
       headers: { "Content-Type": "application/json" },
     });
     return response.data;
   } catch (error: any) {
-  console.error(
-    "❌ Error al obtener datos de posparto:",
-    error.response?.status,
-    error.response?.data
-  );
   throw error;
 }
 };
