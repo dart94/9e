@@ -112,6 +112,7 @@ useEffect(() => {
   }
 
   const { current_week, progress_percentage, week_info, month } = data;
+  
 
   const normalizedProgress = progress_percentage
     ? Math.min(100, Math.max(0, Math.floor(progress_percentage)))
@@ -197,7 +198,7 @@ useEffect(() => {
     </ScrollView>
 
     {/* MODAL + BOTÓN flotante solo si es semana 37+ */}
-    {current_week >= 36 && (
+    {current_week >= 36  && (
       <>
         <BirthFloatingButton onPress={() => setShowPostpartoModal(true)} />
         <PosPartoModal
@@ -215,6 +216,20 @@ const Tab = createBottomTabNavigator();
 
 function DashboardScreen() {
   const router = useRouter();
+  const [currentWeek, setCurrentWeek] = useState<number | null>(null);
+
+  // Fetch dashboard data to get current_week
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const dashboardData = await getDashboard();
+        setCurrentWeek(dashboardData.current_week);
+      } catch (err) {
+        setCurrentWeek(null);
+      }
+    };
+    fetchDashboard();
+  }, []);
 
   const logout = async () => {
     Alert.alert('Confirmación', '¿Estás seguro de que deseas cerrar sesión?', [
@@ -236,6 +251,8 @@ function DashboardScreen() {
     ]);
   };
 
+  const showPostpartumTab = currentWeek !== null && currentWeek > 36;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -249,13 +266,13 @@ function DashboardScreen() {
           if (route.name === 'Dashboard') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Settings') {
-            iconName = focused ? 'settings' : 'person-outline';
+            iconName = focused ? 'settings' : 'person-circle-outline';
           } else if (route.name === 'NewPregnancyRecord') {
-            iconName = focused ? 'add' : 'add-outline';
+            iconName = focused ? 'add' : 'add-circle-outline';
           } else if (route.name === 'ViewPregnancyRecords') {
-            iconName = focused ? 'list' : 'list-outline';
-            } else if (route.name === 'Postpartum') {
-            iconName = focused ? 'list' : 'list-outline';
+            iconName = focused ? 'list' : 'document-text-outline';
+          } else if (route.name === 'Postpartum' && showPostpartumTab) {
+            iconName = focused ? 'list' : 'happy-outline';
           } else if (route.name === 'Logout') {
             iconName = 'log-out-outline';
           }
@@ -270,46 +287,48 @@ function DashboardScreen() {
         },
       })}
     >
-      <Tab.Screen
-        name="Dashboard"
-        component={DashboardContent}
-        options={{ title: 'Inicio', tabBarLabel: 'Dashboard' }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{ title: 'Configuración', tabBarLabel: 'Perfil' }}
-      />
-      <Tab.Screen
-        name="NewPregnancyRecord"
-        component={NewPregnancyRecordScreen}
-        options={{ title: 'Nuevo Registro', tabBarLabel: 'Nuevo' }}
-      />
-      <Tab.Screen
-        name="ViewPregnancyRecords"
-        component={ViewPregnancyRecordsScreen}
-        options={{ title: 'Ver Registros', tabBarLabel: 'Ver Registros' }}
-      />
-      <Tab.Screen
-        name="Postpartum"
-        component={PostpartumScreen}
-        options={{ title: 'Seguimiento Postparto', tabBarLabel: 'Seguimiento Postparto' }}
-      />
-      <Tab.Screen
-        name="Logout"
-        component={LogoutScreen}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            logout();
-          },
-        }}
-        options={{
-          title: 'Cerrar Sesión',
-          tabBarLabel: 'Logout',
-          tabBarStyle: { backgroundColor: '#FF4D4F' },
-        }}
-      />
+<Tab.Screen
+  name="Dashboard"
+  component={DashboardContent}
+  options={{ title: 'Seguimiento', tabBarLabel: 'Inicio' }}
+/>
+<Tab.Screen
+  name="Settings"
+  component={SettingsScreen}
+  options={{ title: 'Tu Perfil', tabBarLabel: 'Perfil' }}
+/>
+<Tab.Screen
+  name="NewPregnancyRecord"
+  component={NewPregnancyRecordScreen}
+  options={{ title: 'Nuevo Registro', tabBarLabel: 'Registrar' }}
+/>
+<Tab.Screen
+  name="ViewPregnancyRecords"
+  component={ViewPregnancyRecordsScreen}
+  options={{ title: 'Mis Registros', tabBarLabel: 'Historial' }}
+/>
+{showPostpartumTab && (
+  <Tab.Screen
+    name="Postpartum"
+    component={PostpartumScreen}
+    options={{ title: 'Seguimiento Postparto', tabBarLabel: 'Postparto' }}
+  />
+)}
+<Tab.Screen
+  name="Logout"
+  component={LogoutScreen}
+  listeners={{
+    tabPress: (e) => {
+      e.preventDefault();
+      logout();
+    },
+  }}
+  options={{
+    title: 'Cerrar Sesión',
+    tabBarLabel: 'Salir',
+    tabBarStyle: { backgroundColor: '#FF4D4F' },
+  }}
+/>
     </Tab.Navigator>
   );
 }

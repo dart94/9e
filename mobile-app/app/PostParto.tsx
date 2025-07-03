@@ -17,12 +17,9 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  StyleSheet,
 } from "react-native";
-import { layoutStyles } from "../src/theme/styles/layoutStyles";
+import { partostyles } from "../src/theme/styles/postpartoStyles";
 import { textStyles } from "../src/theme/styles/textStyles";
-import { buttonStyles } from "../src/theme/styles/buttonStyles";
-import { miscStyles } from "../src/theme/styles/miscStyles";
 
 const PostpartumScreen = () => {
   const [currentWeek, setCurrentWeek] = useState(1);
@@ -75,7 +72,7 @@ const PostpartumScreen = () => {
   }) => (
     <View
       style={[
-        styles.cardContainer,
+        partostyles.cardContainer,
         {
           backgroundColor: bgColor,
           borderLeftWidth: 4,
@@ -85,101 +82,101 @@ const PostpartumScreen = () => {
         },
       ]}
     >
-      <View style={styles.cardHeader}>
-        <View style={[styles.iconContainer, { backgroundColor: "#E8F4F2" }]}>
+      <View style={partostyles.cardHeader}>
+        <View style={[partostyles.iconContainer, { backgroundColor: "#E8F4F2" }]}>
           <Icon size={20} color={accentColor} />
         </View>
-        <Text style={[styles.cardTitle, { color: "#080000" }]}>{title}</Text>
+        <Text style={[partostyles.cardTitle, { color: "#080000" }]}>{title}</Text>
       </View>
-      <Text style={[styles.cardContent, { color: "#555" }]}>{content}</Text>
+      <Text style={[partostyles.cardContent, { color: "#555" }]}>{content}</Text>
     </View>
   );
   // ---------- fin InfoCard ----------
 
   if (!postpartumData) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={partostyles.loadingContainer}>
         <ActivityIndicator size="large" color="#5FBFAF" />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={partostyles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={partostyles.header}>
         <TouchableOpacity
-          style={styles.backButton}
+          style={partostyles.backButton}
           onPress={() => router.back()}
         >
           <ChevronLeft size={24} color="#6B7280" />
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>Seguimiento Postparto</Text>
-            <Text style={styles.headerSubtitle}>Tu recuperación paso a paso</Text>
+          <View style={partostyles.headerTextContainer}>
+            <Text style={partostyles.headerTitle}>Seguimiento Postparto</Text>
+            <Text style={partostyles.headerSubtitle}>Tu recuperación paso a paso</Text>
           </View>
         </TouchableOpacity>
 
-        <View style={styles.heartIconContainer}>
-          <Heart size={24} color="#5FBFAF" />
+        <View style={partostyles.heartIconContainer}>
+          <Heart size={24} color="#3A7669" />
         </View>
       </View>
 
-      {/* Week Selector */}
-      <View style={styles.weekSelector}>
-        <View style={styles.weekNavigation}>
+      {/* Seleccionar Semana */}
+      <View style={partostyles.weekSelector}>
+        <View style={partostyles.weekNavigation}>
           <TouchableOpacity
             onPress={() => setCurrentWeek(Math.max(1, currentWeek - 1))}
             disabled={currentWeek === 1}
             style={[
-              styles.navButton,
-              currentWeek === 1 && styles.disabledButton,
+              partostyles.navButton,
+              currentWeek === 1 && partostyles.disabledButton,
             ]}
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={20} color={textStyles.title.color} />
           </TouchableOpacity>
 
-          <View style={styles.weekTextContainer}>
-            <Text style={styles.weekNumber}>Semana {currentWeek}</Text>
-            <Text style={styles.weekLabel}>Postparto</Text>
+          <View style={partostyles.weekTextContainer}>
+            <Text style={partostyles.weekNumber}>Semana {currentWeek}</Text>
+            <Text style={partostyles.weekLabel}>Postparto</Text>
           </View>
 
           <TouchableOpacity
             onPress={() => setCurrentWeek(Math.min(28, currentWeek + 1))}
             disabled={currentWeek === 28}
             style={[
-              styles.navButton,
-              currentWeek === 28 && styles.disabledButton,
+              partostyles.navButton,
+              currentWeek === 28 && partostyles.disabledButton,
             ]}
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={20} color={textStyles.title.color} />
           </TouchableOpacity>
         </View>
 
         {/* Progress bar */}
-        <View style={styles.progressBarBackground}>
+        <View style={partostyles.progressBarBackground}>
           <View
             style={[
-              styles.progressBarFill,
+              partostyles.progressBarFill,
               {
                 width: `${(currentWeek / 28) * 100}%`,
-                backgroundColor: "#5FBFAF",
+                backgroundColor: "#3A7669",
               },
             ]}
           />
         </View>
-        <Text style={styles.progressText}>
+        <Text style={partostyles.progressText}>
           {currentWeek} de 28 semanas
         </Text>
       </View>
 
       {/* Content Cards */}
-      <View style={styles.contentContainer}>
+      <View style={partostyles.contentContainer}>
         <InfoCard
           icon={Heart}
           title="Cambios en la Madre"
           content={currentData?.cambios_madre ?? ""}
           bgColor="#F5F9F8"
-          accentColor="#5FBFAF"
+          accentColor="#3A7669"
         />
 
         <InfoCard
@@ -194,7 +191,7 @@ const PostpartumScreen = () => {
           title="Sueño del Bebé"
           content={currentData?.sueño_bebe ?? ""}
           bgColor="#F5F9F8"
-          accentColor="#5FBFAF"
+          accentColor="#3A7669"
         />
 
         <InfoCard
@@ -216,7 +213,7 @@ const PostpartumScreen = () => {
           icon={Heart}
           title="Vínculo Familiar"
           content={currentData?.vinculo_familiar ?? ""}
-          accentColor="#5FBFAF"
+          accentColor="#3A7669"
         />
 
         <InfoCard
@@ -228,10 +225,10 @@ const PostpartumScreen = () => {
         />
 
         {/* Symptoms and Tips Section */}
-        <View style={styles.gridContainer}>
+        <View style={partostyles.gridContainer}>
           <View
             style={[
-              styles.specialCard,
+              partostyles.specialCard,
               {
                 backgroundColor: "#FFF7F0",
                 borderColor: "#FFB366",
@@ -239,17 +236,17 @@ const PostpartumScreen = () => {
               },
             ]}
           >
-            <Text style={[styles.specialCardTitle, { color: "#FF8C1A" }]}>
+            <Text style={[partostyles.specialCardTitle, { color: "#FF8C1A" }]}>
               Síntomas Comunes
             </Text>
-            <Text style={styles.specialCardContent}>
+            <Text style={partostyles.specialCardContent}>
               {currentData?.sintomas_comunes ?? ""}
             </Text>
           </View>
 
           <View
             style={[
-              styles.specialCard,
+              partostyles.specialCard,
               {
                 backgroundColor: "#F0F9F6",
                 borderColor: "#4CAF50",
@@ -257,10 +254,10 @@ const PostpartumScreen = () => {
               },
             ]}
           >
-            <Text style={[styles.specialCardTitle, { color: "#2E7D32" }]}>
+            <Text style={[partostyles.specialCardTitle, { color: "#2E7D32" }]}>
               Consejos Importantes
             </Text>
-            <Text style={styles.specialCardContent}>
+            <Text style={partostyles.specialCardContent}>
               {currentData?.consejos ?? ""}
             </Text>
           </View>
@@ -268,206 +265,18 @@ const PostpartumScreen = () => {
       </View>
 
       {/* Navigation Footer */}
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.primaryButton}>
-          <Text style={styles.primaryButtonText}>Ver Dashboard</Text>
+      <View style={partostyles.footer}>
+        <TouchableOpacity style={partostyles.primaryButton}>
+          <Text style={partostyles.primaryButtonText}>Ver Dashboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryButton}>
-          <Text style={styles.secondaryButtonText}>Historial</Text>
+        <TouchableOpacity style={partostyles.secondaryButton}>
+          <Text style={partostyles.secondaryButtonText}>Historial</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FAFBFC",
-    padding: 16,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  headerTextContainer: {
-    marginLeft: 12,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#1F2937",
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: "#6B7280",
-  },
-  heartIconContainer: {
-    padding: 8,
-    borderRadius: 999,
-    backgroundColor: "#E8F4F2",
-  },
-  weekSelector: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  weekNavigation: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  navButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: "#F3F4F6",
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  weekTextContainer: {
-    alignItems: "center",
-  },
-  weekNumber: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#5FBFAF",
-  },
-  weekLabel: {
-    fontSize: 14,
-    color: "#555",
-  },
-  progressBarBackground: {
-    width: "100%",
-    height: 4,
-    backgroundColor: "#E5E7EB",
-    borderRadius: 2,
-    marginBottom: 4,
-  },
-  progressBarFill: {
-    height: 4,
-    borderRadius: 2,
-  },
-  progressText: {
-    fontSize: 12,
-    color: "#6B7280",
-    textAlign: "center",
-  },
-  contentContainer: {
-    gap: 16,
-  },
-  cardContainer: {
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  iconContainer: {
-    padding: 8,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  cardTitle: {
-    fontWeight: "600",
-    fontSize: 14,
-  },
-  cardContent: {
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  gridContainer: {
-    flexDirection: "row",
-    gap: 16,
-    marginBottom: 16,
-  },
-  specialCard: {
-    flex: 1,
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  specialCardTitle: {
-    fontWeight: "600",
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  specialCardContent: {
-    fontSize: 14,
-    color: "#555",
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 16,
-    marginTop: 32,
-    marginBottom: 16,
-  },
-  primaryButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 999,
-    backgroundColor: "#5FBFAF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  primaryButtonText: {
-    color: "#ffffff",
-    fontWeight: "500",
-    fontSize: 14,
-  },
-  secondaryButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 999,
-    backgroundColor: "#ffffff",
-    borderWidth: 1,
-    borderColor: "#5FBFAF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  secondaryButtonText: {
-    color: "#5FBFAF",
-    fontWeight: "500",
-    fontSize: 14,
-  },
-});
+
 
 export default PostpartumScreen;

@@ -1,0 +1,191 @@
+import { StyleSheet } from "react-native";
+
+export const partostyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FAFBFC",
+    padding: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  headerTextContainer: {
+    marginLeft: 12,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#1F2937",
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: "#6B7280",
+  },
+  heartIconContainer: {
+    padding: 8,
+    borderRadius: 999,
+    backgroundColor: "#E8F4F2",
+  },
+  weekSelector: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  weekNavigation: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  navButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: "#F3F4F6",
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  weekTextContainer: {
+    alignItems: "center",
+  },
+  weekNumber: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#3A7669",
+  },
+  weekLabel: {
+    fontSize: 14,
+    color: "#555",
+  },
+  progressBarBackground: {
+    width: "100%",
+    height: 4,
+    backgroundColor: "#E5E7EB",
+    borderRadius: 2,
+    marginBottom: 4,
+  },
+  progressBarFill: {
+    height: 4,
+    borderRadius: 2,
+  },
+  progressText: {
+    fontSize: 12,
+    color: "#6B7280",
+    textAlign: "center",
+  },
+  contentContainer: {
+    gap: 16,
+  },
+  cardContainer: {
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  iconContainer: {
+    padding: 8,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  cardTitle: {
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  cardContent: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  gridContainer: {
+    flexDirection: "row",
+    gap: 16,
+    marginBottom: 16,
+  },
+  specialCard: {
+    flex: 1,
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  specialCardTitle: {
+    fontWeight: "600",
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  specialCardContent: {
+    fontSize: 14,
+    color: "#555",
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 16,
+    marginTop: 32,
+    marginBottom: 16,
+  },
+  primaryButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 999,
+    backgroundColor: "#3A7669   ",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  primaryButtonText: {
+    color: "#ffffff",
+    fontWeight: "500",
+    fontSize: 14,
+  },
+  secondaryButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 999,
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#3A7669",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  secondaryButtonText: {
+    color: "#3A7669",
+    fontWeight: "500",
+    fontSize: 14,
+  },
+});
