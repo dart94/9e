@@ -265,14 +265,14 @@ const PostpartumScreen = () => {
       </View>
 
       {/* Navigation Footer */}
-      <View style={partostyles.footer}>
+      {/* <View style={partostyles.footer}>
         <TouchableOpacity style={partostyles.primaryButton}>
           <Text style={partostyles.primaryButtonText}>Ver Dashboard</Text>
         </TouchableOpacity>
         <TouchableOpacity style={partostyles.secondaryButton}>
           <Text style={partostyles.secondaryButtonText}>Historial</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </ScrollView>
   );
 };

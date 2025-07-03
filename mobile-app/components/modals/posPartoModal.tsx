@@ -1,5 +1,5 @@
 import { postparto } from "@/api/posparto";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   View,
@@ -14,6 +14,7 @@ import {
 import CustomInput from "@/src/components/CustomInput";
 import { miscStyles, modalStyles } from "@/src/theme/styles";
 import { textStyles } from "@/src/theme/styles/textStyles";
+import { getUserIdFromStorage } from "@/utils/user";
 
 type Props = {
   visible: boolean;
@@ -37,16 +38,23 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+    useEffect(() => {
+    const fetchUserId = async () => {
+      const userId = await getUserIdFromStorage();
+      if (userId) {
+        setFormData((prev) => ({ ...prev, user_id: userId }));
+      }
+    };
+
+    if (visible) fetchUserId(); // Carga user_id solo si el modal se abre
+  }, [visible]);
+
   const handleChange = (name: keyof PostpartoData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async () => {
-    if (
-      formData.user_id <= 0 ||
-      !formData.birth_date ||
-      formData.weight <= 0
-    ) {
+    if (!formData.birth_date || formData.weight <= 0) {
       alert("Por favor, completa todos los campos obligatorios.");
       return;
     }
@@ -78,15 +86,6 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
             </TouchableOpacity>
 
             <Text style={modalStyles.modalTitle}>Registro de Nacimiento</Text>
-
-            <Text style={textStyles.label}>ID del Usuario</Text>
-            <CustomInput
-              style={miscStyles.input}
-              value={String(formData.user_id)}
-              onChangeText={(text) => handleChange("user_id", Number(text))}
-              placeholder="ID del usuario"
-              keyboardType="numeric"
-            />
 
             <Text style={textStyles.label}>Fecha de nacimiento</Text>
             <CustomInput

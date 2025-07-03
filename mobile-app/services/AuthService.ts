@@ -5,7 +5,7 @@ import { API_CONFIG } from '../src/config/config';
 
 // Función reutilizable para guardar la sesión del usuario
 const storeUserSession = async (id: number, username: string, token: string, email: string) => {
-  await AsyncStorage.setItem('userId', id.toString());
+  await SecureStore.setItemAsync('userId', id.toString());
   await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
   await SecureStore.setItemAsync('userToken', token);
   await SecureStore.setItemAsync('userEmail', email);

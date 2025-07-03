@@ -49,3 +49,35 @@ export const getAllPostpartoData = async (): Promise<any> => {
   throw error;
 }
 };
+
+//Buscar al usuario por ID
+export const getUserById = async (userId: number): Promise<boolean> => {
+  try {
+    const url = `${API_CONFIG.BASE_URL.replace(/\/$/, "")}/api/is-born/userborn/${userId}`;
+    console.log("🔗 Verificando usuario en:", url);
+
+    const response = await axios.get(url, {
+      headers: { "Content-Type": "application/json" },
+    });
+
+    // Si la respuesta tiene éxito, asumimos que el usuario existe
+    if(response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      // Usuario no encontrado
+      return false;
+    }
+
+    // Otro error inesperado (500, red, etc.)
+    console.error(
+      "❌ Error al verificar usuario:",
+      error.response?.status,
+      error.response?.data
+    );
+    throw error;
+  }
+};
