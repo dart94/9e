@@ -198,7 +198,7 @@ useEffect(() => {
     </ScrollView>
 
     {/* MODAL + BOTÓN flotante solo si es semana 37+ */}
-    {current_week >= 36  && (
+    {current_week >= 34  && (
       <>
         <BirthFloatingButton onPress={() => setShowPostpartoModal(true)} />
         <PosPartoModal
@@ -251,7 +251,7 @@ function DashboardScreen() {
     ]);
   };
 
-  const showPostpartumTab = currentWeek !== null && currentWeek > 36;
+  const showPostpartumTab = currentWeek !== null && currentWeek > 34;
 
   return (
     <Tab.Navigator
@@ -272,7 +272,7 @@ function DashboardScreen() {
           } else if (route.name === 'ViewPregnancyRecords') {
             iconName = focused ? 'list' : 'document-text-outline';
           } else if (route.name === 'Postpartum' && showPostpartumTab) {
-            iconName = focused ? 'list' : 'happy-outline';
+            iconName = focused ? 'happy' : 'happy-outline';
           } else if (route.name === 'Logout') {
             iconName = 'log-out-outline';
           }
