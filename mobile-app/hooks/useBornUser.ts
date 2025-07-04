@@ -24,12 +24,10 @@ const refetch = useCallback(async () => {
     const hasBornUser = Boolean(exists);    
     setBornUser(hasBornUser);   
   } catch (err: any) {
-    console.log("🔍 DEBUG useBornUser - ERROR:", err);
     const errorMessage =
       err.message || "Error al verificar si el usuario ha sido registrado.";
     setError(errorMessage);
     setBornUser(null);
-    console.log("🔍 DEBUG useBornUser - setBornUser(null) called due to error");
   } finally {
     setLoading(false);
   }

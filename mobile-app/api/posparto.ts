@@ -85,35 +85,22 @@ export const getUserById = async (userId: number): Promise<boolean> => {
   }
 
   try {
-    const url = `${API_CONFIG.BASE_URL.replace(/\/$/, "")}/api/is-born/userborn/${userId}`;
-    console.log("🔗 Verificando usuario en:", url);
-    
+    const url = `${API_CONFIG.BASE_URL.replace(/\/$/, "")}/api/is-born/userborn/${userId}`;    
     const response = await axios.get(url, {
       headers: { 
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
-    
-    console.log("🔍 DEBUG getUserById - response.status:", response.status);
-    console.log("🔍 DEBUG getUserById - response.data:", response.data);
-    
     if(response.status === 200) {
-      console.log("🔍 DEBUG getUserById - returning TRUE");
       return true;
     } else {
-      console.log("🔍 DEBUG getUserById - returning FALSE (status not 200)");
       return false;
     }
   } catch (error: any) {
-    console.log("🔍 DEBUG getUserById - CAUGHT ERROR:", error);
-    
     if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      console.log("🔍 DEBUG getUserById - error status:", status);
-      
+      const status = error.response?.status;     
       if (status === 404) {
-        console.log("🔍 DEBUG getUserById - returning FALSE (404)");
         return false;
       }
       
@@ -123,8 +110,6 @@ export const getUserById = async (userId: number): Promise<boolean> => {
         throw authError;
       }
     }
-    
-    console.error("❌ Error al verificar usuario:", error.response?.status, error.response?.data);
     throw error;
   }
 };

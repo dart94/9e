@@ -290,12 +290,6 @@ function DashboardScreen() {
   const router = useRouter();
   const [currentWeek, setCurrentWeek] = useState<number | null>(null);
   const { bornUser, loading: bornUserLoading } = useBornUser();
-    // 🔍 LOGS DE DEBUG
-  console.log("🔍 DEBUG Dashboard - bornUser (raw):", bornUser);
-  console.log("🔍 DEBUG Dashboard - typeof bornUser:", typeof bornUser);
-  console.log("🔍 DEBUG Dashboard - bornUser === true:", bornUser === true);
-  console.log("🔍 DEBUG Dashboard - Boolean(bornUser):", Boolean(bornUser));
-  
   const isBornUser = Boolean(bornUser); // 👈 Cambia esta línea
 
   // Mostrar la pestaña de postpartum solo si la semana actual es mayor a 34 semanas o si el usuario es un bebé
@@ -303,7 +297,6 @@ function DashboardScreen() {
     currentWeek !== null &&
     !bornUserLoading &&
     (currentWeek > 34 || isBornUser);
-
 
   // Fetch a dashboard para obtener la semana actual
   useEffect(() => {
