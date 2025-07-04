@@ -259,7 +259,7 @@ def get_all_posparto_weeks():
 
 @posparto_api.route('/is-born/userborn/<int:user_id>', methods=['GET'])
 def check_user_exists(user_id):
-    user = IsBorn.query.get(user_id)
+    user = IsBorn.query.filter_by(user_id=user_id).first()
     if not user:
         return jsonify({"exists": False}), 404
     return jsonify({"exists": True}), 200

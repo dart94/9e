@@ -15,6 +15,7 @@ import CustomInput from "@/src/components/CustomInput";
 import { miscStyles, modalStyles } from "@/src/theme/styles";
 import { textStyles } from "@/src/theme/styles/textStyles";
 import { getUserIdFromStorage } from "@/utils/user";
+import { useRouter } from "expo-router";
 
 type Props = {
   visible: boolean;
@@ -37,6 +38,7 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
     useEffect(() => {
     const fetchUserId = async () => {
@@ -65,6 +67,8 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
       alert("🎉 Registro exitoso");
       setIsSubmitting(false);
       onClose();
+      //redirect to dashboard
+      router.replace("/PostParto");
     } catch (error) {
       setIsSubmitting(false);
       alert("❌ Ocurrió un error al registrar el nacimiento.");

@@ -59,6 +59,9 @@ function DashboardContent() {
               "Tu sesión ha expirado. Por favor inicia sesión nuevamente."
             );
             break;
+          case "USER_NOT_FOUND":
+            setError('Registra tu embarazo desde el menú "Nuevo".');
+            break;
           case "SERVER_ERROR":
             setError("Ocurrió un problema en el servidor.");
             break;
@@ -110,10 +113,61 @@ function DashboardContent() {
         </View>
       );
     }
-    // Para otros errores mostramos el mensaje simple
+
+    // Reimplementación de fetchData para reintentar la carga de datos del dashboard
+    async function fetchData() {
+      setLoading(true);
+      setError(null);
+      try {
+        const dashboardData = await getDashboard();
+        setData(dashboardData);
+      } catch (err: any) {
+        switch (err.code) {
+          case "NO_TOKEN":
+            setError("No se encontró el token de autenticación.");
+            break;
+          case "UNAUTHORIZED":
+            setError(
+              "Tu sesión ha expirado. Por favor inicia sesión nuevamente."
+            );
+            break;
+          case "USER_NOT_FOUND":
+            setError('Registra tu embarazo desde el menú "Nuevo".');
+            break;
+          case "SERVER_ERROR":
+            setError("Ocurrió un problema en el servidor.");
+            break;
+          default:
+            setError("No se pudo cargar la información.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // Para otros tipos de error, mostrar un componente de error genérico
     return (
       <View style={[layoutStyles.container, layoutStyles.center]}>
-        <Text style={textStyles.errorText}>{error}</Text>
+        <View style={miscStyles.card}>
+          <Ionicons
+            name="alert-circle-outline"
+            size={48}
+            color={textStyles.errorText.color}
+          />
+          <Text style={textStyles.errorText}>Error</Text>
+          <Text style={textStyles.body}>{error}</Text>
+          <TouchableOpacity
+            style={buttonStyles.button}
+            onPress={() => {
+              setError(null);
+              setLoading(true);
+              // Reintenta la carga
+              fetchData();
+            }}
+          >
+            <Text style={buttonStyles.buttonText}>Reintentar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -236,14 +290,22 @@ function DashboardScreen() {
   const router = useRouter();
   const [currentWeek, setCurrentWeek] = useState<number | null>(null);
   const { bornUser, loading: bornUserLoading } = useBornUser();
-  const isBornUser = bornUser === true;
+    // 🔍 LOGS DE DEBUG
+  console.log("🔍 DEBUG Dashboard - bornUser (raw):", bornUser);
+  console.log("🔍 DEBUG Dashboard - typeof bornUser:", typeof bornUser);
+  console.log("🔍 DEBUG Dashboard - bornUser === true:", bornUser === true);
+  console.log("🔍 DEBUG Dashboard - Boolean(bornUser):", Boolean(bornUser));
+  
+  const isBornUser = Boolean(bornUser); // 👈 Cambia esta línea
 
+  // Mostrar la pestaña de postpartum solo si la semana actual es mayor a 34 semanas o si el usuario es un bebé
   const showPostpartumTab =
     currentWeek !== null &&
     !bornUserLoading &&
     (currentWeek > 34 || isBornUser);
 
-  // Fetch dashboard data to get current_week
+
+  // Fetch a dashboard para obtener la semana actual
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
@@ -255,6 +317,8 @@ function DashboardScreen() {
     };
     fetchDashboard();
   }, []);
+
+  
 
   const logout = async () => {
     Alert.alert("Confirmación", "¿Estás seguro de que deseas cerrar sesión?", [

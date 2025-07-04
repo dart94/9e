@@ -1,5 +1,6 @@
 import { API_CONFIG } from "@/src/config/config";
 import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 interface PostpartoData {
   user_id: number;
@@ -9,17 +10,35 @@ interface PostpartoData {
 }
 
 export const postparto = async (data: PostpartoData): Promise<any> => {
+  // Obtener el token de autorización
+  const token = await SecureStore.getItemAsync("userToken");
+  
+  if (!token) {
+    const error = new Error("Token de autenticación no encontrado");
+    (error as any).code = "NO_TOKEN";
+    throw error;
+  }
+
   try {
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/is-born`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // ✅ Agregar el token aquí
       },
       body: JSON.stringify(data),
     });
 
     if (!response.ok) {
-      const errorText = await response.text(); // para mostrar más info del backend
+      const errorText = await response.text();
+      
+      // Manejo específico de errores de autorización
+      if (response.status === 401) {
+        const error = new Error("No autorizado. Tu sesión ha expirado.");
+        (error as any).code = "UNAUTHORIZED";
+        throw error;
+      }
+      
       throw new Error(`Error ${response.status}: ${errorText}`);
     }
 
@@ -31,48 +50,81 @@ export const postparto = async (data: PostpartoData): Promise<any> => {
   }
 };
 
-// Obtener toda la información de posparto
+// También corregir getAllPostpartoData si necesita autenticación
 export const getAllPostpartoData = async (): Promise<any> => {
+  const token = await SecureStore.getItemAsync("userToken");
+  
+  if (!token) {
+    const error = new Error("Token de autenticación no encontrado");
+    (error as any).code = "NO_TOKEN";
+    throw error;
+  }
+
   try {
     const url = `${API_CONFIG.BASE_URL.replace(/\/$/, "")}/api/all-weeks`;
-
     const response = await axios.get(url, {
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // ✅ Agregar el token aquí también
+      },
     });
     return response.data;
   } catch (error: any) {
-  throw error;
-}
+    throw error;
+  }
 };
 
 //Buscar al usuario por ID
 export const getUserById = async (userId: number): Promise<boolean> => {
+  const token = await SecureStore.getItemAsync("userToken");
+  
+  if (!token) {
+    const error = new Error("Token de autenticación no encontrado");
+    (error as any).code = "NO_TOKEN";
+    throw error;
+  }
+
   try {
     const url = `${API_CONFIG.BASE_URL.replace(/\/$/, "")}/api/is-born/userborn/${userId}`;
     console.log("🔗 Verificando usuario en:", url);
-
+    
     const response = await axios.get(url, {
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
-
-    // Si la respuesta tiene éxito, asumimos que el usuario existe
+    
+    console.log("🔍 DEBUG getUserById - response.status:", response.status);
+    console.log("🔍 DEBUG getUserById - response.data:", response.data);
+    
     if(response.status === 200) {
+      console.log("🔍 DEBUG getUserById - returning TRUE");
       return true;
     } else {
+      console.log("🔍 DEBUG getUserById - returning FALSE (status not 200)");
       return false;
     }
   } catch (error: any) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      // Usuario no encontrado
-      return false;
+    console.log("🔍 DEBUG getUserById - CAUGHT ERROR:", error);
+    
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      console.log("🔍 DEBUG getUserById - error status:", status);
+      
+      if (status === 404) {
+        console.log("🔍 DEBUG getUserById - returning FALSE (404)");
+        return false;
+      }
+      
+      if (status === 401) {
+        const authError = new Error("No autorizado. Tu sesión ha expirado.");
+        (authError as any).code = "UNAUTHORIZED";
+        throw authError;
+      }
     }
-
-    // Otro error inesperado (500, red, etc.)
-    console.error(
-      "❌ Error al verificar usuario:",
-      error.response?.status,
-      error.response?.data
-    );
+    
+    console.error("❌ Error al verificar usuario:", error.response?.status, error.response?.data);
     throw error;
   }
 };
