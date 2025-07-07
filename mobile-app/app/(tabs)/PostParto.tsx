@@ -18,11 +18,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { partostyles } from "../src/theme/styles/postpartoStyles";
-import { textStyles } from "../src/theme/styles/textStyles";
+import { partostyles } from "../../src/theme/styles/postpartoStyles";
+import { textStyles } from "../../src/theme/styles/textStyles";
 
 const PostpartumScreen = () => {
   const [currentWeek, setCurrentWeek] = useState(1);
+
 
   type PostpartoWeek = {
     semana: number;
@@ -109,7 +110,6 @@ const PostpartumScreen = () => {
           style={partostyles.backButton}
           onPress={() => router.back()}
         >
-          <ChevronLeft size={24} color="#6B7280" />
           <View style={partostyles.headerTextContainer}>
             <Text style={partostyles.headerTitle}>Seguimiento Postparto</Text>
             <Text style={partostyles.headerSubtitle}>Tu recuperación paso a paso</Text>
@@ -265,14 +265,17 @@ const PostpartumScreen = () => {
       </View>
 
       {/* Navigation Footer */}
-      {/* <View style={partostyles.footer}>
-        <TouchableOpacity style={partostyles.primaryButton}>
+      <View style={partostyles.footer}>
+        <TouchableOpacity
+          style={partostyles.primaryButton}
+          // onPress={() => router.replace('/(tabs)')}
+        >
           <Text style={partostyles.primaryButtonText}>Ver Dashboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={partostyles.secondaryButton}>
+        {/* <TouchableOpacity style={partostyles.secondaryButton}>
           <Text style={partostyles.secondaryButtonText}>Historial</Text>
-        </TouchableOpacity>
-      </View> */}
+        </TouchableOpacity> */}
+      </View>
     </ScrollView>
   );
 };

@@ -60,31 +60,31 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="dashboard"
+        name="(tabs)/index"
         options={{
           title: 'Dashboard',
         }}
       />
       <Stack.Screen
-        name="(auth)/settings"
+        name="(tabs)/settings"
         options={{
           title: 'Configuración',
         }}
       />
       <Stack.Screen
-        name="newPregnancy"
+        name="(tabs)/newPregnancy"
         options={{
           title: 'Nuevo Registro',
         }}
       />
       <Stack.Screen
-        name="viewPregnancy"
+        name="(tabs)/viewPregnancy"
         options={{
           title: 'Ver Registros',
         }}
       />
       <Stack.Screen
-        name="PostParto"
+        name="(tabs)/PostParto"
         options={{
           title: 'Seguimiento Postparto',
         }}
@@ -93,3 +93,4 @@ export default function Layout() {
     
   );
 }
+

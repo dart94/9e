@@ -10,10 +10,10 @@ import {
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_CONFIG } from "../src/config/config";
-import { layoutStyles } from "../src/theme/styles/layoutStyles";
-import { textStyles } from "../src/theme/styles/textStyles";
-import { miscStyles } from "../src/theme/styles/miscStyles";
+import { API_CONFIG } from "../../src/config/config";
+import { layoutStyles } from "../../src/theme/styles/layoutStyles";
+import { textStyles } from "../../src/theme/styles/textStyles";
+import { miscStyles } from "../../src/theme/styles/miscStyles";
 import { ProgressBar } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -26,10 +26,10 @@ import { getDashboard } from "@/api/dashboard";
 import { useBornUser } from "@/hooks/useBornUser";
 
 // Importa las pantallas adicionales
-import SettingsScreen from "./(auth)/settings";
+import SettingsScreen from "./settings";
 import NewPregnancyRecordScreen from "./newPregnancy";
 import ViewPregnancyRecordsScreen from "./viewPregnancy";
-import LogoutScreen from "../utils/auth";
+import LogoutScreen from "../../utils/auth";
 import PostpartumScreen from "./PostParto";
 
 function DashboardContent() {
@@ -290,7 +290,7 @@ function DashboardScreen() {
   const router = useRouter();
   const [currentWeek, setCurrentWeek] = useState<number | null>(null);
   const { bornUser, loading: bornUserLoading } = useBornUser();
-  const isBornUser = Boolean(bornUser); // 👈 Cambia esta línea
+  const isBornUser = Boolean(bornUser); // 
 
   // Mostrar la pestaña de postpartum solo si la semana actual es mayor a 34 semanas o si el usuario es un bebé
   const showPostpartumTab =
@@ -350,7 +350,7 @@ function DashboardScreen() {
             iconName = focused ? "add" : "add-circle-outline";
           } else if (route.name === "ViewPregnancyRecords") {
             iconName = focused ? "list" : "document-text-outline";
-          } else if (route.name === "Postpartum" && showPostpartumTab) {
+          } else if (route.name === "PostParto" && showPostpartumTab) {
             iconName = focused ? "happy" : "happy-outline";
           } else if (route.name === "Logout") {
             iconName = "log-out-outline";
@@ -388,7 +388,7 @@ function DashboardScreen() {
       />
       {showPostpartumTab && (
         <Tab.Screen
-          name="Postpartum"
+          name="PostParto"
           component={PostpartumScreen}
           options={{ title: "Seguimiento Postparto", tabBarLabel: "Postparto" }}
         />

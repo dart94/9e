@@ -35,7 +35,7 @@ export default function BiometricLogin() {
       if (result.success) {
         // Esperar un momento antes de navegar para asegurar que todo se guardó
         await new Promise(resolve => setTimeout(resolve, 500));
-        router.replace('/dashboard');
+        router.replace('../(tabs)/index');
       } else {
         Alert.alert('Error', result.message || 'No se pudo autenticar');
         if (!hasCredentials) {

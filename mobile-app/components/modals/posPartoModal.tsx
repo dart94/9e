@@ -60,19 +60,22 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
       alert("Por favor, completa todos los campos obligatorios.");
       return;
     }
-
     try {
       setIsSubmitting(true);
       const result = await postparto(formData);
       alert("🎉 Registro exitoso");
       setIsSubmitting(false);
+      console.log(result);
       onClose();
       //redirect to dashboard
-      router.replace("/PostParto");
+      router.replace('/(tabs)/PostParto');
+
     } catch (error) {
       setIsSubmitting(false);
+      console.log(error);
       alert("❌ Ocurrió un error al registrar el nacimiento.");
     }
+
   };
 
   return (

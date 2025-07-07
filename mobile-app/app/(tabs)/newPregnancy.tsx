@@ -10,11 +10,11 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios, { AxiosError } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { layoutStyles } from "../src/theme/styles/layoutStyles";
-import { textStyles } from "../src/theme/styles/textStyles";
-import { buttonStyles } from "../src/theme/styles/buttonStyles";
-import { miscStyles } from "../src/theme/styles/miscStyles";
-import { API_CONFIG } from "../src/config/config";
+import { layoutStyles } from "../../src/theme/styles/layoutStyles";
+import { textStyles } from "../../src/theme/styles/textStyles";
+import { buttonStyles } from "../../src/theme/styles/buttonStyles";
+import { miscStyles } from "../../src/theme/styles/miscStyles";
+import { API_CONFIG } from "../../src/config/config";
 import { useRouter } from "expo-router";
 import CustomInput from "@/src/components/CustomInput";
 import * as SecureStore from "expo-secure-store";
@@ -129,7 +129,7 @@ useEffect(() => {
       });
 
       Alert.alert("Éxito", "Registro de embarazo añadido correctamente.");
-      router.replace("/dashboard");
+      router.replace('../(tabs)/index');
     } catch (error) {
       const axiosError = error as AxiosError;
       const errorData = axiosError.response?.data as { error?: string };

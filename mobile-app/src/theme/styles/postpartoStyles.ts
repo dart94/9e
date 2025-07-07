@@ -164,6 +164,7 @@ export const partostyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    marginBottom: 16,
   },
   primaryButtonText: {
     color: "#ffffff",
@@ -182,6 +183,7 @@ export const partostyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    marginBottom: 16,
   },
   secondaryButtonText: {
     color: "#3A7669",

@@ -50,7 +50,7 @@ export default function LoginScreen() {
     try {
       const user = await loginWithGoogle(accessToken);
       await BiometricAuthService.saveCredentials(user.email, user.token, true);
-      router.replace('/dashboard');
+      router.replace('/(tabs)');
     } catch (e) {
       alert('Error al iniciar sesión con Google');
     } finally {
@@ -62,7 +62,7 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       const result = await BiometricAuthService.authenticateAndLogin();
-      if (result.success) router.replace('/dashboard');
+      if (result.success) router.replace('/(tabs)');
       else alert(result.message);
     } catch {
       alert('Error con autenticación biométrica');
@@ -82,6 +82,7 @@ export default function LoginScreen() {
     );
   }
 
+
   return (
     <LoginForm
       email={email}
@@ -89,7 +90,7 @@ export default function LoginScreen() {
       password={password}
       setPassword={setPassword}
       loading={loading}
-      onLoginSuccess={() => router.replace('/dashboard')}
+      onLoginSuccess={() => router.replace('/(tabs)')}
       onGoogleLogin={() => promptAsync()}
     />
   );
