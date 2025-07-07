@@ -268,7 +268,7 @@ const PostpartumScreen = () => {
       <View style={partostyles.footer}>
         <TouchableOpacity
           style={partostyles.primaryButton}
-          // onPress={() => router.replace('/(tabs)')}
+          onPress={() => router.replace('/(tabs)')}
         >
           <Text style={partostyles.primaryButtonText}>Ver Dashboard</Text>
         </TouchableOpacity>

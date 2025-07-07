@@ -89,8 +89,11 @@ flask run
 
 ✅ **Sprint 2 - 📖 Postparto**
 - [x] 🗄️ Diseñar la base de datos para entradas del diario.
-- [ ] 🎨 Crear UI para agregar, editar y visualizar Posparto.
+- [x] 🎨 Crear UI para agregar, editar y visualizar Posparto.
 - [x] 🔄 Sincronizar con backend.
+- [ ] 📝 Crear estado de posparto.
+- [ ] 📝 minimizar componente de registro.
+
 
 ✅ **Sprint 3 - 🛠️ Pruebas e iteraciones**
 - [ ] 📝 Recoger feedback de usuarios.
@@ -118,3 +121,5 @@ flask run
 - [ ] Finalizar la UI del diario postparto
 - [ ] Iniciar pruebas beta con usuarios reales
 - [ ] Analizar métricas de uso para optimizar la experiencia
+- [ ] Analizar métricas de uso para optimizar la experiencia
+
