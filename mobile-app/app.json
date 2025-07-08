@@ -12,11 +12,12 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.dart94.embrace",
+      "googleServicesFile": "./android/app/google-services.json",  
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/pregnancy-logo.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.dart94.embrace"
+      }
     },
     "web": {
       "bundler": "metro",

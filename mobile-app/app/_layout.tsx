@@ -7,6 +7,7 @@ export default function Layout() {
   const router = useRouter();
 
   useEffect(() => {
+    console.log('🚀 Iniciando notificaciones');
     registerForPushNotificationsAsync();
   }, []);
 
