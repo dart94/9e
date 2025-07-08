@@ -9,19 +9,14 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "runtimeVersion": {
-        "policy": "appVersion"
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/pregnancy-logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.dart94.embrace",
-      "runtimeVersion": "1.0.0"
-
+      "package": "com.dart94.embrace"
     },
     "web": {
       "bundler": "metro",
@@ -41,7 +36,7 @@
       ],
       "expo-secure-store",
       "expo-font",
-      "expo-notifications" 
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true
@@ -56,10 +51,7 @@
       }
     },
     "updates": {
-      "url": "https://u.expo.dev/2a971723-c6c0-468c-a406-d819cc28e2bf",
-      "runtimeVersion": {
-        "policy": "sdkVersion"
-      }
+      "url": "https://u.expo.dev/2a971723-c6c0-468c-a406-d819cc28e2bf"
     }
   }
 }
