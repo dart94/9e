@@ -91,8 +91,8 @@ flask run
 - [x] 🗄️ Diseñar la base de datos para entradas del diario.
 - [x] 🎨 Crear UI para agregar, editar y visualizar Posparto.
 - [x] 🔄 Sincronizar con backend.
-- [ ] 📝 Crear estado de posparto.
-- [ ] 📝 minimizar componente de registro.
+- [x] 📝 Crear estado de posparto.
+- [x] 📝 minimizar componente de registro.
 
 
 ✅ **Sprint 3 - 🛠️ Pruebas e iteraciones**

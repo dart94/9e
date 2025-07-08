@@ -106,7 +106,7 @@ function DashboardContent() {
             </Text>
             <TouchableOpacity
               style={buttonStyles.button}
-              onPress={() => router.push("/newPregnancy")}
+              onPress={() => router.push("/(tabs)/viewPregnancy")}
             >
               <Text style={buttonStyles.buttonText}>Registrar ahora</Text>
             </TouchableOpacity>
@@ -291,7 +291,7 @@ function DashboardScreen() {
   const router = useRouter();
   const [currentWeek, setCurrentWeek] = useState<number | null>(null);
   const { bornUser, loading: bornUserLoading } = useBornUser();
-  const isBornUser = Boolean(bornUser); // 
+  const isBornUser = Boolean(bornUser); //
 
   // Mostrar la pestaña de postpartum solo si la semana actual es mayor a 34 semanas o si el usuario es un bebé
   const showPostpartumTab =
@@ -311,8 +311,6 @@ function DashboardScreen() {
     };
     fetchDashboard();
   }, []);
-
-  
 
   const logout = async () => {
     Alert.alert("Confirmación", "¿Estás seguro de que deseas cerrar sesión?", [
@@ -368,24 +366,19 @@ function DashboardScreen() {
       })}
     >
       <Tab.Screen
-        name="Dashboard"
-        component={DashboardContent}
-        options={{ title: "Seguimiento", tabBarLabel: "Inicio" }}
-      />
-      <Tab.Screen
         name="Settings"
         component={SettingsScreen}
         options={{ title: "Tu Perfil", tabBarLabel: "Perfil" }}
       />
       <Tab.Screen
-        name="NewPregnancyRecord"
-        component={NewPregnancyRecordScreen}
-        options={{ title: "Nuevo Registro", tabBarLabel: "Registrar" }}
-      />
-      <Tab.Screen
         name="ViewPregnancyRecords"
         component={ViewPregnancyRecordsScreen}
         options={{ title: "Mis Registros", tabBarLabel: "Historial" }}
+      />
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardContent}
+        options={{ title: "Seguimiento", tabBarLabel: "Inicio" }}
       />
       {showPostpartumTab && (
         <Tab.Screen

@@ -129,7 +129,7 @@ useEffect(() => {
       });
 
       Alert.alert("Éxito", "Registro de embarazo añadido correctamente.");
-      router.replace('../(tabs)/index');
+      router.replace('/');
     } catch (error) {
       const axiosError = error as AxiosError;
       const errorData = axiosError.response?.data as { error?: string };
