@@ -14,6 +14,7 @@ export const COLORS = {
   success: '#4CAF50',         // Verde para éxito
   error: '#F44336',           // Rojo para errores
   boxshadow: 'rgba(95, 191, 175, 0.1)', // Sombra basada en el primary
+  grisclaro: '#5b5b5b',
   
 };
 

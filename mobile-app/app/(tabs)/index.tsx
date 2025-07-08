@@ -44,6 +44,7 @@ function DashboardContent() {
     error: bornUserError,
   } = useBornUser();
 
+  //Hook para obtener datos del dashboard
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -269,8 +270,8 @@ function DashboardContent() {
         )}
       </ScrollView>
 
-      {/* MODAL + BOTÓN flotante solo si es semana 37+ */}
-      {current_week >= 34 && (
+      {/* MODAL + BOTÓN flotante solo si es semana 34+ y el usuario no tiene un registro en bornUser */}
+      {current_week >= 34 && !bornUser && (
         <>
           <BirthFloatingButton onPress={() => setShowPostpartoModal(true)} />
           <PosPartoModal

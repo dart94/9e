@@ -19,7 +19,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
     <TextInput
       style={[styles.input, error && styles.inputError, style]} // Combina estilos
       placeholder={placeholder}
-      placeholderTextColor={COLORS.text} // Usa el color definido para el placeholder
+      placeholderTextColor={COLORS.grisclaro} // Usa el color definido para el placeholder
       value={value}
       onChangeText={onChangeText}
       {...props} // Propiedades adicionales

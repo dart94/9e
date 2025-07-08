@@ -26,7 +26,7 @@ export const miscStyles = StyleSheet.create({
     padding: SIZES.padding / 2,
     marginBottom: SIZES.margin,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.textLight,
     borderRadius: SIZES.borderRadius,
     backgroundColor: COLORS.white,
     minHeight: 48,
