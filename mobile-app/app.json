@@ -21,6 +21,7 @@
       },
       "package": "com.dart94.embrace",
       "runtimeVersion": "1.0.0"
+
     },
     "web": {
       "bundler": "metro",
@@ -39,7 +40,8 @@
         }
       ],
       "expo-secure-store",
-      "expo-font"
+      "expo-font",
+      "expo-notifications" 
     ],
     "experiments": {
       "typedRoutes": true

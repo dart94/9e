@@ -1,9 +1,14 @@
 import { useEffect } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import { NotificationService } from '../services/notifications/NotificationService';
+import { registerForPushNotificationsAsync } from '@/services/notifications/registerPushToken';
 
 export default function Layout() {
   const router = useRouter();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
 
   useEffect(() => {
     let subscription: { remove: () => void } | null = null;
