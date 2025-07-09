@@ -45,3 +45,5 @@ android/
 
 
 backend/app/static/css/*.css.map
+
+backend/embrace.json
