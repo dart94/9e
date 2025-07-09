@@ -46,7 +46,7 @@ def send_pushnotification(fcm_token, title, body):
     response = requests.post(fcm_url, data=json.dumps(payload), headers=headers)
     return response.json(), response.status_code
 
-@fcm.route('/send_pushnotification', methods=['POST'])  # URL completa: /api/send_pushnotification
+@fcm.route('/send_pushnotification', methods=['POST'])
 def send_notification():
     data = request.json
     fcm_token = data.get("token")

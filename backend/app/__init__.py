@@ -61,7 +61,7 @@ def create_app():
     from .routes import routes, delete_account
     from .api.fetal_development_api import fetal_api
     from .api.posparto_api import posparto_api
-    from .notifications import fcm
+    from .notifications.fcm import fcm
 
     app.register_blueprint(delete_account)
     app.register_blueprint(routes)
