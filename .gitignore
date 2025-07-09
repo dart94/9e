@@ -40,5 +40,8 @@ yarn-error.log*
 
 # Ignorar compilaciones de Android (Expo/React Native)
 android/
+!android/app/
+!android/app/google-services.json
+
 
 backend/app/static/css/*.css.map
