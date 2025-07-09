@@ -8,7 +8,8 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "RUNTIME_VERSION": "2.0.0"
+        "RUNTIME_VERSION": "2.0.0",
+        "GOOGLE_SERVICES_JSON": "./android/app/google-services.json"
       },
       "channel": "development",
       "node": "20.18.1"
@@ -16,7 +17,8 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "RUNTIME_VERSION": "2.0.0"
+        "RUNTIME_VERSION": "2.0.0",
+        "GOOGLE_SERVICES_JSON": "./android/app/google-services.json"
       },
       "channel": "preview",
       "node": "20.18.1"
@@ -24,7 +26,8 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "RUNTIME_VERSION": "2.0.0"
+        "RIME_VERSION": "2.0.0",
+        "GOOGLE_SERVICES_JSON": "./android/app/google-services.json"
       },
       "channel": "production",
       "node": "20.18.1"
