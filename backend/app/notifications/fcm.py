@@ -13,11 +13,10 @@ load_dotenv()
 fcm = Blueprint('fcm', __name__)  # ✅ Agregado
 
 # Leer la ruta al archivo de credenciales
-SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_CREDENTIALS')
+service_account_info = json.loads(os.getenv('SERVICE_ACCOUNT_CREDENTIALS_JSON'))
 
-# Leer las credenciales del archivo JSON
-credentials = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE,
+credentials = service_account.Credentials.from_service_account_info(
+    service_account_info,
     scopes=['https://www.googleapis.com/auth/firebase.messaging']
 )
 
