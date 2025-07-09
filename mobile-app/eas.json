@@ -26,7 +26,7 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "RIME_VERSION": "2.0.0",
+        "RUNTIME_VERSION": "2.0.0",
         "GOOGLE_SERVICES_JSON": "./android/app/google-services.json"
       },
       "channel": "production",
