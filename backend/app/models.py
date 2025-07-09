@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
     google_id = db.Column(db.String(200), unique=True, nullable=True)
     auth_provider = db.Column(db.String(50), default='email', nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    push_token = db.Column(db.String(200), nullable=True)
 
 class PregnancyData(db.Model):
     id = db.Column(db.Integer, primary_key=True)

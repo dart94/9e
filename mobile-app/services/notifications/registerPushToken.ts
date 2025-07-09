@@ -3,6 +3,10 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { API_CONFIG } from '@/src/config/config';
+
 
 export async function registerForPushNotificationsAsync() {
   try {
@@ -31,10 +35,23 @@ export async function registerForPushNotificationsAsync() {
       return;
     }
 
-    const { data } = await Notifications.getExpoPushTokenAsync();
-    console.log("✅ Token generado:", data);
-    Alert.alert("Push Token", data);
-    return data;
+    
+    const { data: token } = await Notifications.getExpoPushTokenAsync();
+    console.log("✅ Token generado:", token);
+
+    // Guarda token local si quieres
+    await AsyncStorage.setItem('expoPushToken', token);
+
+    // Aquí llamamos al backend
+    const jwt = await AsyncStorage.getItem('jwt'); // o donde guardes tu token
+    const res = await axios.post(
+      'https://`${API_CONFIG.BASE_URL}/api/save_push_token',
+      { token },
+      { headers: { Authorization: `Bearer ${jwt}` } }
+    );
+
+    console.log('🎯 Token enviado al backend:', res.data);
+    return token;
 
   } catch (error) {
     console.log("🔥 Error al registrar push token:", error);

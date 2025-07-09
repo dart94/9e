@@ -7,10 +7,16 @@ from flask import Blueprint, request, jsonify
 from google.oauth2 import service_account
 from google.auth.transport.requests import Request as GoogleRequest
 from dotenv import load_dotenv
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from .. import db
+from ..models import User
+
+
 
 load_dotenv()
 
 fcm = Blueprint('fcm', __name__)  # ✅ Agregado
+notifications_bp = Blueprint('notifications', __name__)  # ✅ Agregado
 
 # Leer la ruta al archivo de credenciales
 service_account_info = json.loads(os.getenv('SERVICE_ACCOUNT_CREDENTIALS_JSON'))
@@ -58,3 +64,26 @@ def send_notification():
     
     result, status = send_pushnotification(fcm_token, title, body)
     return jsonify({"result": result}), status
+
+
+@notifications_bp.route('/save_push_token', methods=['POST'])
+@jwt_required()
+def save_push_token():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    token = data.get('token')
+
+    if not token:
+        return jsonify({'error': 'Token no proporcionado'}), 400
+
+    # Guarda en la base de datos (ejemplo simple)
+    # Aquí asumes que tienes un modelo User con una columna push_token
+    from ..models import User
+    from .. import db
+    user = User.query.get(user_id)
+    if user:
+        user.push_token = token
+        db.session.commit()
+        return jsonify({'message': 'Token guardado correctamente'})
+    else:
+        return jsonify({'error': 'Usuario no encontrado'}), 404
