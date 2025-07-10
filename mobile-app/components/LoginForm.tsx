@@ -14,6 +14,7 @@ import { validateEmail } from "@/utils/validations";
 import { loginWithEmail } from "@/services/AuthService";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 type LoginFormProps = {
   email: string;
@@ -21,7 +22,7 @@ type LoginFormProps = {
   password: string;
   setPassword: (password: string) => void;
   loading: boolean;
-  onLoginSuccess: () => void;
+  onLogin: (email: string, password: string) => void; // <--- CAMBIO
   onGoogleLogin: () => void;
 };
 
@@ -31,29 +32,25 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   password,
   setPassword,
   loading,
-  onLoginSuccess,
+  onLogin,
   onGoogleLogin,
 }) => {
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
   const router = useRouter();
 
-  const handleLogin = async () => {
-    if (!validateEmail(email)) {
-      setEmailError(true);
-      return;
-    }
-    if (!password) {
-      setPasswordError(true);
-      return;
-    }
-    try {
-      await loginWithEmail(email, password);
-      onLoginSuccess();
-    } catch (err) {
-      alert("Error al iniciar sesión");
-    }
-  };
+  const handleLogin = () => {
+  if (!validateEmail(email)) {
+    setEmailError(true);
+    return;
+  }
+  if (!password) {
+    setPasswordError(true);
+    return;
+  }
+
+  onLogin(email, password); // <--- nuevo
+};
 
   return (
     <View

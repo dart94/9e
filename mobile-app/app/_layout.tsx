@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 
 export default function Layout() {
-  usePushNotifications();
+  // usePushNotifications();
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
