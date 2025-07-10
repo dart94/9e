@@ -70,20 +70,25 @@ def send_notification():
 @jwt_required()
 def save_push_token():
     user_id = get_jwt_identity()
-    data = request.get_json()
-    token = data.get('token')
+    try:
+        data = request.get_json()
+        print("📨 JSON recibido:", data)
 
-    if not token:
-        return jsonify({'error': 'Token no proporcionado'}), 400
+        if not data or 'token' not in data:
+            return jsonify({'error': 'Token no proporcionado'}), 400
 
-    # Guarda en la base de datos (ejemplo simple)
-    # Aquí asumes que tienes un modelo User con una columna push_token
-    from ..models import User
-    from .. import db
-    user = User.query.get(user_id)
-    if user:
-        user.push_token = token
-        db.session.commit()
-        return jsonify({'message': 'Token guardado correctamente'})
-    else:
-        return jsonify({'error': 'Usuario no encontrado'}), 404
+        token = data['token']
+
+        from ..models import User
+        from .. import db
+        user = User.query.get(user_id)
+        if user:
+            user.push_token = token
+            db.session.commit()
+            return jsonify({'message': 'Token guardado correctamente'})
+        else:
+            return jsonify({'error': 'Usuario no encontrado'}), 404
+
+    except Exception as e:
+        print("🔥 Error en /save_push_token:", e)
+        return jsonify({'error': 'Error interno del servidor'}), 500

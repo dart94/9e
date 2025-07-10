@@ -46,6 +46,11 @@ export async function registerForPushNotificationsAsync() {
 
     // Aquí llamamos al backend
     const jwt = await AsyncStorage.getItem("jwt"); // o donde guardes tu token
+    console.log("📦 Enviando a backend:", {
+      token,
+      jwt,
+      url: `${API_CONFIG.BASE_URL}/api/save_push_token`,
+    });
     const res = await axios.post(
       `${API_CONFIG.BASE_URL}/api/save_push_token`,
       JSON.stringify({ token }),
