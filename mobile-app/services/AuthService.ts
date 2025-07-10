@@ -33,6 +33,7 @@ export const loginWithEmail = async (email: string, password: string) => {
     const { id, username, token } = data;
 
     await storeUserSession(id, username, token, email);
+    await AsyncStorage.setItem('jwt', token);
 
     return data;
   } catch (error) {

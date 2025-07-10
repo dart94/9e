@@ -15,6 +15,7 @@ import { loginWithEmail } from "@/services/AuthService";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { registerForPushNotificationsAsync } from "@/services/notifications/registerPushToken";
 
 type LoginFormProps = {
   email: string;

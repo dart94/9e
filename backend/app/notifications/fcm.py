@@ -67,7 +67,7 @@ def send_notification():
 
 
 @notifications_bp.route('/save_push_token', methods=['POST'])
-@jwt_required
+@jwt_required()
 def save_push_token():
     user_id = get_jwt_identity()
     try:
