@@ -168,7 +168,7 @@ useEffect(() => {
         />
       )}
 
-      <Text style={textStyles.label}>Peso Inicial (Kg)</Text>
+      <Text style={textStyles.label}>Peso actual (Kg)</Text>
       <CustomInput
         style={miscStyles.input}
         value={form.weight}

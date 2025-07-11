@@ -10,12 +10,15 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import CustomInput from "@/src/components/CustomInput";
 import { miscStyles, modalStyles } from "@/src/theme/styles";
 import { textStyles } from "@/src/theme/styles/textStyles";
+import { buttonStyles } from "@/src/theme/styles";
 import { getUserIdFromStorage } from "@/utils/user";
 import { useRouter } from "expo-router";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 type Props = {
   visible: boolean;
@@ -38,9 +41,11 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [date, setDate] = useState(new Date());
   const router = useRouter();
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchUserId = async () => {
       const userId = await getUserIdFromStorage();
       if (userId) {
@@ -53,6 +58,21 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
 
   const handleChange = (name: keyof PostpartoData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(Platform.OS === "ios");
+    if (selectedDate) {
+      setDate(selectedDate);
+      const formattedDate = selectedDate.toISOString().split("T")[0];
+      setFormData((prevForm) => ({
+        ...prevForm,
+        birth_date: formattedDate,
+      }));
+    }
+  };
+  const showDatepicker = () => {
+    setShowDatePicker(true);
   };
 
   const handleSubmit = async () => {
@@ -68,14 +88,12 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
       console.log(result);
       onClose();
       //redirect to dashboard
-      router.replace('/(tabs)/PostParto');
-
+      router.replace("/(tabs)/PostParto");
     } catch (error) {
       setIsSubmitting(false);
       console.log(error);
       alert("❌ Ocurrió un error al registrar el nacimiento.");
     }
-
   };
 
   return (
@@ -95,12 +113,22 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
             <Text style={modalStyles.modalTitle}>Registro de Nacimiento</Text>
 
             <Text style={textStyles.label}>Fecha de nacimiento</Text>
-            <CustomInput
-              style={miscStyles.input}
-              value={formData.birth_date}
-              onChangeText={(text) => handleChange("birth_date", text)}
-              placeholder="YYYY-MM-DD"
-            />
+            <TouchableOpacity
+              style={[miscStyles.input, { justifyContent: "center" }]}
+              onPress={showDatepicker}
+            >
+              <Text>{formData.birth_date || "Seleccionar fecha"}</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode="date"
+                display="default"
+                onChange={onDateChange}
+                maximumDate={new Date()}
+              />
+            )}
 
             <Text style={textStyles.label}>Peso (kg)</Text>
             <CustomInput
@@ -119,12 +147,12 @@ export const PosPartoModal: React.FC<Props> = ({ visible, onClose }) => {
               placeholder="Notas adicionales"
               multiline
             />
-
-            {isSubmitting ? (
-              <ActivityIndicator size="large" color="#FF4081" />
-            ) : (
-              <Button title="Enviar" onPress={handleSubmit} />
-            )}
+            <TouchableOpacity
+              style={buttonStyles.button}
+              onPress={handleSubmit}
+            >
+              <Text style={buttonStyles.buttonText}>Guardar Registro</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </TouchableWithoutFeedback>

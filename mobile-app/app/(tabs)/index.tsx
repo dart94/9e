@@ -366,6 +366,11 @@ function DashboardScreen() {
       })}
     >
       <Tab.Screen
+        name="Dashboard"
+        component={DashboardContent}
+        options={{ title: "Seguimiento", tabBarLabel: "Inicio" }}
+      />
+      <Tab.Screen
         name="Settings"
         component={SettingsScreen}
         options={{ title: "Tu Perfil", tabBarLabel: "Perfil" }}
@@ -374,11 +379,6 @@ function DashboardScreen() {
         name="ViewPregnancyRecords"
         component={ViewPregnancyRecordsScreen}
         options={{ title: "Mis Registros", tabBarLabel: "Historial" }}
-      />
-      <Tab.Screen
-        name="Dashboard"
-        component={DashboardContent}
-        options={{ title: "Seguimiento", tabBarLabel: "Inicio" }}
       />
       {showPostpartumTab && (
         <Tab.Screen
