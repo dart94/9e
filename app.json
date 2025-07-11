@@ -1,3 +1,12 @@
 {
-  "expo": {}
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "a4df3a04-e656-4c4b-a5a5-97649f05933a"
+      }
+    },
+    "android": {
+      "package": "com.dart94.backend"
+    }
+  }
 }

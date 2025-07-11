@@ -30,7 +30,7 @@
         "GOOGLE_SERVICES_JSON": "./android/app/google-services.json"
       },
       "channel": "production",
-      "node": "1.18.1"
+      "node": "18.17.1"
     }
   },
   "submit": {
