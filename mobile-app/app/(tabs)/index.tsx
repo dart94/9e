@@ -259,7 +259,7 @@ function DashboardContent() {
               {renderList(week_info.consejos)}
             </View>
             <View style={miscStyles.card}>
-              <Text style={textStyles.subtitle}>Pruebas Médicas</Text>
+              <Text style={textStyles.subtitle}>Etapas del camino</Text>
               {renderList(week_info.pruebas_medicas)}
             </View>
           </>

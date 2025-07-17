@@ -218,7 +218,7 @@ const PostpartumScreen = () => {
 
         <InfoCard
           icon={Stethoscope}
-          title="Pruebas Médicas"
+          title="Pruebas Generales"
           content={currentData?.pruebas_medicas ?? ""}
           bgColor="#F5F9F8"
           accentColor="#FFB366"

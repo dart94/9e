@@ -147,7 +147,7 @@ useEffect(() => {
       {loading && (
         <ActivityIndicator size="large" color={textStyles.title.color} />
       )}
-      <Text style={textStyles.title}>Registro de Embarazo</Text>
+      <Text style={textStyles.title}>Mis Notas del Camino</Text>
 
       <Text style={textStyles.label}>Última Fecha de Periodo</Text>
       <TouchableOpacity
