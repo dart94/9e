@@ -13,7 +13,7 @@
     },
     "android": {
       "package": "com.dart94.embrace",
-      "googleServicesFile": "./google-services.json",  
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/pregnancy-logo.png",
         "backgroundColor": "#ffffff"
@@ -54,6 +54,9 @@
     },
     "updates": {
       "url": "https://u.expo.dev/2a971723-c6c0-468c-a406-d819cc28e2bf"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
