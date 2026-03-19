@@ -1,12 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     ext {
-        buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
+        buildToolsVersion = findProperty('android.buildToolsVersion') ?: '34.0.0'
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
-        compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
+        compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '34')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
-        kotlinVersion = findProperty('android.kotlinVersion') ?: '1.9.24'
+        kotlinVersion = findProperty('android.kotlinVersion') ?: '1.8.20'
         ndkVersion = "26.1.10909125"
     }
     repositories {
@@ -26,35 +25,29 @@ apply plugin: "com.facebook.react.rootproject"
 allprojects {
     repositories {
         maven {
-            // Todos los binarios de React Native se instalan desde npm
-            url(new File(['node', '--print', "require.resolve('react-native/package.json')"]
-                .execute(null, rootDir).text.trim(), '../android'))
+            url new File(['node', '--print', "require.resolve('react-native/package.json')"]
+                .execute(null, rootDir).text.trim(), '../android')
         }
         maven {
-            // Android JSC se instala desde npm
-            url(new File(['node', '--print', "require.resolve('jsc-android/package.json', { paths: [require.resolve('react-native/package.json')] })"]
-                .execute(null, rootDir).text.trim(), '../dist'))
+            url new File(['node', '--print', "require.resolve('jsc-android/package.json', { paths: [require.resolve('react-native/package.json')] })"]
+                .execute(null, rootDir).text.trim(), '../dist')
         }
         google()
         mavenCentral()
         maven { url 'https://www.jitpack.io' }
     }
-    
+   
     configurations.all {
         resolutionStrategy {
-            // Para todas las dependencias cuyo grupo sea 'org.jetbrains.kotlin'
             eachDependency { details ->
                 if (details.requested.group == 'org.jetbrains.kotlin') {
-                    // Si no se especifica versión o está vacía, se forzará a kotlinVersion
                     if (!details.requested.version || details.requested.version.trim().isEmpty()) {
-                        details.useVersion "$kotlinVersion"
+                        details.useVersion kotlinVersion
                     } else {
-                        // Incluso si se declaró una versión, la forzamos a la que queremos usar
-                        details.useVersion "$kotlinVersion"
+                        details.useVersion kotlinVersion
                     }
                 }
             }
-            // Forzamos explícitamente las dependencias clave de Kotlin
             force "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
                   "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion",
                   "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
@@ -63,16 +56,15 @@ allprojects {
     }
 }
 
-// También aseguramos que en todos los subproyectos se aplique la misma estrategia
 subprojects {
     configurations.all {
         resolutionStrategy {
             eachDependency { details ->
                 if (details.requested.group == 'org.jetbrains.kotlin') {
                     if (!details.requested.version || details.requested.version.trim().isEmpty()) {
-                        details.useVersion "$kotlinVersion"
+                        details.useVersion kotlinVersion
                     } else {
-                        details.useVersion "$kotlinVersion"
+                        details.useVersion kotlinVersion
                     }
                 }
             }

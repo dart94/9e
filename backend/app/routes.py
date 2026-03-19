@@ -284,7 +284,7 @@ def reset_password_request():
 @routes.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     try:
-        email = current_app.extensions['serializer'].loads(token, salt='password-reset-salt', max_age=3600)
+        email = current_app.extensions['password_reset_serializer'].loads(token, salt='password-reset-salt', max_age=3600)
     except Exception:
         flash('El enlace de recuperación ha expirado o es inválido.', 'danger')
         return redirect(url_for('routes.reset_password_request'))
@@ -345,7 +345,7 @@ def forgot_password():
     user = User.query.filter_by(email=email).first()
     if user:
         # Generar token de recuperación
-        serializer = current_app.extensions['serializer']
+        serializer = current_app.extensions['password_reset_serializer']
         token = serializer.dumps(user.email, salt='password-reset-salt')
         reset_url = url_for('routes.reset_password', token=token, _external=True)
         send_reset_email(user.email, reset_url)
