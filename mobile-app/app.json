@@ -8,7 +8,7 @@
     "icon": "./assets/images/pregnancy-logo.png",
     "scheme": "embrace",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/pregnancy-logo.png",
