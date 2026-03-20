@@ -225,7 +225,7 @@ export default function LoginScreen() {
       <Text style={textStyles.title}>Iniciar Sesión</Text>
 
       <CustomInput
-        placeholder="Correo electrónico"
+        placeholder="TEST 123 🔥"
         value={email}
         onChangeText={(text) => {
           setEmailError(false);
