@@ -8,6 +8,7 @@ import requests
 import uuid
 import os
 from urllib.parse import urlencode
+import os
 
 from . import auth_bp
 from ..extensions import db, bcrypt, mail
@@ -17,6 +18,9 @@ from flask_mail import Message
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 REDIRECT_URI = "https://9e-production.up.railway.app/auth/callback"
+
+def get_base_url():
+    return os.getenv('BASE_URL', 'http://192.168.13.38:5000')
 
 
 # --- Helpers de email ---
@@ -71,7 +75,7 @@ def register():
     try:
         serializer = current_app.extensions['email_confirm_serializer']
         token = serializer.dumps(new_user.email, salt='email-confirm-salt')
-        confirm_url = f"https://9e-production.up.railway.app/api/auth/confirm_email/{token}"
+        confirm_url = f"{get_base_url()}/api/auth/confirm_email/{token}"
         send_confirmation_email(new_user.email, confirm_url)
         return jsonify({"message": "Usuario registrado. Revisa tu correo para confirmar la cuenta."}), 201
     except Exception as e:
@@ -139,7 +143,7 @@ def forgot_password():
     # BUG CORREGIDO: era 'serializer', ahora es 'password_reset_serializer'
     serializer = current_app.extensions['password_reset_serializer']
     token = serializer.dumps(user.email, salt='password-reset-salt')
-    reset_url = f"https://9e-production.up.railway.app/api/auth/reset_password/{token}"
+    reset_url = f"{get_base_url()}/api/auth/reset_password/{token}"
     send_reset_email(user.email, reset_url)
     return jsonify({'message': 'Se ha enviado un enlace de recuperación a tu correo.'}), 200
 

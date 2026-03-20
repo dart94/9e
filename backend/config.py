@@ -43,3 +43,13 @@ class Config:
         'CORS_ORIGINS',
         'http://localhost:8081,https://9e-production.up.railway.app'
     ).split(',')
+
+
+    # Configuración de reconexión para PostgreSQL
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,        # verifica la conexión antes de usarla
+        "pool_recycle": 300,          # reconecta cada 5 minutos
+        "pool_timeout": 20,           # espera máximo 20 segundos
+        "pool_size": 5,               # conexiones simultáneas
+        "max_overflow": 2,            # conexiones extra permitidas
+    }

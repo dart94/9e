@@ -27,7 +27,7 @@ export default function ForgotPasswordScreen() {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${API_CONFIG.BASE_URL}/forgot-password`, { email });
+      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/auth/forgot-password`, { email });
       if (response.status === 200) {
         Alert.alert('Éxito', response.data.message);
       }
