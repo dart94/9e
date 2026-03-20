@@ -41,7 +41,7 @@ function DashboardContent() {
           return;
         }
 
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/dashboard`, {
+        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/pregnancy/dashboard`, {
           params: { user_id: userId },
           withCredentials: true,
         });

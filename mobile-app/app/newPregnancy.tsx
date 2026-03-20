@@ -41,7 +41,7 @@ export default function NewPregnancyRecordScreen() {
         }
 
         setLoading(true);
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/embarazos`, {
+        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/pregnancy/embarazos`, {
           params: { user_id: userId },
           withCredentials: true,
         });
@@ -113,7 +113,7 @@ export default function NewPregnancyRecordScreen() {
         notes: form.notes,
       };
 
-      await axios.post(`${API_CONFIG.BASE_URL}/api/embarazos`, payload, {
+      await axios.post(`${API_CONFIG.BASE_URL}/api/pregnancy/embarazos`, payload, {
         headers: {
           'Content-Type': 'application/json',
         },

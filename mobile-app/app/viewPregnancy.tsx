@@ -47,7 +47,7 @@ export default function ViewPregnancyRecordsScreen() {
           return;
         }
 
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/embarazos`, {
+        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/pregnancy/embarazos`, {
           params: { user_id: userId },
           withCredentials: true,
         });
@@ -76,7 +76,7 @@ export default function ViewPregnancyRecordsScreen() {
           onPress: async () => {
             try {
               console.log('ID to delete:', id);
-              await axios.delete(`${API_CONFIG.BASE_URL}/api/embarazos/${id}`);
+              await axios.delete(`${API_CONFIG.BASE_URL}/api/pregnancy/embarazos/${id}`);
   
               Alert.alert('Éxito', 'Registro eliminado correctamente.');
               setRecords((prevRecords) =>

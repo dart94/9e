@@ -33,7 +33,7 @@ export default function SettingsScreen() {
           return;
         }
 
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/mi-perfil`, {
+        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/user/perfil`, {
           params: { user_id: userId },
           withCredentials: true,
         });
@@ -68,7 +68,7 @@ export default function SettingsScreen() {
   const handleSave = async () => {
     try {
       setLoading(true);
-      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/editar-perfil`, form, {
+      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/user/perfil`, form, {
         withCredentials: true,
       });
       Alert.alert('Éxito', response.data.message);
