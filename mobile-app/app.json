@@ -3,7 +3,6 @@
     "name": "Embrace",
     "slug": "mobile-app",
     "version": "2.0.3",
-    "runtimeVersion": "2.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/pregnancy-logo.png",
     "scheme": "embrace",
@@ -28,11 +27,9 @@
             "kotlinVersion": "1.9.24"
           }
         }
-      ]
+      ],
+      "expo-router"
     ],
-    "updates": {
-      "url": "https://u.expo.dev/2a971723-c6c0-468c-a406-d819cc28e2bf"
-    },
     "extra": {
       "eas": {
         "projectId": "2a971723-c6c0-468c-a406-d819cc28e2bf"
