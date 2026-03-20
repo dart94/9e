@@ -44,7 +44,7 @@ def send_confirmation_email(to_email, confirm_url):
         mail.send(msg)
     except Exception as e:
         current_app.logger.error(f"Error enviando correo: {str(e)}")
-        raise
+        
 
 
 # --- Endpoints ---
