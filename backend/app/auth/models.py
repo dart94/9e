@@ -12,3 +12,9 @@ class User(db.Model):
     auth_provider = db.Column(db.String(50), default='email', nullable=False)
 
     pregnancies = db.relationship('PregnancyData', backref='user', lazy=True)
+
+
+class TokenBlocklist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)

@@ -8,10 +8,10 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import axios from 'axios';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import api, { clearSession } from '../src/services/api';
 import { API_CONFIG } from '../src/config/config';
 import { layoutStyles } from '../src/theme/styles/layoutStyles';
 import { textStyles } from '../src/theme/styles/textStyles';
@@ -41,9 +41,8 @@ function DashboardContent() {
           return;
         }
 
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/pregnancy/dashboard`, {
+        const response = await api.get('/api/pregnancy/dashboard', {
           params: { user_id: userId },
-          withCredentials: true,
         });
 
         setData(response.data);
@@ -154,12 +153,12 @@ export default function DashboardScreen() {
         style: 'destructive',
         onPress: async () => {
           try {
-            await AsyncStorage.removeItem('userId');
-            await AsyncStorage.removeItem('user');
+            await api.post('/api/auth/logout');
+          } catch {
+            // Si falla el server (token ya expirado, sin red), igual limpiamos local
+          } finally {
+            await clearSession();
             router.replace('/(auth)/login');
-          } catch (error) {
-            console.error('Error al cerrar sesión:', error);
-            Alert.alert('Error', 'No se pudo cerrar sesión.');
           }
         },
       },

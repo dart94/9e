@@ -1,5 +1,8 @@
 from flask import request, jsonify, current_app, render_template, redirect
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import (
+    create_access_token, create_refresh_token,
+    jwt_required, get_jwt_identity, get_jwt
+)
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from werkzeug.security import generate_password_hash
 from datetime import timedelta
@@ -8,11 +11,10 @@ import requests
 import uuid
 import os
 from urllib.parse import urlencode
-import os
 
 from . import auth_bp
 from ..extensions import db, bcrypt, mail
-from .models import User
+from .models import User, TokenBlocklist
 from flask_mail import Message
 
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
@@ -96,11 +98,13 @@ def login():
         return jsonify({"error": "Debes confirmar tu correo antes de iniciar sesión."}), 403
 
     access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
+    refresh_token = create_refresh_token(identity=user.id)
     return jsonify({
         "message": "Inicio de sesión exitoso.",
         "id": user.id,
         "username": user.username,
-        "token": access_token
+        "token": access_token,
+        "refresh_token": refresh_token
     }), 200
 
 
@@ -230,11 +234,13 @@ def google_login():
                 db.session.commit()
 
         access_token = create_access_token(identity=user.id)
+        refresh_token = create_refresh_token(identity=user.id)
         return jsonify({
             "id": user.id,
             "username": user.username,
             "email": user.email,
-            "token": access_token
+            "token": access_token,
+            "refresh_token": refresh_token
         }), 200
 
     except requests.exceptions.RequestException as e:
@@ -242,3 +248,24 @@ def google_login():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Unexpected error", "details": str(e)}), 500
+
+
+@auth_bp.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    try:
+        db.session.add(TokenBlocklist(jti=jti))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        return jsonify({"error": "Error al cerrar sesión"}), 500
+    return jsonify({"message": "Sesión cerrada exitosamente."}), 200
+
+
+@auth_bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=identity)
+    return jsonify({"token": access_token}), 200

@@ -98,12 +98,13 @@ export default function LoginScreen() {
         throw new Error("No se pudo iniciar sesión con Google en el backend");
       }
   
-      const { id, username, token } = response.data;
-  
+      const { id, username, token, refresh_token } = response.data;
+
       // Guardar información en AsyncStorage
       await AsyncStorage.setItem('userId', String(id));
       await AsyncStorage.setItem('user', JSON.stringify({ id, username }));
-      await AsyncStorage.setItem('userToken', token);
+      await storage.setItem('userToken', token);
+      if (refresh_token) await storage.setItem('refreshToken', refresh_token);
   
       // Redirigir al dashboard
       router.replace('/dashboard');
@@ -176,28 +177,17 @@ export default function LoginScreen() {
       });
 
       if (response.status === 200) {
-        const { id, username, token } = response.data;
+        const { id, username, token, refresh_token } = response.data;
 
         // Guardar datos de usuario
         await AsyncStorage.setItem('userId', id.toString());
         await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
 
-        // Guardar token y credenciales
+        // Guardar tokens y credenciales
         await storage.setItem('userToken', token);
+        if (refresh_token) await storage.setItem('refreshToken', refresh_token);
         await storage.setItem('userEmail', loginEmail);
         await storage.setItem('userPassword', loginPassword);
-
-        // Configurar interceptor de Axios
-        axios.interceptors.request.use(
-          async (config) => {
-            const token = await storage.getItem('userToken');
-            if (token) {
-              config.headers.Authorization = `Bearer ${token}`;
-            }
-            return config;
-          },
-          (error) => Promise.reject(error)
-        );
 
         // Navegar al Dashboard
         router.replace('/dashboard');

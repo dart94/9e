@@ -1,10 +1,9 @@
 from flask import Flask, Blueprint, request
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 from config import Config
-from .extensions import db, migrate, bcrypt, mail
+from .extensions import db, migrate, bcrypt, mail, jwt
 from .api.fetal_development_api import fetal_api
 
 legacy_bp = Blueprint('legacy', __name__)
@@ -18,7 +17,7 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     mail.init_app(app)
-    JWTManager(app)
+    jwt.init_app(app)
     CORS(app, origins=app.config['CORS_ORIGINS'])
 
     app.extensions['email_confirm_serializer'] = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -27,8 +26,13 @@ def create_app(config_class=Config):
     from .auth import auth_bp
     from .pregnancy import pregnancy_bp
     from .user import user_bp
-    from .auth.models import User
+    from .auth.models import User, TokenBlocklist
     from .pregnancy.models import PregnancyData
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_revoked(jwt_header, jwt_payload):
+        jti = jwt_payload["jti"]
+        return db.session.query(TokenBlocklist.id).filter_by(jti=jti).first() is not None
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(pregnancy_bp, url_prefix='/api/pregnancy')
