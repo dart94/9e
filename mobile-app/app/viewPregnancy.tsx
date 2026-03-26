@@ -1,26 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
   FlatList,
-  ActivityIndicator,
   Alert,
   Modal,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { layoutStyles } from '../src/theme/styles/layoutStyles';
 import { textStyles } from '../src/theme/styles/textStyles';
 import { buttonStyles } from '../src/theme/styles/buttonStyles';
 import { modalStyles } from '../src/theme/styles/modalStyles';
-import { miscStyles as miscStylesStyles } from '../src/theme/styles/miscStyles';
-import { API_CONFIG } from '../src/config/config';
+import { miscStyles } from '../src/theme/styles/miscStyles';
 import { useRouter } from 'expo-router';
 import NewPregnancyRecordScreen from './newPregnancy';
+import api from '../src/services/api';
+import { LoadingScreen, EmptyState } from '../src/components';
+import { COLORS } from '../src/theme/theme';
 
 
 interface PregnancyRecord {
@@ -34,35 +35,41 @@ interface PregnancyRecord {
 export default function ViewPregnancyRecordsScreen() {
   const [records, setRecords] = useState<PregnancyRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchRecords = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (!userId) {
-          Alert.alert('Error', 'Usuario no autenticado.');
-          router.replace('/(auth)/login');
-          return;
-        }
-
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/pregnancy/embarazos`, {
-          params: { user_id: userId },
-          withCredentials: true,
-        });
-        
-        setRecords(response.data);
-      } catch (error) {
-        console.error('Error al cargar registros:', error);
-        Alert.alert('Error', 'No se pudieron cargar los registros.');
-      } finally {
-        setLoading(false);
+  const fetchRecords = useCallback(async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) {
+        Alert.alert('Error', 'Usuario no autenticado.');
+        router.replace('/(auth)/login');
+        return;
       }
-    };
 
-    fetchRecords();
+      const response = await api.get('/api/pregnancy/embarazos', {
+        params: { user_id: userId },
+      });
+
+      setRecords(response.data);
+    } catch (error) {
+      console.error('Error al cargar registros:', error);
+      Alert.alert('Error', 'No se pudieron cargar los registros.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchRecords();
+  }, [fetchRecords]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchRecords();
+  };
 
   const handleDelete = async (id: number) => {
     Alert.alert(
@@ -75,20 +82,10 @@ export default function ViewPregnancyRecordsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              console.log('ID to delete:', id);
-              await axios.delete(`${API_CONFIG.BASE_URL}/api/pregnancy/embarazos/${id}`);
-  
+              await api.delete(`/api/pregnancy/embarazos/${id}`);
               Alert.alert('Éxito', 'Registro eliminado correctamente.');
-              setRecords((prevRecords) =>
-                prevRecords.filter((record) => record.id !== id)
-              );
-            } catch (error) {
-              if (axios.isAxiosError(error)) {
-                console.error('Response error data:', error.response?.data);
-                console.error('Response status:', error.response?.status);
-              } else {
-                console.error('Unknown error:', error);
-              }
+              setRecords((prev) => prev.filter((r) => r.id !== id));
+            } catch {
               Alert.alert('Error', 'No se pudo eliminar el registro.');
             }
           },
@@ -97,9 +94,8 @@ export default function ViewPregnancyRecordsScreen() {
     );
   };
 
-  
   const renderRecord = ({ item }: { item: PregnancyRecord }) => (
-    <View style={miscStylesStyles.card}>
+    <View style={miscStyles.card}>
       <Text style={textStyles.subtitle}>Semana: {item.week}</Text>
       <View style={textStyles.infoRow}>
         <Text style={textStyles.infoLabel}>Peso: </Text>
@@ -116,7 +112,12 @@ export default function ViewPregnancyRecordsScreen() {
         <Text style={textStyles.infoValue}>{item.notes || 'N/A'}</Text>
       </View>
       <View style={layoutStyles.actionsRow}>
-        <TouchableOpacity style={buttonStyles.deleteButton} onPress={() => handleDelete(item.id)}>
+        <TouchableOpacity
+          style={buttonStyles.deleteButton}
+          onPress={() => handleDelete(item.id)}
+          accessibilityRole="button"
+          accessibilityLabel={`Eliminar registro semana ${item.week}`}
+        >
           <Text style={buttonStyles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
       </View>
@@ -124,12 +125,7 @@ export default function ViewPregnancyRecordsScreen() {
   );
 
   if (loading) {
-    return (
-      <View style={[layoutStyles.container, layoutStyles.center]}>
-        <ActivityIndicator size="large" color={textStyles.title.color} />
-        <Text style={textStyles.title}>Cargando registros...</Text>
-      </View>
-    );
+    return <LoadingScreen message="Cargando registros..." />;
   }
 
   return (
@@ -142,16 +138,34 @@ export default function ViewPregnancyRecordsScreen() {
             keyExtractor={(item, index) => `${item.week}-${index}`}
             renderItem={renderRecord}
             contentContainerStyle={{ paddingBottom: 20 }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor={COLORS.primary}
+                colors={[COLORS.primary]}
+              />
+            }
           />
         ) : (
-          <Text style={textStyles.errorText}>No se encontraron registros.</Text>
+          <EmptyState
+            icon="document-text-outline"
+            message="Sin registros aún"
+            subMessage="Agrega tu primer registro de seguimiento"
+            actionLabel="Nuevo Registro"
+            onAction={() => setIsModalVisible(true)}
+          />
         )}
-        <TouchableOpacity
-          style={buttonStyles.button}
-          onPress={() => setIsModalVisible(true)}
-        >
-          <Text style={buttonStyles.buttonText}>Nuevo Registro</Text>
-        </TouchableOpacity>
+        {records.length > 0 && (
+          <TouchableOpacity
+            style={buttonStyles.button}
+            onPress={() => setIsModalVisible(true)}
+            accessibilityRole="button"
+            accessibilityLabel="Agregar nuevo registro"
+          >
+            <Text style={buttonStyles.buttonText}>Nuevo Registro</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <Modal
@@ -170,10 +184,11 @@ export default function ViewPregnancyRecordsScreen() {
             </ScrollView>
           </View>
 
-          {/* Botón cerrar fuera del modalContent */}
           <TouchableOpacity
             style={[buttonStyles.cerrarButton, { marginTop: 10 }]}
             onPress={() => setIsModalVisible(false)}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar formulario"
           >
             <Text style={buttonStyles.buttonText}>Cerrar</Text>
           </TouchableOpacity>

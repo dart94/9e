@@ -15,12 +15,10 @@ export const layoutStyles = StyleSheet.create({
   actionsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: SIZES.spacingMD,
   },
-
   touchableContainer: {
     minHeight: 48,
     justifyContent: 'center',
-  }
-  
+  },
 });

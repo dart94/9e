@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { layoutStyles } from '../../src/theme/styles/layoutStyles';
 import { textStyles } from '../../src/theme/styles/textStyles';
 import { buttonStyles } from '../../src/theme/styles/buttonStyles';
-import { miscStyles } from '../../src/theme/styles/miscStyles';
 import axios from 'axios';
 import { API_CONFIG } from '../../src/config/config';
 import { useRouter } from 'expo-router';
@@ -61,14 +60,14 @@ export default function RegisterScreen() {
     <View style={[layoutStyles.container, layoutStyles.center]}>
       <Text style={textStyles.title}>Crear Cuenta</Text>
       <CustomInput
-        style={miscStyles.input}
+
         placeholder="Nombre de usuario"
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
       />
       <CustomInput
-        style={miscStyles.input}
+
         placeholder="Correo electrónico"
         value={email}
         onChangeText={setEmail}
@@ -76,7 +75,7 @@ export default function RegisterScreen() {
         autoCapitalize="none"
       />
       <CustomInput
-        style={miscStyles.input}
+
         placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}

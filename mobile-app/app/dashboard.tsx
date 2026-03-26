@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
-  ActivityIndicator,
-  FlatList,
   ScrollView,
   Image,
-  Alert,
+  RefreshControl,
 } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import api, { clearSession } from '../src/services/api';
+import api from '../src/services/api';
 import { API_CONFIG } from '../src/config/config';
 import { layoutStyles } from '../src/theme/styles/layoutStyles';
 import { textStyles } from '../src/theme/styles/textStyles';
@@ -20,50 +18,50 @@ import { ProgressBar } from 'react-native-paper';
 import SettingsScreen from './(auth)/settings';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
 import NewPregnancyRecordScreen from './newPregnancy';
-import { useRouter } from 'expo-router';
+import { COLORS } from '../src/theme/theme';
+import { LoadingScreen } from '../src/components';
 
 const Tab = createBottomTabNavigator();
-
-const LogoutScreen = () => null;
 
 function DashboardContent() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (!userId) {
-          setError('No se pudo obtener el usuario autenticado.');
-          setLoading(false);
-          return;
-        }
-
-        const response = await api.get('/api/pregnancy/dashboard', {
-          params: { user_id: userId },
-        });
-
-        setData(response.data);
-      } catch (err) {
-        console.error('Error al cargar datos del dashboard:', err);
-        setError('Error al cargar los datos del dashboard.');
-      } finally {
-        setLoading(false);
+  const fetchDashboardData = useCallback(async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) {
+        setError('No se pudo obtener el usuario autenticado.');
+        return;
       }
-    };
 
-    fetchDashboardData();
+      const response = await api.get('/api/pregnancy/dashboard', {
+        params: { user_id: userId },
+      });
+
+      setData(response.data);
+      setError(null);
+    } catch (err) {
+      console.error('Error al cargar datos del dashboard:', err);
+      setError('Error al cargar los datos del dashboard.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, []);
 
-  if (loading)
-    return (
-      <View style={[layoutStyles.container, layoutStyles.center]}>
-        <ActivityIndicator size="large" color={textStyles.title.color} />
-        <Text style={textStyles.title}>Cargando datos...</Text>
-      </View>
-    );
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchDashboardData();
+  };
+
+  if (loading) return <LoadingScreen message="Cargando datos..." />;
 
   if (error)
     return (
@@ -93,7 +91,17 @@ function DashboardContent() {
   };
 
   return (
-    <ScrollView style={layoutStyles.container}>
+    <ScrollView
+      style={layoutStyles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor={COLORS.primary}
+          colors={[COLORS.primary]}
+        />
+      }
+    >
       <View style={miscStyles.card}>
         <Text style={textStyles.title}>Semana {current_week || 'N/A'} de 40</Text>
         <Image
@@ -143,63 +151,39 @@ function DashboardContent() {
 }
 
 export default function DashboardScreen() {
-  const router = useRouter();
-
-  const logout = async () => {
-    Alert.alert('Confirmación', '¿Estás seguro de que deseas cerrar sesión?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Cerrar Sesión',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await api.post('/api/auth/logout');
-          } catch {
-            // Si falla el server (token ya expirado, sin red), igual limpiamos local
-          } finally {
-            await clearSession();
-            router.replace('/(auth)/login');
-          }
-        },
-      },
-    ]);
-  };
-
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { backgroundColor: '#3A7669' },
-        tabBarActiveTintColor: '#fff',
-        tabBarInactiveTintColor: '#f0f0f0',
+        tabBarStyle: { backgroundColor: COLORS.tabBar },
+        tabBarActiveTintColor: COLORS.tabBarActive,
+        tabBarInactiveTintColor: COLORS.tabBarInactive,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName = 'help-circle-outline';
 
           if (route.name === 'Dashboard') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Settings') {
-            iconName = focused ? 'settings' : 'person-outline';
+            iconName = focused ? 'person' : 'person-outline';
           } else if (route.name === 'NewPregnancyRecord') {
-            iconName = focused ? 'add' : 'add-outline';
+            iconName = focused ? 'add-circle' : 'add-circle-outline';
           } else if (route.name === 'ViewPregnancyRecords') {
             iconName = focused ? 'list' : 'list-outline';
-          } else if (route.name === 'Logout') {
-            iconName = 'log-out-outline';
           }
 
           return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
         },
       })}
-      >
-        <Tab.Screen
-          name="Dashboard"
-          component={DashboardContent}
-          options={{ title: 'Inicio', tabBarLabel: 'Dashboard' }}
-        />
+    >
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardContent}
+        options={{ title: 'Inicio', tabBarLabel: 'Inicio' }}
+      />
       <Tab.Screen
         name="Settings"
         component={SettingsScreen}
-        options={{ title: 'Configuración', tabBarLabel: 'Perfil' }}
+        options={{ title: 'Perfil', tabBarLabel: 'Perfil' }}
       />
       <Tab.Screen
         name="NewPregnancyRecord"
@@ -209,22 +193,7 @@ export default function DashboardScreen() {
       <Tab.Screen
         name="ViewPregnancyRecords"
         component={ViewPregnancyRecordsScreen}
-        options={{ title: 'Ver Registros', tabBarLabel: 'Ver Registros' }}
-      />
-      <Tab.Screen
-        name="Logout"
-        component={LogoutScreen}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            logout();
-          },
-        }}
-        options={{
-          title: 'Cerrar Sesión',
-          tabBarLabel: 'Logout',
-          tabBarStyle: { backgroundColor: '#FF4D4F' },
-        }}
+        options={{ title: 'Ver Registros', tabBarLabel: 'Registros' }}
       />
     </Tab.Navigator>
   );

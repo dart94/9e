@@ -1,8 +1,35 @@
 import { Stack } from 'expo-router';
+import { useEffect } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
+import {
+  useFonts,
+  Nunito_400Regular,
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+} from '@expo-google-fonts/nunito';
+import { ToastProvider } from '../src/context/ToastContext';
 
+SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
+  const [fontsLoaded] = useFonts({
+    Nunito_400Regular,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
+    <ToastProvider>
     <Stack
       screenOptions={{
         headerShown: false,
@@ -47,15 +74,14 @@ export default function Layout() {
         options={{
           title: 'Nuevo Registro',
         }}
-        />
+      />
       <Stack.Screen
         name="viewPregnancy"
         options={{
           title: 'Ver Registros',
         }}
       />
-
     </Stack>
-    
+    </ToastProvider>
   );
 }

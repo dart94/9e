@@ -3,11 +3,9 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
   Alert,
+  StyleSheet,
 } from 'react-native';
-import axios from 'axios';
-import { API_CONFIG } from '../../src/config/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
@@ -16,12 +14,37 @@ import { textStyles } from '../../src/theme/styles/textStyles';
 import { miscStyles } from '../../src/theme/styles/miscStyles';
 import { buttonStyles } from '../../src/theme/styles/buttonStyles';
 import CustomInput from '@/src/components/CustomInput';
+import { useRouter } from 'expo-router';
+import api, { clearSession } from '../../src/services/api';
+import { COLORS, SIZES } from '../../src/theme/theme';
+import { LoadingScreen, InfoRow } from '../../src/components';
 
 export default function SettingsScreen() {
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ username: '', email: '' });
+  const router = useRouter();
+
+  const handleLogout = () => {
+    Alert.alert('Confirmación', '¿Estás seguro de que deseas cerrar sesión?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Cerrar Sesión',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await api.post('/api/auth/logout');
+          } catch {
+            // Si falla el server, igual limpiamos sesión local
+          } finally {
+            await clearSession();
+            router.replace('/(auth)/login');
+          }
+        },
+      },
+    ]);
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -33,9 +56,8 @@ export default function SettingsScreen() {
           return;
         }
 
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/user/perfil`, {
+        const response = await api.get('/api/user/perfil', {
           params: { user_id: userId },
-          withCredentials: true,
         });
 
         setProfileData(response.data);
@@ -68,9 +90,7 @@ export default function SettingsScreen() {
   const handleSave = async () => {
     try {
       setLoading(true);
-      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/user/perfil`, form, {
-        withCredentials: true,
-      });
+      const response = await api.post('/api/user/perfil', form);
       Alert.alert('Éxito', response.data.message);
       setEditing(false);
       setProfileData({ ...profileData, ...form });
@@ -83,12 +103,7 @@ export default function SettingsScreen() {
   };
 
   if (loading) {
-    return (
-      <View style={[layoutStyles.container, layoutStyles.center]}>
-        <ActivityIndicator size="large" color={textStyles.title.color} />
-        <Text style={textStyles.title}>Cargando perfil...</Text>
-      </View>
-    );
+    return <LoadingScreen message="Cargando perfil..." />;
   }
 
   if (!profileData) {
@@ -105,9 +120,8 @@ export default function SettingsScreen() {
 
       {editing ? (
         <>
-          <Text style={textStyles.subtitle}>Nombre de Usuario</Text>
           <CustomInput
-            style={miscStyles.input}
+            label="Nombre de Usuario"
             value={form.username}
             onChangeText={(text) => setForm({ ...form, username: text })}
           />
@@ -123,42 +137,12 @@ export default function SettingsScreen() {
         <>
           <View style={miscStyles.card}>
             <Text style={miscStyles.cardTitle}>Información de Perfil</Text>
-
-            <View style={textStyles.infoRow}>
-              <Ionicons name="person-outline" size={24} color={textStyles.infoLabel.color} />
-              <Text style={textStyles.infoLabel}> Nombre de Usuario: </Text>
-              <Text style={textStyles.infoValue}>{profileData.username}</Text>
-            </View>
-
-            <View style={textStyles.infoRow}>
-              <Ionicons name="mail-outline" size={24} color={textStyles.infoLabel.color} />
-              <Text style={textStyles.infoLabel}> Correo Electrónico: </Text>
-              <Text style={textStyles.infoValue}>{profileData.email}</Text>
-            </View>
-
-            <View style={textStyles.infoRow}>
-              <Ionicons name="calendar-outline" size={24} color={textStyles.infoLabel.color} />
-              <Text style={textStyles.infoLabel}> Progreso de Embarazo: </Text>
-              <Text style={textStyles.infoValue}>{profileData.progress_percentage?.toFixed(2) || '0'}%</Text>
-            </View>
-
-            <View style={textStyles.infoRow}>
-              <Ionicons name="scale-outline" size={24} color={textStyles.infoLabel.color} />
-              <Text style={textStyles.infoLabel}> Peso: </Text>
-              <Text style={textStyles.infoValue}>{profileData.last_record?.weight || 'N/A'} Kg</Text>
-            </View>
-
-            <View style={textStyles.infoRow}>
-              <Ionicons name="medical-outline" size={24} color={textStyles.infoLabel.color} />
-              <Text style={textStyles.infoLabel}> Últimos Síntomas: </Text>
-              <Text style={textStyles.infoValue}>{profileData.last_record?.symptoms || 'N/A'}</Text>
-            </View>
-
-            <View style={textStyles.infoRow}>
-              <Ionicons name="clipboard-outline" size={24} color={textStyles.infoLabel.color} />
-              <Text style={textStyles.infoLabel}> Notas: </Text>
-              <Text style={textStyles.infoValue}>{profileData.last_record?.notes || 'N/A'}</Text>
-            </View>
+            <InfoRow icon="person-outline" label="Nombre de Usuario" value={profileData.username} />
+            <InfoRow icon="mail-outline" label="Correo Electrónico" value={profileData.email} />
+            <InfoRow icon="calendar-outline" label="Progreso de Embarazo" value={`${profileData.progress_percentage?.toFixed(2) || '0'}%`} />
+            <InfoRow icon="scale-outline" label="Peso" value={profileData.last_record?.weight ? `${profileData.last_record.weight} Kg` : 'N/A'} />
+            <InfoRow icon="medical-outline" label="Últimos Síntomas" value={profileData.last_record?.symptoms || 'N/A'} />
+            <InfoRow icon="clipboard-outline" label="Notas" value={profileData.last_record?.notes || 'N/A'} />
           </View>
 
           <TouchableOpacity style={buttonStyles.button} onPress={() => setEditing(true)}>
@@ -176,8 +160,27 @@ export default function SettingsScreen() {
           >
             <Text style={buttonStyles.buttonText}>Deshabilitar Huella</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[buttonStyles.button, localStyles.logoutButton]}
+            onPress={handleLogout}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar sesión"
+          >
+            <Ionicons name="log-out-outline" size={20} color={COLORS.white} style={{ marginRight: SIZES.spacingSM }} />
+            <Text style={buttonStyles.buttonText}>Cerrar Sesión</Text>
+          </TouchableOpacity>
         </>
       )}
     </View>
   );
 }
+
+const localStyles = StyleSheet.create({
+  logoutButton: {
+    backgroundColor: COLORS.danger,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: SIZES.spacingLG,
+  },
+});

@@ -8,15 +8,14 @@ import {
   Platform,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { layoutStyles } from '../src/theme/styles/layoutStyles';
 import { textStyles } from '../src/theme/styles/textStyles';
 import { buttonStyles } from '../src/theme/styles/buttonStyles';
 import { miscStyles } from '../src/theme/styles/miscStyles';
-import { API_CONFIG } from '../src/config/config';
 import { useRouter } from 'expo-router';
 import CustomInput from '@/src/components/CustomInput';
+import api from '../src/services/api';
 
 export default function NewPregnancyRecordScreen() {
   const [form, setForm] = useState({
@@ -41,9 +40,8 @@ export default function NewPregnancyRecordScreen() {
         }
 
         setLoading(true);
-        const response = await axios.get(`${API_CONFIG.BASE_URL}/api/pregnancy/embarazos`, {
+        const response = await api.get('/api/pregnancy/embarazos', {
           params: { user_id: userId },
-          withCredentials: true,
         });
 
         if (response.data && response.data.length > 0) {
@@ -113,17 +111,12 @@ export default function NewPregnancyRecordScreen() {
         notes: form.notes,
       };
 
-      await axios.post(`${API_CONFIG.BASE_URL}/api/pregnancy/embarazos`, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      await api.post('/api/pregnancy/embarazos', payload);
 
       Alert.alert('Éxito', 'Registro de embarazo añadido correctamente.');
       router.replace('/dashboard');
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      const errorData = axiosError.response?.data as { error?: string };
+    } catch (error: any) {
+      const errorData = error?.response?.data as { error?: string };
       Alert.alert('Error', errorData?.error || 'No se pudo guardar el registro.');
     } finally {
       setLoading(false);
@@ -135,7 +128,7 @@ export default function NewPregnancyRecordScreen() {
       {loading && <ActivityIndicator size="large" color={textStyles.title.color} />}
       <Text style={textStyles.title}>Registro de Embarazo</Text>
 
-      <Text style={textStyles.label}>Última Fecha de Periodo</Text>
+      <Text style={textStyles.label}>Última Fecha de Periodo *</Text>
       <TouchableOpacity 
         style={[miscStyles.input, { justifyContent: 'center' }]} 
         onPress={showDatepicker}
@@ -154,26 +147,23 @@ export default function NewPregnancyRecordScreen() {
         />
       )}
 
-      <Text style={textStyles.label}>Peso Inicial (Kg)</Text>
       <CustomInput
-        style={miscStyles.input}
+        label="Peso Inicial (Kg)"
         value={form.weight}
         onChangeText={(value) => handleInputChange('weight', value)}
         placeholder="Peso de la madre"
         keyboardType="numeric"
       />
 
-      <Text style={textStyles.label}>Síntomas</Text>
       <CustomInput
-        style={miscStyles.input}
+        label="Síntomas"
         value={form.symptoms}
         onChangeText={(value) => handleInputChange('symptoms', value)}
         placeholder="Síntomas de la madre"
       />
 
-      <Text style={textStyles.label}>Notas</Text>
       <CustomInput
-        style={miscStyles.input}
+        label="Notas"
         value={form.notes}
         onChangeText={(value) => handleInputChange('notes', value)}
         placeholder="Recordatorios o notas adicionales"

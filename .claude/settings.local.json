@@ -5,7 +5,12 @@
       "Bash(\"venv/Scripts/pip.exe\" list:*)",
       "Bash(FLASK_APP=run.py \"venv/Scripts/flask.exe\" db migrate -m \"add token blocklist\")",
       "Bash(FLASK_APP=run.py PYTHONPATH=\"C:/Users/Diego-lap/Desktop/devg/9e/backend\" \"venv/Scripts/flask.exe\" db migrate -m \"add token blocklist\")",
-      "Bash(FLASK_APP=run.py PYTHONPATH=\"C:/Users/Diego-lap/Desktop/devg/9e/backend\" \"venv/Scripts/flask.exe\" db upgrade)"
+      "Bash(FLASK_APP=run.py PYTHONPATH=\"C:/Users/Diego-lap/Desktop/devg/9e/backend\" \"venv/Scripts/flask.exe\" db upgrade)",
+      "Bash(npm install:*)",
+      "Bash(rm -rf components/)",
+      "Bash(rm -f hooks/useThemeColor.ts hooks/useThemeColor.web.ts hooks/useColorScheme.ts hooks/useColorScheme.web.ts constants/Colors.ts)",
+      "Bash(node -e \"require\\(''./src/theme/theme.js''\\)\")",
+      "Bash(npx tsc:*)"
     ]
   }
 }

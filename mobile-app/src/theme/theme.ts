@@ -1,34 +1,71 @@
 export const COLORS = {
+  // Paleta principal
   primary: '#5FBFAF',         // Verde-azulado suave
   primaryDark: '#3A7669',     // Versión más oscura del primary
   secondary: '#E8F4F2',       // Fondo claro, complementario
   accent: '#FFB366',          // Naranja suave para detalles
   accentDark: '#FF8C1A',      // Naranja acento oscuro
-  text: '#080000',            // Gris oscuro para texto
-  textLight: '#555',          // Gris claro para subtítulos
-  background: '#FAFBFC',      // Fondo claro
-  background2: '#6B7280',     // Fondo oscuro
+
+  // Texto
+  text: '#080000',            // Casi negro para texto principal
+  textLight: '#555555',       // Gris para subtítulos
+
+  // Fondos
+  background: '#FAFBFC',      // Fondo principal claro
   backgroundAlt: '#F5F9F8',   // Fondo alternativo
-  white: '#ffffff',           // Blanco puro
-  border: '#3A7669',          // Borde suave
+  surface: '#FFFFFF',         // Superficies de cards/modales
+  overlay: 'rgba(0, 0, 0, 0.6)', // Backdrop de modales
+
+  // Estados
   success: '#4CAF50',         // Verde para éxito
   error: '#F44336',           // Rojo para errores
-  boxshadow: 'rgba(95, 191, 175, 0.1)', // Sombra basada en el primary
-  
+  warning: '#FF9800',         // Naranja para advertencias
+  danger: '#F44336',          // Alias de error para destructivos
+
+  // Misceláneos
+  white: '#FFFFFF',
+  border: '#5FBFAF',          // Borde usa primary (no primaryDark)
+  boxshadow: 'rgba(95, 191, 175, 0.15)',
+  shadowDark: 'rgba(0, 0, 0, 0.1)',
+
+  // Tab bar
+  tabBar: '#3A7669',
+  tabBarActive: '#FFFFFF',
+  tabBarInactive: '#B2D8D2',
 };
 
 export const SIZES = {
-  padding: 16,        // Espaciado estándar
-  margin: 10,         // Margen estándar
-  borderRadius: 12,   // Borde redondeado
-  fontSmall: 14,      // Fuente pequeña
-  fontMedium: 18,     // Fuente mediana
-  fontLarge: 24,      // Fuente grande
-  fontExtraLarge: 32, // Fuente extra grande
-  shadowOffset: 4,    // Desplazamiento de sombras
-  lineHeight: 22,     // Altura de línea
+  // Espaciado
+  padding: 16,
+  margin: 10,
+  spacingXS: 4,
+  spacingSM: 8,
+  spacingMD: 16,
+  spacingLG: 24,
+  spacingXL: 32,
+
+  // Border radius
+  borderRadiusSmall: 8,
+  borderRadius: 12,           // Alias de medium para compatibilidad
+  borderRadiusMedium: 12,
+  borderRadiusLarge: 16,
+  borderRadiusFull: 9999,
+
+  // Tipografía
+  fontSmall: 14,
+  fontMedium: 18,
+  fontLarge: 24,
+  fontExtraLarge: 32,
+
+  // Misc
+  shadowOffset: 4,
+  lineHeight: 22,
 };
 
 export const FONTS = {
-  primary: 'Nunito, sans-serif', // Fuente principal
+  regular: 'Nunito_400Regular',
+  semiBold: 'Nunito_600SemiBold',
+  bold: 'Nunito_700Bold',
+  // Fallback mientras se cargan las fuentes
+  primary: 'System',
 };

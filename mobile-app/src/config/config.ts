@@ -3,8 +3,7 @@ import Constants from 'expo-constants';
 const getBaseUrl = () => {
   // Si estamos en desarrollo, usar el backend local
   if (__DEV__) {
-    // Cambiar a IP local si tienes el backend corriendo: 'http://192.168.13.38:5000'
-    return 'https://9e-production.up.railway.app';
+    return 'http://192.168.13.44:5000';
   }
   //  usar Railway
   return 'https://9e-production.up.railway.app';
