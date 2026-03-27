@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -7,6 +7,7 @@ import {
   ViewStyle,
   TextStyle,
   View,
+  Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { COLORS, SIZES, FONTS } from '../theme/theme';
@@ -39,6 +40,15 @@ export default function AppButton({
   textStyle,
   accessibilityLabel,
 }: AppButtonProps) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(scale, { toValue: 0.96, useNativeDriver: true, tension: 200, friction: 10 }).start();
+  };
+  const handlePressOut = () => {
+    Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 200, friction: 10 }).start();
+  };
+
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onPress();
@@ -47,6 +57,7 @@ export default function AppButton({
   const isDisabled = disabled || loading;
 
   return (
+    <Animated.View style={{ transform: [{ scale }], width: '100%' }}>
     <TouchableOpacity
       style={[
         btnStyles.base,
@@ -60,6 +71,8 @@ export default function AppButton({
         style,
       ]}
       onPress={handlePress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       disabled={isDisabled}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
@@ -86,6 +99,7 @@ export default function AppButton({
         </View>
       )}
     </TouchableOpacity>
+    </Animated.View>
   );
 }
 

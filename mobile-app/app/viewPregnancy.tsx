@@ -11,7 +11,6 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { layoutStyles } from '../src/theme/styles/layoutStyles';
 import { textStyles } from '../src/theme/styles/textStyles';
 import { buttonStyles } from '../src/theme/styles/buttonStyles';
@@ -41,16 +40,7 @@ export default function ViewPregnancyRecordsScreen() {
 
   const fetchRecords = useCallback(async () => {
     try {
-      const userId = await AsyncStorage.getItem('userId');
-      if (!userId) {
-        Alert.alert('Error', 'Usuario no autenticado.');
-        router.replace('/(auth)/login');
-        return;
-      }
-
-      const response = await api.get('/api/pregnancy/embarazos', {
-        params: { user_id: userId },
-      });
+      const response = await api.get('/api/pregnancy/embarazos');
 
       setRecords(response.data);
     } catch (error) {
@@ -180,7 +170,7 @@ export default function ViewPregnancyRecordsScreen() {
         >
           <View style={modalStyles.modalContent}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-              <NewPregnancyRecordScreen />
+              <NewPregnancyRecordScreen onSuccess={() => { setIsModalVisible(false); fetchRecords(); }} />
             </ScrollView>
           </View>
 

@@ -12,7 +12,7 @@ from datetime import datetime
 @user_bp.route('/perfil', methods=['GET'])
 @jwt_required()
 def get_perfil():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404
@@ -43,7 +43,7 @@ def get_perfil():
 @user_bp.route('/perfil', methods=['PUT'])
 @jwt_required()
 def editar_perfil():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404

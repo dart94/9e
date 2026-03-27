@@ -13,7 +13,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv(
         'DATABASE_URL',  # URL de la base de datos definida en Render
         # Fallback para desarrollo local
-        os.getenv('EXTERNAL_DATABASE_URL', 'sqlite:///default.db')
+        os.getenv('EXTERNAL_DATABASE_URL', 'mysql+mysqlconnector://user:1234@localhost/pregnancy_tracker')
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

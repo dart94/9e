@@ -33,21 +33,15 @@ export default function RegisterScreen() {
         Alert.alert(
           '¡Registro exitoso!',
           'Revisa tu correo para confirmar tu cuenta.',
-          [
-            {
-              text: 'OK',
-              onPress: () => router.push('/(auth)/login'),
-            },
-          ]
+          [{ text: 'OK', onPress: () => router.push('/(auth)/login') }]
         );
       } else {
         Alert.alert('Error', 'Hubo un problema al registrar el usuario.');
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.error || 'Hubo un problema al registrar el usuario.';
-        Alert.alert('Error', errorMessage);
+        const msg = error.response?.data?.error || 'Hubo un problema al registrar el usuario.';
+        Alert.alert('Error', msg);
       } else {
         Alert.alert('Error', 'Ocurrió un error inesperado.');
       }
@@ -58,41 +52,55 @@ export default function RegisterScreen() {
 
   return (
     <View style={[layoutStyles.container, layoutStyles.center]}>
-      <Text style={textStyles.title}>Crear Cuenta</Text>
-      <CustomInput
+      <Text style={textStyles.title} accessibilityRole="header">
+        Crear Cuenta
+      </Text>
 
-        placeholder="Nombre de usuario"
+      <CustomInput
+        label="Nombre de usuario"
+        placeholder="Tu nombre de usuario"
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
+        accessibilityLabel="Campo de nombre de usuario"
       />
       <CustomInput
-
-        placeholder="Correo electrónico"
+        label="Correo electrónico"
+        placeholder="tu@correo.com"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
+        accessibilityLabel="Campo de correo electrónico"
       />
       <CustomInput
-
-        placeholder="Contraseña"
+        label="Contraseña"
+        placeholder="Mínimo 8 caracteres"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        accessibilityLabel="Campo de contraseña"
       />
+
       <TouchableOpacity
         style={[buttonStyles.button, loading && buttonStyles.buttonDisabled]}
         onPress={handleRegister}
         disabled={loading}
+        accessibilityRole="button"
+        accessibilityLabel={loading ? 'Registrando...' : 'Registrar nueva cuenta'}
+        accessibilityState={{ disabled: loading }}
       >
         <Text style={buttonStyles.buttonText}>
           {loading ? 'Registrando...' : 'Registrar'}
         </Text>
       </TouchableOpacity>
+
       <TouchableOpacity
-       style={layoutStyles.touchableContainer}
-       onPress={() => router.push('/(auth)/login')}>
+        style={layoutStyles.touchableContainer}
+        onPress={() => router.push('/(auth)/login')}
+        accessibilityRole="link"
+        accessibilityLabel="Ir a iniciar sesión"
+      >
         <Text style={textStyles.link}>¿Ya tienes una cuenta? Inicia sesión</Text>
       </TouchableOpacity>
     </View>

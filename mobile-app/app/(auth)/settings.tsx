@@ -6,7 +6,6 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 import { layoutStyles } from '../../src/theme/styles/layoutStyles';
@@ -49,16 +48,7 @@ export default function SettingsScreen() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (!userId) {
-          Alert.alert('Error', 'No se pudo obtener el usuario autenticado.');
-          setLoading(false);
-          return;
-        }
-
-        const response = await api.get('/api/user/perfil', {
-          params: { user_id: userId },
-        });
+        const response = await api.get('/api/user/perfil');
 
         setProfileData(response.data);
         setForm({ username: response.data.username, email: response.data.email });
@@ -90,7 +80,7 @@ export default function SettingsScreen() {
   const handleSave = async () => {
     try {
       setLoading(true);
-      const response = await api.post('/api/user/perfil', form);
+      const response = await api.put('/api/user/perfil', form);
       Alert.alert('Éxito', response.data.message);
       setEditing(false);
       setProfileData({ ...profileData, ...form });
@@ -116,7 +106,7 @@ export default function SettingsScreen() {
 
   return (
     <View style={layoutStyles.container}>
-      <Text style={textStyles.title}>Perfil</Text>
+      <Text style={textStyles.title} accessibilityRole="header">Perfil</Text>
 
       {editing ? (
         <>
@@ -124,19 +114,30 @@ export default function SettingsScreen() {
             label="Nombre de Usuario"
             value={form.username}
             onChangeText={(text) => setForm({ ...form, username: text })}
+            accessibilityLabel="Campo de nombre de usuario"
           />
 
-          <TouchableOpacity style={buttonStyles.button} onPress={handleSave}>
+          <TouchableOpacity
+            style={buttonStyles.button}
+            onPress={handleSave}
+            accessibilityRole="button"
+            accessibilityLabel="Guardar cambios del perfil"
+          >
             <Text style={buttonStyles.buttonText}>Guardar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={buttonStyles.button} onPress={() => setEditing(false)}>
+          <TouchableOpacity
+            style={buttonStyles.button}
+            onPress={() => setEditing(false)}
+            accessibilityRole="button"
+            accessibilityLabel="Cancelar edición"
+          >
             <Text style={buttonStyles.buttonText}>Cancelar</Text>
           </TouchableOpacity>
         </>
       ) : (
         <>
-          <View style={miscStyles.card}>
-            <Text style={miscStyles.cardTitle}>Información de Perfil</Text>
+          <View style={miscStyles.card} accessibilityLabel="Información de perfil">
+            <Text style={miscStyles.cardTitle} accessibilityRole="header">Información de Perfil</Text>
             <InfoRow icon="person-outline" label="Nombre de Usuario" value={profileData.username} />
             <InfoRow icon="mail-outline" label="Correo Electrónico" value={profileData.email} />
             <InfoRow icon="calendar-outline" label="Progreso de Embarazo" value={`${profileData.progress_percentage?.toFixed(2) || '0'}%`} />
@@ -145,18 +146,27 @@ export default function SettingsScreen() {
             <InfoRow icon="clipboard-outline" label="Notas" value={profileData.last_record?.notes || 'N/A'} />
           </View>
 
-          <TouchableOpacity style={buttonStyles.button} onPress={() => setEditing(true)}>
+          <TouchableOpacity
+            style={buttonStyles.button}
+            onPress={() => setEditing(true)}
+            accessibilityRole="button"
+            accessibilityLabel="Editar información del perfil"
+          >
             <Text style={buttonStyles.buttonText}>Editar Perfil</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={buttonStyles.button}
             onPress={() => handleToggleBiometricAuth(true)}
+            accessibilityRole="button"
+            accessibilityLabel="Habilitar autenticación por huella digital"
           >
             <Text style={buttonStyles.buttonText}>Habilitar Huella</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={buttonStyles.button}
             onPress={() => handleToggleBiometricAuth(false)}
+            accessibilityRole="button"
+            accessibilityLabel="Deshabilitar autenticación por huella digital"
           >
             <Text style={buttonStyles.buttonText}>Deshabilitar Huella</Text>
           </TouchableOpacity>

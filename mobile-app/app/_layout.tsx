@@ -35,6 +35,11 @@ export default function Layout() {
         headerShown: false,
       }}
     >
+      <Stack.Screen
+        name="onboarding"
+        options={{ title: 'Bienvenida', headerShown: false }}
+      />
+
       {/* Pantallas de autenticación */}
       <Stack.Screen
         name="(auth)/login"

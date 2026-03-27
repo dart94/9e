@@ -97,8 +97,8 @@ def login():
     if not user.is_verified:
         return jsonify({"error": "Debes confirmar tu correo antes de iniciar sesión."}), 403
 
-    access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
-    refresh_token = create_refresh_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id), expires_delta=timedelta(days=1))
+    refresh_token = create_refresh_token(identity=str(user.id))
     return jsonify({
         "message": "Inicio de sesión exitoso.",
         "id": user.id,
@@ -233,8 +233,8 @@ def google_login():
                     user.auth_provider = 'google'
                 db.session.commit()
 
-        access_token = create_access_token(identity=user.id)
-        refresh_token = create_refresh_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
+        refresh_token = create_refresh_token(identity=str(user.id))
         return jsonify({
             "id": user.id,
             "username": user.username,

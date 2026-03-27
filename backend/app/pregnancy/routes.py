@@ -25,7 +25,7 @@ def week_to_month(week):
 @pregnancy_bp.route('/dashboard', methods=['GET'])
 @jwt_required()
 def get_dashboard():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
 
     last_record = PregnancyData.query.filter_by(user_id=user_id).order_by(PregnancyData.id.desc()).first()
     if not last_record or not last_record.last_period_date:
@@ -54,7 +54,7 @@ def get_dashboard():
 @pregnancy_bp.route('/embarazos', methods=['GET'])
 @jwt_required()
 def get_registros():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     registros = PregnancyData.query.filter_by(user_id=user_id).all()
     return jsonify([
         {
@@ -72,7 +72,7 @@ def get_registros():
 @pregnancy_bp.route('/embarazos', methods=['POST'])
 @jwt_required()
 def crear_registro():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
 
     if not data or not data.get('last_period_date') or not data.get('weight'):
