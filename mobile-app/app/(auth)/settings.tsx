@@ -25,6 +25,30 @@ export default function SettingsScreen() {
   const [form, setForm] = useState({ username: '', email: '' });
   const router = useRouter();
 
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'Eliminar Cuenta',
+      'Esta acción es permanente e irreversible. Se eliminarán tu cuenta y todos tus registros.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await api.delete('/api/user/account');
+            } catch {
+              // Si falla el server, igual limpiamos local
+            } finally {
+              await clearSession();
+              router.replace('/(auth)/login');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const handleLogout = () => {
     Alert.alert('Confirmación', '¿Estás seguro de que deseas cerrar sesión?', [
       { text: 'Cancelar', style: 'cancel' },
@@ -172,6 +196,16 @@ export default function SettingsScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
+            style={[buttonStyles.button, localStyles.deleteButton]}
+            onPress={handleDeleteAccount}
+            accessibilityRole="button"
+            accessibilityLabel="Eliminar cuenta permanentemente"
+          >
+            <Ionicons name="trash-outline" size={20} color={COLORS.white} style={{ marginRight: SIZES.spacingSM }} />
+            <Text style={buttonStyles.buttonText}>Eliminar Cuenta</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={[buttonStyles.button, localStyles.logoutButton]}
             onPress={handleLogout}
             accessibilityRole="button"
@@ -187,10 +221,16 @@ export default function SettingsScreen() {
 }
 
 const localStyles = StyleSheet.create({
+  deleteButton: {
+    backgroundColor: '#B71C1C',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: SIZES.spacingMD,
+  },
   logoutButton: {
     backgroundColor: COLORS.danger,
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: SIZES.spacingLG,
+    marginTop: SIZES.spacingSM,
   },
 });

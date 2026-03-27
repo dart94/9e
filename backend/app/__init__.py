@@ -40,6 +40,10 @@ def create_app(config_class=Config):
     app.register_blueprint(fetal_api, url_prefix='/api')
     app.register_blueprint(legacy_bp)
 
+    from .user.routes import delete_account_page, delete_account_web
+    app.add_url_rule('/eliminar-cuenta', 'delete_account_page', delete_account_page, methods=['GET'])
+    app.add_url_rule('/eliminar-cuenta', 'delete_account_web', delete_account_web, methods=['POST'])
+
     @app.errorhandler(404)
     def not_found_error(error):
         return {"error": "Resource not found"}, 404

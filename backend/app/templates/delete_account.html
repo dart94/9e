@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Cuenta - Embrace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #F5F9F8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px 36px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3A7669;
+            margin-bottom: 8px;
+        }
+        h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #080000;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #C8E6E2;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            color: #080000;
+            background: #F5F9F8;
+            margin-bottom: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: #5FBFAF; }
+        .btn-danger {
+            width: 100%;
+            padding: 14px;
+            background: #F44336;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: background 0.2s;
+        }
+        .btn-danger:hover { background: #D32F2F; }
+        .alert {
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .alert-error { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+        .alert-success { background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
+        .warning-box {
+            background: #FFF3E0;
+            border: 1px solid #FFE0B2;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 13px;
+            color: #E65100;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .warning-box strong { display: block; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">Embrace</div>
+        <h1>Eliminar Cuenta</h1>
+        <p class="subtitle">Ingresa tus credenciales para eliminar tu cuenta de forma permanente.</p>
+
+        {% if success %}
+            <div class="alert alert-success">
+                Tu cuenta y todos tus datos han sido eliminados correctamente.
+            </div>
+        {% else %}
+            {% if error %}
+                <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+
+            <div class="warning-box">
+                <strong>⚠️ Esta acción es irreversible.</strong>
+                Se eliminarán tu cuenta y todos tus registros de embarazo de forma permanente.
+            </div>
+
+            <form method="POST">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" name="email" placeholder="tu@correo.com" required>
+
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+
+                <button type="submit" class="btn-danger">Eliminar mi cuenta</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>
