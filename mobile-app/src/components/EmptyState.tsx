@@ -21,12 +21,14 @@ export default function EmptyState({
 }: EmptyStateProps) {
   return (
     <View style={emptyStyles.container}>
-      <Ionicons
-        name={icon}
-        size={64}
-        color={COLORS.secondary}
-        accessibilityLabel=""
-      />
+      <View style={{ backgroundColor: COLORS.primary + '18', borderRadius: 60, padding: 20, alignSelf: 'center' }}>
+        <Ionicons
+          name={icon}
+          size={56}
+          color={COLORS.primary}
+          accessibilityLabel=""
+        />
+      </View>
       <Text style={emptyStyles.message}>{message}</Text>
       {subMessage && <Text style={emptyStyles.subMessage}>{subMessage}</Text>}
       {actionLabel && onAction && (

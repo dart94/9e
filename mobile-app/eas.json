@@ -21,7 +21,6 @@
     },
     "production": {
       "autoIncrement": true,
-      "image": "latest",
       "env": {
         "RUNTIME_VERSION": "2.0.3"
       },

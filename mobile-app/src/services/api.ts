@@ -1,11 +1,11 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { API_CONFIG } from '../config/config';
 import { storage } from '../../utils/storageHelper';
 
 const api = axios.create({
   baseURL: API_CONFIG.BASE_URL,
+  timeout: 15000,
 });
 
 // Adjunta el access token a cada request
@@ -86,11 +86,11 @@ api.interceptors.response.use(
 );
 
 export const clearSession = async () => {
-  await AsyncStorage.multiRemove(['userId', 'user']);
+  await storage.removeItem('userId');
+  await storage.removeItem('user');
   await storage.removeItem('userToken');
   await storage.removeItem('refreshToken');
   await storage.removeItem('userEmail');
-  await storage.removeItem('userPassword');
 };
 
 export default api;

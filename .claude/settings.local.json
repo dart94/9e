@@ -10,7 +10,14 @@
       "Bash(rm -rf components/)",
       "Bash(rm -f hooks/useThemeColor.ts hooks/useThemeColor.web.ts hooks/useColorScheme.ts hooks/useColorScheme.web.ts constants/Colors.ts)",
       "Bash(node -e \"require\\(''./src/theme/theme.js''\\)\")",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(\"C:\\\\Users\\\\Diego-lap\\\\desktop\\\\devg\\\\9e\\\\mobile-app\\\\.gitignore\")",
+      "Bash(sed -i '0,/\\\\.env\\\\*\\\\.local/s/\\\\.env\\\\*\\\\.local/.env\\\\n.env*.local/' \"C:\\\\Users\\\\Diego-lap\\\\desktop\\\\devg\\\\9e\\\\mobile-app\\\\.gitignore\")",
+      "Bash(find /c/Users/Diego-lap/desktop/devg/9e -type f \\\\\\(-name .github -o -name *.yml -o -name *.yaml -o -name .gitlab-ci* \\\\\\))",
+      "Bash(xargs wc:*)",
+      "Bash(wc -l /c/Users/Diego-lap/desktop/devg/9e/mobile-app/app/*.tsx)",
+      "Bash(grep -r any /c/Users/Diego-lap/desktop/devg/9e/mobile-app/app --include=*.tsx --include=*.ts)",
+      "Bash(grep -r \"axios\\\\|fetch\" /c/Users/Diego-lap/desktop/devg/9e/mobile-app/app --include=*.tsx)"
     ]
   }
 }

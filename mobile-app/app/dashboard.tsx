@@ -7,6 +7,7 @@ import {
   RefreshControl,
   Animated,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,7 +18,9 @@ import SettingsScreen from './(auth)/settings';
 import ViewPregnancyRecordsScreen from './viewPregnancy';
 import NewPregnancyRecordScreen from './newPregnancy';
 import { COLORS, SIZES, FONTS } from '../src/theme/theme';
-import { LoadingScreen } from '../src/components';
+import { LoadingScreen, DashboardSkeleton, EmptyState } from '../src/components';
+import { useNavigation } from '@react-navigation/native';
+import { haptics } from '../src/services/haptics';
 import { textStyles } from '../src/theme/styles/textStyles';
 
 const Tab = createBottomTabNavigator();
@@ -123,6 +126,10 @@ function DashboardContent() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const navigation = useNavigation<any>();
+
+  const onRegisterNow = () => navigation.navigate('NewPregnancyRecord');
 
   // Animaciones del hero
   const heroOpacity = useRef(new Animated.Value(0)).current;
@@ -133,9 +140,15 @@ function DashboardContent() {
       const response = await api.get('/api/pregnancy/dashboard');
       setData(response.data);
       setError(null);
-    } catch (err) {
-      console.error('Error al cargar datos del dashboard:', err);
-      setError('Error al cargar los datos del dashboard.');
+      setIsEmpty(false);
+    } catch (err: any) {
+      if (err?.response?.status === 404) {
+        setIsEmpty(true);
+        setError(null);
+      } else {
+        setError('No se pudo cargar el dashboard. Verifica tu conexión.');
+        setIsEmpty(false);
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -156,17 +169,38 @@ function DashboardContent() {
   }, [data]);
 
   const onRefresh = () => {
+    haptics.impact();
     setRefreshing(true);
     fetchDashboardData();
   };
 
-  if (loading) return <LoadingScreen message="Cargando datos..." />;
+  if (loading) return <DashboardSkeleton />;
+
+  if (isEmpty)
+    return (
+      <EmptyState
+        icon="heart-outline"
+        message="¡Bienvenida a Embrace!"
+        subMessage="Aún no has registrado tu embarazo. Puedes empezar registrando tu propio embarazo o seguir el de un ser querido."
+        actionLabel="Registrar ahora"
+        onAction={onRegisterNow}
+      />
+    );
 
   if (error)
     return (
       <View style={dashStyles.errorContainer}>
-        <Ionicons name="cloud-offline-outline" size={48} color={COLORS.textLight} accessibilityLabel="Error de conexión" />
+        <Ionicons name="cloud-offline-outline" size={64} color={COLORS.textLight} accessibilityLabel="Error de conexión" />
+        <Text style={dashStyles.errorTitle}>No se pudo cargar</Text>
         <Text style={textStyles.errorText}>{error}</Text>
+        <TouchableOpacity
+          style={dashStyles.retryButton}
+          onPress={() => { setLoading(true); fetchDashboardData(); }}
+          accessibilityRole="button"
+          accessibilityLabel="Reintentar carga del dashboard"
+        >
+          <Text style={dashStyles.retryButtonText}>Reintentar</Text>
+        </TouchableOpacity>
       </View>
     );
 
@@ -428,5 +462,27 @@ const dashStyles = StyleSheet.create({
     padding: SIZES.spacingXL,
     gap: SIZES.spacingMD,
     backgroundColor: COLORS.background,
+  },
+  errorTitle: {
+    fontSize: SIZES.fontMedium,
+    fontFamily: FONTS.semiBold,
+    color: COLORS.text,
+    textAlign: 'center',
+  },
+  retryButton: {
+    marginTop: SIZES.spacingSM,
+    paddingVertical: SIZES.spacingMD,
+    paddingHorizontal: SIZES.spacingXL,
+    backgroundColor: COLORS.primaryDark,
+    borderRadius: SIZES.borderRadius,
+    minHeight: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  retryButtonText: {
+    color: COLORS.white,
+    fontSize: SIZES.fontMedium,
+    fontFamily: FONTS.bold,
+    fontWeight: 'bold',
   },
 });

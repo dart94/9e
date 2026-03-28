@@ -42,7 +42,7 @@ class Config:
     # Configuración de CORS
     CORS_ORIGINS = os.getenv(
         'CORS_ORIGINS',
-        'http://localhost:8081,https://9e-production.up.railway.app'
+        'http://localhost:8081,http://localhost:19006,http://localhost:19000,http://localhost:3000,https://9e-production.up.railway.app'
     ).split(',')
 
 

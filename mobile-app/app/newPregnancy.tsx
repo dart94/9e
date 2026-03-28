@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert,
   ActivityIndicator,
   Platform,
 } from 'react-native';
@@ -15,6 +14,9 @@ import { miscStyles } from '../src/theme/styles/miscStyles';
 import { useRouter } from 'expo-router';
 import CustomInput from '@/src/components/CustomInput';
 import api from '../src/services/api';
+import { haptics } from '../src/services/haptics';
+import { useToast } from '../src/context/ToastContext';
+import { getErrorMessage } from '../src/services/errorHandler';
 
 interface Props {
   onSuccess?: () => void;
@@ -31,14 +33,12 @@ export default function NewPregnancyRecordScreen({ onSuccess }: Props = {}) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const router = useRouter();
+  const toast = useToast();
 
   useEffect(() => {
     const fetchLastPeriodDate = async () => {
       try {
-        setLoading(true);
-        // user_id viene del JWT en el backend
         const response = await api.get('/api/pregnancy/embarazos');
-
         if (response.data && response.data.length > 0) {
           const latestRecord = response.data[0];
           if (latestRecord?.last_period_date) {
@@ -49,11 +49,8 @@ export default function NewPregnancyRecordScreen({ onSuccess }: Props = {}) {
             setDate(new Date(latestRecord.last_period_date));
           }
         }
-      } catch (error) {
-        console.error('Error al cargar la última fecha de periodo:', error);
-        Alert.alert('Error', 'No se pudo cargar la última fecha de periodo.');
-      } finally {
-        setLoading(false);
+      } catch {
+        // Fallo silencioso — el usuario puede ingresar la fecha manualmente
       }
     };
 
@@ -85,13 +82,13 @@ export default function NewPregnancyRecordScreen({ onSuccess }: Props = {}) {
 
   const handleSubmit = async () => {
     if (!form.last_period_date || !form.weight) {
-      Alert.alert('Error', 'Por favor, completa todos los campos obligatorios.');
+      toast.error('Por favor completa la fecha de último período y el peso.');
       return;
     }
+    haptics.impactMedium();
 
     try {
       setLoading(true);
-      // user_id viene del token JWT en el backend — no hace falta enviarlo en el body
       const payload = {
         last_period_date: form.last_period_date,
         weight: form.weight,
@@ -100,22 +97,15 @@ export default function NewPregnancyRecordScreen({ onSuccess }: Props = {}) {
       };
 
       await api.post('/api/pregnancy/embarazos', payload);
-
-      Alert.alert('Éxito', 'Registro de embarazo añadido correctamente.', [
-        {
-          text: 'OK',
-          onPress: () => {
-            if (onSuccess) {
-              onSuccess();
-            } else {
-              router.replace('/dashboard');
-            }
-          },
-        },
-      ]);
-    } catch (error: any) {
-      const errorData = error?.response?.data as { error?: string };
-      Alert.alert('Error', errorData?.error || 'No se pudo guardar el registro.');
+      haptics.success();
+      toast.success('Registro guardado correctamente.');
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        router.replace('/dashboard');
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'No se pudo guardar el registro. Inténtalo de nuevo.'));
     } finally {
       setLoading(false);
     }
@@ -150,7 +140,7 @@ export default function NewPregnancyRecordScreen({ onSuccess }: Props = {}) {
       )}
 
       <CustomInput
-        label="Peso Inicial (Kg)"
+        label="Peso actual (kg)"
         value={form.weight}
         onChangeText={(value) => handleInputChange('weight', value)}
         placeholder="Ej: 60.5"
@@ -183,7 +173,7 @@ export default function NewPregnancyRecordScreen({ onSuccess }: Props = {}) {
         accessibilityLabel="Guardar registro de embarazo"
         accessibilityState={{ disabled: loading }}
       >
-        <Text style={buttonStyles.buttonText}>Guardar Registro</Text>
+        <Text style={buttonStyles.buttonText}>{loading ? 'Guardando...' : 'Guardar Registro'}</Text>
       </TouchableOpacity>
     </View>
   );

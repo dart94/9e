@@ -9,7 +9,7 @@ import {
   View,
   Animated,
 } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '../services/haptics';
 import { COLORS, SIZES, FONTS } from '../theme/theme';
 
 type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'ghost';
@@ -50,7 +50,7 @@ export default function AppButton({
   };
 
   const handlePress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    haptics.impact();
     onPress();
   };
 

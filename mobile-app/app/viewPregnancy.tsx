@@ -3,13 +3,13 @@ import {
   View,
   Text,
   FlatList,
-  Alert,
   Modal,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   RefreshControl,
+  StyleSheet,
 } from 'react-native';
 import { layoutStyles } from '../src/theme/styles/layoutStyles';
 import { textStyles } from '../src/theme/styles/textStyles';
@@ -20,8 +20,9 @@ import { useRouter } from 'expo-router';
 import NewPregnancyRecordScreen from './newPregnancy';
 import api from '../src/services/api';
 import { LoadingScreen, EmptyState } from '../src/components';
-import { COLORS } from '../src/theme/theme';
-
+import { COLORS, SIZES, FONTS } from '../src/theme/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useToast } from '../src/context/ToastContext';
 
 interface PregnancyRecord {
   id: number;
@@ -36,16 +37,16 @@ export default function ViewPregnancyRecordsScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
   const router = useRouter();
+  const toast = useToast();
 
   const fetchRecords = useCallback(async () => {
     try {
       const response = await api.get('/api/pregnancy/embarazos');
-
       setRecords(response.data);
-    } catch (error) {
-      console.error('Error al cargar registros:', error);
-      Alert.alert('Error', 'No se pudieron cargar los registros.');
+    } catch {
+      toast.error('No se pudieron cargar los registros. Verifica tu conexión.');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -61,27 +62,21 @@ export default function ViewPregnancyRecordsScreen() {
     fetchRecords();
   };
 
-  const handleDelete = async (id: number) => {
-    Alert.alert(
-      'Confirmación',
-      '¿Estás seguro de que deseas eliminar este registro?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await api.delete(`/api/pregnancy/embarazos/${id}`);
-              Alert.alert('Éxito', 'Registro eliminado correctamente.');
-              setRecords((prev) => prev.filter((r) => r.id !== id));
-            } catch {
-              Alert.alert('Error', 'No se pudo eliminar el registro.');
-            }
-          },
-        },
-      ]
-    );
+  const handleDelete = (id: number) => {
+    setDeleteTargetId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTargetId) return;
+    const id = deleteTargetId;
+    setDeleteTargetId(null);
+    try {
+      await api.delete(`/api/pregnancy/embarazos/${id}`);
+      toast.success('Registro eliminado correctamente.');
+      setRecords((prev) => prev.filter((r) => r.id !== id));
+    } catch {
+      toast.error('No se pudo eliminar el registro.');
+    }
   };
 
   const renderRecord = ({ item }: { item: PregnancyRecord }) => (
@@ -90,16 +85,16 @@ export default function ViewPregnancyRecordsScreen() {
       <View style={textStyles.infoRow}>
         <Text style={textStyles.infoLabel}>Peso: </Text>
         <Text style={textStyles.infoValue}>
-          {item.weight ? `${item.weight} Kg` : 'N/A'}
+          {item.weight ? `${item.weight} Kg` : 'Sin registrar'}
         </Text>
       </View>
       <View style={textStyles.infoRow}>
         <Text style={textStyles.infoLabel}>Síntomas: </Text>
-        <Text style={textStyles.infoValue}>{item.symptoms || 'N/A'}</Text>
+        <Text style={textStyles.infoValue}>{item.symptoms || 'Sin registrar'}</Text>
       </View>
       <View style={textStyles.infoRow}>
         <Text style={textStyles.infoLabel}>Notas: </Text>
-        <Text style={textStyles.infoValue}>{item.notes || 'N/A'}</Text>
+        <Text style={textStyles.infoValue}>{item.notes || 'Sin registrar'}</Text>
       </View>
       <View style={layoutStyles.actionsRow}>
         <TouchableOpacity
@@ -115,7 +110,12 @@ export default function ViewPregnancyRecordsScreen() {
   );
 
   if (loading) {
-    return <LoadingScreen message="Cargando registros..." />;
+    return (
+      <LoadingScreen
+        message="Cargando registros..."
+        onRetry={() => { setLoading(true); fetchRecords(); }}
+      />
+    );
   }
 
   return (
@@ -140,8 +140,8 @@ export default function ViewPregnancyRecordsScreen() {
         ) : (
           <EmptyState
             icon="document-text-outline"
-            message="Sin registros aún"
-            subMessage="Agrega tu primer registro de seguimiento"
+            message="Aún no tienes registros"
+            subMessage="Comienza registrando tu peso y síntomas de hoy. Cada dato cuenta para tu seguimiento."
             actionLabel="Nuevo Registro"
             onAction={() => setIsModalVisible(true)}
           />
@@ -158,6 +158,7 @@ export default function ViewPregnancyRecordsScreen() {
         )}
       </View>
 
+      {/* Modal de nuevo registro */}
       <Modal
         visible={isModalVisible}
         animationType="slide"
@@ -184,6 +185,95 @@ export default function ViewPregnancyRecordsScreen() {
           </TouchableOpacity>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* Modal de confirmación de eliminación */}
+      <Modal
+        visible={deleteTargetId !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDeleteTargetId(null)}
+      >
+        <View style={deleteModalStyles.backdrop}>
+          <View style={deleteModalStyles.card}>
+            <Ionicons name="warning-outline" size={48} color={COLORS.danger} accessibilityLabel="" />
+            <Text style={deleteModalStyles.title}>Eliminar registro</Text>
+            <Text style={deleteModalStyles.message}>
+              ¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer.
+            </Text>
+            <View style={deleteModalStyles.actions}>
+              <TouchableOpacity
+                style={[buttonStyles.button, deleteModalStyles.cancelBtn]}
+                onPress={() => setDeleteTargetId(null)}
+                accessibilityRole="button"
+                accessibilityLabel="Cancelar eliminación"
+              >
+                <Text style={buttonStyles.buttonText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[buttonStyles.button, deleteModalStyles.confirmBtn]}
+                onPress={confirmDelete}
+                accessibilityRole="button"
+                accessibilityLabel="Confirmar eliminación"
+              >
+                <Text style={buttonStyles.buttonText}>Eliminar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
+
+const deleteModalStyles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: SIZES.spacingXL,
+  },
+  card: {
+    backgroundColor: COLORS.surface,
+    borderRadius: SIZES.borderRadius,
+    padding: SIZES.spacingXL,
+    alignItems: 'center',
+    gap: SIZES.spacingMD,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  title: {
+    fontSize: SIZES.fontLarge,
+    fontFamily: FONTS.bold,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    textAlign: 'center',
+  },
+  message: {
+    fontSize: SIZES.fontSmall,
+    fontFamily: FONTS.regular,
+    color: COLORS.textLight,
+    textAlign: 'center',
+    lineHeight: SIZES.lineHeight,
+  },
+  actions: {
+    flexDirection: 'row',
+    gap: SIZES.spacingSM,
+    marginTop: SIZES.spacingSM,
+    width: '100%',
+  },
+  cancelBtn: {
+    flex: 1,
+    backgroundColor: COLORS.textLight,
+    marginVertical: 0,
+  },
+  confirmBtn: {
+    flex: 1,
+    backgroundColor: COLORS.danger,
+    marginVertical: 0,
+  },
+});

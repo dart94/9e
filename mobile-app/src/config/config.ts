@@ -1,11 +1,15 @@
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
 const getBaseUrl = () => {
-  // Si estamos en desarrollo, usar el backend local
   if (__DEV__) {
-    return 'http://192.168.13.44:5000';
+    // En web el browser hace fetch desde localhost, no desde la IP de red
+    if (Platform.OS === 'web') {
+      return 'http://localhost:5000';
+    }
+    const devHost = process.env.EXPO_PUBLIC_DEV_API_HOST ?? '192.168.13.44';
+    return `http://${devHost}:5000`;
   }
-  //  usar Railway
   return 'https://9e-production.up.railway.app';
 };
 

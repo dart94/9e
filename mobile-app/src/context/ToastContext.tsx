@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { haptics } from '../services/haptics';
 import { COLORS, SIZES, FONTS } from '../theme/theme';
 
 type ToastType = 'success' | 'error' | 'info';
@@ -106,6 +107,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const show = (message: string, type: ToastType = 'info', duration?: number) => {
     const id = nextId++;
     setToasts((prev) => [...prev.slice(-2), { id, type, message, duration }]);
+    if (type === 'success') {
+      haptics.success();
+    } else if (type === 'error') {
+      haptics.error();
+    }
   };
 
   const dismiss = (id: number) => {

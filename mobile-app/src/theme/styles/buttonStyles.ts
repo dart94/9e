@@ -12,7 +12,8 @@ export const buttonStyles = StyleSheet.create({
     minHeight: 48,
   },
   buttonDisabled: {
-    backgroundColor: COLORS.primary + '88',
+    backgroundColor: '#AAAAAA',
+    opacity: 0.7,
   },
   buttonText: {
     color: COLORS.white,
@@ -46,7 +47,7 @@ export const buttonStyles = StyleSheet.create({
     minHeight: 48,
   },
   cerrarButton: {
-    backgroundColor: COLORS.danger,
+    backgroundColor: COLORS.primaryDark,
     padding: SIZES.spacingMD,
     marginLeft: SIZES.spacingSM,
     borderRadius: SIZES.borderRadiusSmall,

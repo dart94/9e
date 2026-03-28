@@ -3,12 +3,10 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import { Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG } from '../../src/config/config';
 import { layoutStyles } from '../../src/theme/styles/layoutStyles';
 import { textStyles } from '../../src/theme/styles/textStyles';
@@ -23,12 +21,14 @@ import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import * as Application from 'expo-application';
 import { COLORS, SIZES } from '../../src/theme/theme';
+import { useToast } from '../../src/context/ToastContext';
+import { getErrorMessage } from '../../src/services/errorHandler';
 
 WebBrowser.maybeCompleteAuthSession();
 
-const WEB_CLIENT_ID = '30060725584-n3hofnkgj935hehk5ot4dcn5o9d8dcr8.apps.googleusercontent.com';
-const ANDROID_CLIENT_ID = '30060725584-nuohjfa7tk392bltpl1k0tvs1gebhs7d.apps.googleusercontent.com';
-const IOS_CLIENT_ID = '30060725584-i56l4d5oab74g16mbensag5e21qk7rss.apps.googleusercontent.com';
+const WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID!;
+const ANDROID_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID!;
+const IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID!;
 
 export default function LoginScreen() {
   const isRunningInExpoGo = Constants.appOwnership === 'expo';
@@ -58,13 +58,14 @@ export default function LoginScreen() {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
   const router = useRouter();
+  const toast = useToast();
 
   useEffect(() => {
     if (response?.type === 'success') {
       const { code } = response.params;
       if (code) handleGoogleLogin(code);
     } else if (response?.type === 'error') {
-      Alert.alert('Error', 'No se pudo iniciar sesión con Google');
+      toast.error('No se pudo iniciar sesión con Google. Inténtalo de nuevo.');
     }
   }, [response]);
 
@@ -79,16 +80,15 @@ export default function LoginScreen() {
         code,
         redirectUri,
       });
-      if (resp.status !== 200) throw new Error('No se pudo iniciar sesión con Google en el backend');
+      if (resp.status !== 200) throw new Error('google_login_failed');
       const { id, username, token, refresh_token } = resp.data;
-      await AsyncStorage.setItem('userId', String(id));
-      await AsyncStorage.setItem('user', JSON.stringify({ id, username }));
+      await storage.setItem('userId', String(id));
+      await storage.setItem('user', JSON.stringify({ id, username }));
       await storage.setItem('userToken', token);
       if (refresh_token) await storage.setItem('refreshToken', refresh_token);
       router.replace('/dashboard');
     } catch (error) {
-      const msg = axios.isAxiosError(error) ? error.response?.data?.error : 'Error desconocido';
-      Alert.alert('Error', `No se pudo iniciar sesión: ${msg}`);
+      toast.error(getErrorMessage(error, 'No se pudo iniciar sesión con Google.'));
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ export default function LoginScreen() {
     try {
       const savedEmail = await storage.getItem('userEmail');
       if (!savedEmail) {
-        Alert.alert('No hay datos guardados', 'Por favor, inicia sesión primero con tu correo y contraseña.');
+        toast.info('Inicia sesión primero con tu correo y contraseña para habilitar la huella.');
         return;
       }
       const result = await LocalAuthentication.authenticateAsync({
@@ -109,25 +109,30 @@ export default function LoginScreen() {
         cancelLabel: 'Cancelar',
       });
       if (result.success) {
-        const savedPassword = await storage.getItem('userPassword');
-        await handleLogin(savedEmail, savedPassword || '');
+        const savedRefreshToken = await storage.getItem('refreshToken');
+        if (!savedRefreshToken) {
+          toast.info('Tu sesión expiró. Inicia sesión con tu correo y contraseña.');
+          return;
+        }
+        router.replace('/dashboard');
       }
     } catch {
-      Alert.alert('Error', 'No se pudo completar la autenticación biométrica');
+      toast.error('No se pudo completar la autenticación biométrica.');
     }
   };
 
   const handleLogin = async (loginEmail = email, loginPassword = password) => {
+    let hasError = false;
     if (!loginEmail || !validateEmail(loginEmail)) {
       setEmailError(true);
-      Alert.alert('Error', 'Por favor ingresa un correo electrónico válido.');
-      return;
+      hasError = true;
     }
     if (!loginPassword) {
       setPasswordError(true);
-      Alert.alert('Error', 'Por favor ingresa tu contraseña.');
-      return;
+      hasError = true;
     }
+    if (hasError) return;
+
     setLoading(true);
     try {
       const resp = await axios.post(`${API_CONFIG.BASE_URL}/api/auth/login`, {
@@ -136,23 +141,15 @@ export default function LoginScreen() {
       });
       if (resp.status === 200) {
         const { id, username, token, refresh_token } = resp.data;
-        await AsyncStorage.setItem('userId', id.toString());
-        await AsyncStorage.setItem('user', JSON.stringify({ id, name: username }));
+        await storage.setItem('userId', id.toString());
+        await storage.setItem('user', JSON.stringify({ id, name: username }));
         await storage.setItem('userToken', token);
         if (refresh_token) await storage.setItem('refreshToken', refresh_token);
         await storage.setItem('userEmail', loginEmail);
-        await storage.setItem('userPassword', loginPassword);
         router.replace('/dashboard');
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const msg =
-          error.response?.data?.message ||
-          (error.response?.status === 401 ? 'Credenciales inválidas.' : 'Ocurrió un error. Inténtalo de nuevo.');
-        Alert.alert('Error', msg);
-      } else {
-        Alert.alert('Error', 'Ocurrió un error inesperado.');
-      }
+      toast.error(getErrorMessage(error, 'No se pudo iniciar sesión. Verifica tus datos.'));
     } finally {
       setLoading(false);
     }
@@ -179,7 +176,7 @@ export default function LoginScreen() {
 
       <CustomInput
         label="Contraseña"
-        placeholder="Tu contraseña"
+        placeholder="Escribe tu contraseña"
         value={password}
         onChangeText={(t) => { setPasswordError(false); setPassword(t); }}
         secureTextEntry
@@ -197,7 +194,7 @@ export default function LoginScreen() {
         accessibilityState={{ disabled: loading }}
       >
         <Text style={buttonStyles.buttonText}>
-          {loading ? 'Cargando...' : 'Ingresar'}
+          {loading ? 'Iniciando sesión...' : 'Ingresar'}
         </Text>
       </TouchableOpacity>
 
