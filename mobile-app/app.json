@@ -25,8 +25,8 @@
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
             "buildToolsVersion": "35.0.0",
-            "kotlinVersion": "1.9.24",
-            "ndkVersion": "27.0.12077973",
+            "kotlinVersion": "2.0.21",
+            "ndkVersion": "27.1.12297006",
             "useLegacyPackaging": false
           }
         }

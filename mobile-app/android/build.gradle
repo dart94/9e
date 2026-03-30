@@ -4,9 +4,8 @@ buildscript {
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '35')
-        kotlinVersion = "1.9.25"
-        ndkVersion = "27.0.12077973"
-        composeCompilerVersion = "1.5.15"
+        kotlinVersion = "2.0.21"
+        ndkVersion = "27.1.12297006"
     }
     repositories {
         google()
@@ -17,8 +16,6 @@ buildscript {
         classpath('com.android.tools.build:gradle')
         classpath('com.facebook.react:react-native-gradle-plugin')
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
-        classpath("androidx.compose.compiler:compiler:$composeCompilerVersion")
     }
 }
 
@@ -35,37 +32,5 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://www.jitpack.io' }
-    }
-
-    configurations.all {
-        resolutionStrategy {
-            eachDependency { details ->
-                if (details.requested.group == 'org.jetbrains.kotlin') {
-                    details.useVersion "1.9.25"
-                }
-            }
-            force "org.jetbrains.kotlin:kotlin-stdlib:1.9.25",
-                  "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25",
-                  "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25",
-                  "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25",
-                  "org.jetbrains.kotlin:kotlin-annotations-jvm:1.9.25"
-        }
-    }
-}
-
-subprojects {
-    configurations.all {
-        resolutionStrategy {
-            eachDependency { details ->
-                if (details.requested.group == 'org.jetbrains.kotlin') {
-                    details.useVersion "1.9.25"
-                }
-            }
-            force "org.jetbrains.kotlin:kotlin-stdlib:1.9.25",
-                  "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25",
-                  "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25",
-                  "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25",
-                  "org.jetbrains.kotlin:kotlin-annotations-jvm:1.9.25"
-        }
     }
 }
