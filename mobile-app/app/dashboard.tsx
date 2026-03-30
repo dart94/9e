@@ -22,6 +22,7 @@ import { LoadingScreen, DashboardSkeleton, EmptyState } from '../src/components'
 import { useNavigation } from '@react-navigation/native';
 import { haptics } from '../src/services/haptics';
 import { textStyles } from '../src/theme/styles/textStyles';
+import { useScreenSize } from '../src/hooks/useScreenSize';
 
 const Tab = createBottomTabNavigator();
 
@@ -128,6 +129,7 @@ function DashboardContent() {
   const [error, setError] = useState<string | null>(null);
   const [isEmpty, setIsEmpty] = useState(false);
   const navigation = useNavigation<any>();
+  const { isTablet, contentMaxWidth, horizontalPadding } = useScreenSize();
 
   const onRegisterNow = () => navigation.navigate('NewPregnancyRecord');
 
@@ -212,10 +214,17 @@ function DashboardContent() {
 
   const weeksRemaining = 40 - (current_week || 0);
 
+  // Altura adaptativa de la imagen hero según el tipo de pantalla
+  const heroImageHeight = isTablet ? 260 : 180;
+
   return (
     <ScrollView
       style={dashStyles.scrollView}
-      contentContainerStyle={dashStyles.scrollContent}
+      contentContainerStyle={[
+        dashStyles.scrollContent,
+        { paddingHorizontal: horizontalPadding },
+        isTablet && { maxWidth: contentMaxWidth, alignSelf: 'center' as const, width: '100%' },
+      ]}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -245,7 +254,7 @@ function DashboardContent() {
           source={{
             uri: `${API_CONFIG.BASE_URL}/static/images/development/month${month}.png`,
           }}
-          style={[dashStyles.image, { opacity: heroOpacity, transform: [{ scale: heroScale }] }]}
+          style={[dashStyles.image, { height: heroImageHeight, opacity: heroOpacity, transform: [{ scale: heroScale }] }]}
           accessibilityLabel={`Imagen de desarrollo del bebé, mes ${month}`}
           accessibilityRole="image"
         />

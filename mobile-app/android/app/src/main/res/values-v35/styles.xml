@@ -1,0 +1,15 @@
+<resources>
+  <!--
+    Android 15 (API 35) forces edge-to-edge for apps targeting SDK 35.
+    This attribute opts the app out of the forced edge-to-edge enforcement
+    while the underlying libraries (react-native-screens, reanimated) still use
+    deprecated APIs (WindowCompat.setDecorFitsSystemWindows, window.statusBarColor,
+    window.navigationBarColor). Remove this opt-out once all dependencies have
+    migrated to WindowInsetsControllerCompat / the new WindowInsets APIs.
+
+    Reference: https://developer.android.com/about/versions/15/behavior-changes-15#edge-to-edge
+  -->
+  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+  </style>
+</resources>

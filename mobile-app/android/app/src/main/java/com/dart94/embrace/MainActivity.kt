@@ -11,6 +11,9 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate
 
 import expo.modules.ReactActivityDelegateWrapper
 
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
+
 class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     // Set the theme to AppTheme BEFORE onCreate to support
@@ -21,6 +24,18 @@ class MainActivity : ReactActivity() {
     SplashScreenManager.registerOnActivity(this)
     // @generated end expo-splashscreen
     super.onCreate(null)
+
+    // Configure edge-to-edge using the modern WindowInsetsControllerCompat API
+    // instead of the deprecated WindowCompat.setDecorFitsSystemWindows /
+    // window.statusBarColor / window.navigationBarColor (deprecated in Android 15).
+    // This ensures the app draws behind system bars correctly on all API levels.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      WindowCompat.setDecorFitsSystemWindows(window, false)
+      val insetsController = WindowInsetsControllerCompat(window, window.decorView)
+      // Light status bar icons (dark icons on light background)
+      insetsController.isAppearanceLightStatusBars = true
+      insetsController.isAppearanceLightNavigationBars = true
+    }
   }
 
   /**

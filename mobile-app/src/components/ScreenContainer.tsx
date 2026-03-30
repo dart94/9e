@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, SIZES } from '../theme/theme';
+import { useScreenSize } from '../hooks/useScreenSize';
 
 interface ScreenContainerProps {
   children: React.ReactNode;
@@ -25,23 +26,35 @@ export default function ScreenContainer({
   padded = true,
   style,
 }: ScreenContainerProps) {
+  const { contentMaxWidth, horizontalPadding, isTablet } = useScreenSize();
+
   const containerStyle = [
     containerStyles.base,
-    padded && containerStyles.padded,
+    padded && { padding: horizontalPadding, paddingBottom: SIZES.spacingXL + SIZES.spacingLG },
     centered && containerStyles.centered,
     style,
   ];
 
+  // En tablets, centramos el contenido con un ancho máximo
+  const innerWrapperStyle: ViewStyle = isTablet
+    ? { width: '100%', maxWidth: contentMaxWidth, alignSelf: 'center' }
+    : { flex: 1 };
+
   const content = scrollable ? (
     <ScrollView
       style={containerStyles.base}
-      contentContainerStyle={[padded && containerStyles.padded, centered && containerStyles.centered]}
+      contentContainerStyle={[
+        padded && { padding: horizontalPadding, paddingBottom: SIZES.spacingXL + SIZES.spacingLG },
+        centered && containerStyles.centered,
+      ]}
       showsVerticalScrollIndicator={false}
     >
-      {children}
+      <View style={innerWrapperStyle}>{children}</View>
     </ScrollView>
   ) : (
-    <View style={containerStyle}>{children}</View>
+    <View style={containerStyle}>
+      <View style={innerWrapperStyle}>{children}</View>
+    </View>
   );
 
   return (
@@ -67,10 +80,6 @@ const containerStyles = StyleSheet.create({
   base: {
     flex: 1,
     backgroundColor: COLORS.background,
-  },
-  padded: {
-    padding: SIZES.padding,
-    paddingBottom: SIZES.spacingXL + SIZES.spacingLG,
   },
   centered: {
     justifyContent: 'center',

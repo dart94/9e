@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   FlatList,
   Animated,
   TouchableOpacity,
@@ -13,8 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES, FONTS } from '../src/theme/theme';
 import { AppButton } from '../src/components';
-
-const { width } = Dimensions.get('window');
+import { useScreenSize } from '../src/hooks/useScreenSize';
 
 const SLIDES = [
   {
@@ -48,6 +46,7 @@ export default function OnboardingScreen() {
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { width, contentMaxWidth, isTablet } = useScreenSize();
 
   const handleFinish = async () => {
     await AsyncStorage.setItem('hasSeenOnboarding', 'true');
@@ -64,6 +63,9 @@ export default function OnboardingScreen() {
   };
 
   const handleSkip = () => handleFinish();
+
+  // En tablets, el slide ocupa el ancho del contenido centrado, no toda la pantalla
+  const slideWidth = isTablet ? Math.min(contentMaxWidth, width) : width;
 
   return (
     <View style={obStyles.container}>
@@ -91,10 +93,10 @@ export default function OnboardingScreen() {
           { useNativeDriver: false }
         )}
         onMomentumScrollEnd={(e) => {
-          setCurrentIndex(Math.round(e.nativeEvent.contentOffset.x / width));
+          setCurrentIndex(Math.round(e.nativeEvent.contentOffset.x / slideWidth));
         }}
         renderItem={({ item }) => (
-          <View style={obStyles.slide}>
+          <View style={[obStyles.slide, { width: slideWidth }]}>
             <View style={[obStyles.iconCircle, { backgroundColor: item.iconColor + '18' }]}>
               <Ionicons
                 name={item.icon}
@@ -112,7 +114,7 @@ export default function OnboardingScreen() {
       {/* Dots */}
       <View style={obStyles.dotsRow}>
         {SLIDES.map((_, i) => {
-          const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
+          const inputRange = [(i - 1) * slideWidth, i * slideWidth, (i + 1) * slideWidth];
           const dotWidth = scrollX.interpolate({
             inputRange,
             outputRange: [8, 24, 8],
@@ -162,7 +164,7 @@ const obStyles = StyleSheet.create({
     color: COLORS.textLight,
   },
   slide: {
-    width,
+    // El ancho se aplica dinámicamente inline (slideWidth) para soportar redimensionamiento
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

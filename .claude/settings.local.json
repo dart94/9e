@@ -17,7 +17,13 @@
       "Bash(xargs wc:*)",
       "Bash(wc -l /c/Users/Diego-lap/desktop/devg/9e/mobile-app/app/*.tsx)",
       "Bash(grep -r any /c/Users/Diego-lap/desktop/devg/9e/mobile-app/app --include=*.tsx --include=*.ts)",
-      "Bash(grep -r \"axios\\\\|fetch\" /c/Users/Diego-lap/desktop/devg/9e/mobile-app/app --include=*.tsx)"
+      "Bash(grep -r \"axios\\\\|fetch\" /c/Users/Diego-lap/desktop/devg/9e/mobile-app/app --include=*.tsx)",
+      "Bash(source /c/Users/Diego-lap/Desktop/devg/9e/.venv/Scripts/activate)",
+      "Bash(grep -r \"setDecorFitsSystemWindows\\\\|setStatusBarColor\\\\|setNavigationBarColor\\\\|LAYOUT_IN_DISPLAY_CUTOUT\" /c/Users/Diego-lap/Desktop/devg/9e/mobile-app/node_modules/react-native/ReactAndroid/src --include=*.kt --include=*.java -l)",
+      "Bash(grep -r \"setDecorFitsSystemWindows\\\\|setStatusBarColor\\\\|setNavigationBarColor\\\\|LAYOUT_IN_DISPLAY_CUTOUT\" /c/Users/Diego-lap/Desktop/devg/9e/mobile-app/node_modules/react-native-reanimated/android/src --include=*.kt --include=*.java -l)",
+      "Bash(npm view:*)",
+      "Bash(npm pack:*)",
+      "Bash(xargs grep:*)"
     ]
   }
 }
